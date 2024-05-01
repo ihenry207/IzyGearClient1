@@ -1,0 +1,67 @@
+.rental-info {
+    font-family: 'Nunito Sans', sans-serif;
+    text-align: center;
+    padding: 50px 0;
+  }
+  
+  .rental-info-text {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 30px;
+    margin-top: 0px;
+   
+  }
+  
+  .rental-info-text p {
+    font-size: 23px;
+    line-height: 1.5;
+    font-weight:600;
+  }
+  
+  .list-gear-section {
+    background-color: #212F3D;
+    color: #fff;
+    padding: 40px 20px;
+    margin-top: 50px;
+  }
+  
+  .list-gear-section p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .list-gear-button {
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #212F3D;
+    background-color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-gear-button:hover {
+    background-color: #f5f5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .rental-info-text p {
+      font-size: 18px;
+    }
+  
+    .list-gear-section p {
+      font-size: 20px;
+    }
+  
+    .list-gear-button {
+      font-size: 16px;
+      padding: 10px 24px;
+    }
+  }

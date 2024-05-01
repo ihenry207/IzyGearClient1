@@ -1,0 +1,124 @@
+.login {
+  background-color: #212F3D;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+}
+
+.login_content {
+  background-color: #616A6B;
+  padding: 60px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+}
+
+.login_content h1 {
+  margin-bottom: 30px;
+  text-align: center;
+  font-size: 36px;
+}
+
+.login_content_form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login_content_form input {
+  margin-bottom: 20px;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login_content_form .password-input {
+  position: relative;
+  width: 100%;
+}
+
+.login_content_form .password-input input {
+  padding-right: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login_content_form .password-eye {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login_content_form button {
+  padding: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 18px;
+}
+
+.login_content_form button:hover {
+  background-color: #45a049;
+}
+
+.login_content .signup-link {
+  text-align: center;
+  margin-top: 20px;
+  transition: color 0.3s ease;
+  font-size: 20px;
+}
+
+.login_content .signup-link a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+.login_content .signup-link a:hover {
+  color: #45a049;
+}
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+/* Media Queries for Mobile Devices */
+@media screen and (max-width: 480px) {
+  .login {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  .login_content {
+    padding: 20px;
+  }
+  
+  .login_content h1 {
+    font-size: 24px;
+  }
+  
+  .login_content_form input {
+    font-size: 14px;
+  }
+  
+  .login_content_form button {
+    font-size: 14px;
+  }
+  
+  .login_content .signup-link {
+    font-size: 18px;
+  }
+}
