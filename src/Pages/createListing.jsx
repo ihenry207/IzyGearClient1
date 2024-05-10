@@ -18,6 +18,11 @@ const CreateListing = () =>{
   const [condition, setCondition] = useState("");
   const [withBoots, setWithBoots] = useState(false);
   const [withBindings, setWithBindings] = useState(false);
+  const [type, setType] = useState("");
+  const [kind, setKind] = useState("");
+  const [subcategory, setSubcategory] = useState("");
+  const [otherSubcategory, setOtherSubcategory] = useState("");
+  const [name, setName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   /* LOCATION */
   const [formLocation, setFormLocation] = useState({
@@ -68,7 +73,8 @@ const CreateListing = () =>{
 
   const handlePost = async (e) => {
     e.preventDefault();
-
+    console.log("Form submitted");
+  
     // Check if all required fields are filled
     const missingFields = [];
     if (!category) missingFields.push("Category");
@@ -83,11 +89,13 @@ const CreateListing = () =>{
     if (!formLocation.streetAddress) missingFields.push("Street Address");
     if (!condition) missingFields.push("Condition");
     if (!description) missingFields.push("Description");
-
+  
     if (missingFields.length > 0) {
+      console.log("missing fields", missingFields);
       setErrorMessage(`Please fill in the following fields: ${missingFields.join(", ")}`);
       return;
     }
+  
     try {
       /* Create a new FormData object to handle file uploads */
       const listingForm = new FormData();
@@ -104,26 +112,52 @@ const CreateListing = () =>{
       listingForm.append("streetAddress", formLocation.streetAddress);
       listingForm.append("aptSuite", formLocation.aptSuite);
       listingForm.append("condition", condition);
-      listingForm.append("boots", withBoots);
-      listingForm.append("bindings", withBindings);
       listingForm.append("description", description);
+  
+      if (category === "Snowboard" || category === "Ski") {
+        listingForm.append("boots", withBoots);
+        listingForm.append("bindings", withBindings);
+      }
+  
+      if (category === "Biking") {
+        listingForm.append("type", type);
+        listingForm.append("kind", kind);
+      }
 
+      if (category === "Camping") {
+        listingForm.append("subcategory", subcategory === "Others" ? otherSubcategory : subcategory);
+        listingForm.append("name", name);
+       
+      }
+  
+  
       /* Append each selected photo to the FormData object */
       photos.forEach((photo) => {
         listingForm.append("listingPhotos", photo);
       });
-
-      /* Send a POST request to server */
-      const response = await fetch("http://10.1.82.57:3001/gears/create", {
-        method: "POST",
-        body: listingForm,
-      });
-
+  
+      /* Send a POST request to server 10.1.82.57:3001*/
+      const response = await fetch(
+        category === "Biking"
+          ? "http://10.1.82.57:3001/gears/biking/create"
+          : category === "Camping"
+          ? "http://10.1.82.57:3001/gears/camping/create"
+          : "http://10.1.82.57:3001/gears/skisnow/create",
+        {
+          method: "POST",
+          body: listingForm,
+        }
+      );
+      console.log("Response:", response);
+  
       if (response.ok) {
         navigate("/");
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
       }
     } catch (err) {
       console.log("Publish Listing failed", err.message);
+      setErrorMessage("An error occurred. Please try again.");
     }
   };
   return(
@@ -139,9 +173,7 @@ const CreateListing = () =>{
           <h3>Which of these categories best describes your gear?</h3>
           <div className="category-list">
             <div
-              className={`category ${
-                category === "Snowboard" ? "selected" : ""
-              }`}
+              className={`category ${category === "Snowboard" ? "selected" : ""}`}
               onClick={() => setCategory("Snowboard")}
             >
               <p>Snowboard</p>
@@ -151,6 +183,18 @@ const CreateListing = () =>{
               onClick={() => setCategory("Ski")}
             >
               <p>Ski</p>
+            </div>
+            <div
+              className={`category ${category === "Biking" ? "selected" : ""}`}
+              onClick={() => setCategory("Biking")}
+            >
+              <p>Biking</p>
+            </div>
+            <div
+              className={`category ${category === "Camping" ? "selected" : ""}`}
+              onClick={() => setCategory("Camping")}
+            >
+              <p>Camping</p>
             </div>
           </div>
 
@@ -198,23 +242,50 @@ const CreateListing = () =>{
                 <option value="Girls'">Girls'</option>
               </select>
 
-              <h3>Size Range</h3>
-              <select
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
+              <h3>Size (in CM)</h3>
+              <div className="size-input">
+                <input
+                  type="number"
+                  placeholder="Enter size"
+                  min={1}
+                  max={300}
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                  required
+                />
+                <span>cm</span>
+              </div>
+              <h3>Price per Day (in dollars)</h3>
+              <input
+                type="number"
+                placeholder="Enter price"
+                min={1}
+                max={199.99}
+                step={1}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 required
-              >
-                <option value="">Select size range</option>
-                <option value="< 100 cm">{"< 100 cm"}</option>
-                <option value="100-109 cm">100-109 cm</option>
-                <option value="110-119 cm">110-119 cm</option>
-                <option value="120-129 cm">120-129 cm</option>
-                <option value="130-139 cm">130-139 cm</option>
-                <option value="140-149 cm">140-149 cm</option>
-                <option value="150-159 cm">150-159 cm</option>
-                <option value="160-169 cm">160-169 cm</option>
-                <option value="170-179 cm">170-179 cm</option>
-              </select>
+              />
+
+              <h3>Additional Options</h3>
+              <div>
+                <input
+                  type="checkbox"
+                  id="withBoots"
+                  checked={withBoots}
+                  onChange={(e) => setWithBoots(e.target.checked)}
+                />
+                <label htmlFor="withBoots">Comes with Boots</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="withBindings"
+                  checked={withBindings}
+                  onChange={(e) => setWithBindings(e.target.checked)}
+                />
+                <label htmlFor="withBindings">Comes with Bindings</label>
+              </div>
             </>
           )}
 
@@ -262,39 +333,222 @@ const CreateListing = () =>{
                 <option value="Girls'">Girls'</option>
               </select>
 
-              <h3>Size Range</h3>
-              <select
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
+              <h3>Size (in CM)</h3>
+              <div className="size-input">
+                <input
+                  type="number"
+                  placeholder="Enter size"
+                  min={1}
+                  max={300}
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                  required
+                />
+                <span>cm</span>
+              </div>
+              <h3>Price per Day (in dollars)</h3>
+              <input
+                type="number"
+                placeholder="Enter price"
+                min={1}
+                max={199.99}
+                step={1}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 required
-              >
-                <option value="">Select size range</option>
-                <option value="< 100 cm">{"< 100 cm"}</option>
-                <option value="100-109 cm">100-109 cm</option>
-                <option value="110-119 cm">110-119 cm</option>
-                <option value="120-129 cm">120-129 cm</option>
-                <option value="130-139 cm">130-139 cm</option>
-                <option value="140-149 cm">140-149 cm</option>
-                <option value="150-159 cm">150-159 cm</option>
-                <option value="160-169 cm">160-169 cm</option>
-                <option value="170-179 cm">170-179 cm</option>
-                <option value="180-190 cm">180-190 cm</option>
-                <option value="> 190 cm">{"> 190 cm"}</option>
-              </select>
+              />
+
+                <h3>Additional Options</h3>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="withBoots"
+                        checked={withBoots}
+                        onChange={(e) => setWithBoots(e.target.checked)}
+                      />
+                      <label htmlFor="withBoots">Comes with Boots</label>
+                    </div>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="withBindings"
+                        checked={withBindings}
+                        onChange={(e) => setWithBindings(e.target.checked)}
+                      />
+                      <label htmlFor="withBindings">Comes with Bindings</label>
+                    </div>
             </>
           )}
 
-          <h3>Price per Day (in dollars)</h3>
-          <input
-            type="number"
-            placeholder="Enter price"
-            min={1}
-            max={199.99}
-            step={1}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
+          {category === "Biking" && (
+            <>
+            <h3>Type</h3>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              >
+                <option value="">Select a type</option>
+                <option value="scooter">Scooter</option>
+                <option value="bike">Bike</option>
+              </select>
+
+              <h3>Kind</h3>
+              <select
+                value={kind}
+                onChange={(e) => setKind(e.target.value)}
+                required
+              >
+                <option value="">Select a kind</option>
+                <option value="electric">Electric</option>
+                <option value="non-electric">Non-electric</option>
+              </select>
+              <h3>Brand</h3>
+              <input
+                type="text"
+                placeholder="Enter brand name"
+                maxLength={25}
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+                style={{ width: "60%" }}
+              />
+              {brand === "Other" && (
+                <input
+                  type="text"
+                  placeholder="Enter brand name"
+                  maxLength={15}
+                  required
+                />
+              )}
+
+              <h3>Gender</h3>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                required
+              >
+                <option value="">Select gender</option>
+                <option value="Men's">Men's</option>
+                <option value="Women's">Women's</option>
+                <option value="Kids'">Kids'</option>
+                <option value="Boys'">Boys'</option>
+                <option value="Girls'">Girls'</option>
+              </select>
+
+              <h3>Size</h3>
+                <input
+                  type="text"
+                  placeholder="Enter size"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                  required
+                />
+
+
+              <h3>Price per Day (in dollars)</h3>
+              <input
+                type="number"
+                placeholder="Enter price"
+                min={1}
+                max={199.99}
+                step={1}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </>
+          )}
+
+          {category === "Camping" && (
+            <>
+              <h3>Subcategory</h3>
+              <select
+                value={subcategory}
+                onChange={(e) => setSubcategory(e.target.value)}
+                required
+              >
+                <option value="">Select a subcategory</option>
+                <option value="Sleeping bags and pads">Sleeping bags and pads</option>
+                <option value="Tents and shelter">Tents and shelter</option>
+                <option value="Kitchen">Kitchen</option>
+                <option value="Lighting">Lighting</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Bags and backpacks">Bags and backpacks</option>
+                <option value="Outdoor clothing">Outdoor clothing</option>
+                <option value="Portable power">Portable power</option>
+                <option value="Others">Others</option>
+              </select>
+
+              {subcategory === "Others" && (
+                <input
+                  type="text"
+                  placeholder="Specify subcategory"
+                  value={otherSubcategory}
+                  onChange={(e) => setOtherSubcategory(e.target.value)}
+                  required
+                />
+              )}
+
+              <h3>Brand</h3>
+              <input
+                type="text"
+                placeholder="Enter brand name"
+                maxLength={25}
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+                style={{ width: "60%" }}
+              />
+
+              <h3>Name</h3>
+              <input
+                type="text"
+                placeholder="Enter item name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+
+              <h3>Gender</h3>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  required
+                >
+                  <option value="">Select gender</option>
+                  <option value="Men's">Men's</option>
+                  <option value="Women's">Women's</option>
+                  <option value="Kids'">Kids'</option>
+                  <option value="Boys'">Boys'</option>
+                  <option value="Girls'">Girls'</option>
+                  <option value="No gender">No gender</option>
+                </select>
+
+                <h3>Size</h3>
+                <input
+                  type="text"
+                  placeholder="Enter size"
+                  value={size}
+                  onChange={(e) => setSize(e.target.value)}
+                  required
+                />
+
+              <h3>Price per Day (in dollars)</h3>
+              <input
+                type="number"
+                placeholder="Enter price"
+                min={1}
+                max={599.99}
+                step={1}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </>
+          )}
+
+          
 
           <h3>Where's your gear located?</h3>
           <p style={{ fontSize: "18px", fontWeight: "normal" }}>
@@ -373,7 +627,7 @@ const CreateListing = () =>{
                 name="aptSuite"
                 value={formLocation.aptSuite}
                 onChange={handleChangeLocation}
-                required
+                
               />
             </div>
           </div>
@@ -391,25 +645,7 @@ const CreateListing = () =>{
             <option value="Fair">Fair</option>
           </select>
 
-          <h3>Additional Options</h3>
-          <div>
-            <input
-              type="checkbox"
-              id="withBoots"
-              checked={withBoots}
-              onChange={(e) => setWithBoots(e.target.checked)}
-            />
-            <label htmlFor="withBoots">Comes with Boots</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="withBindings"
-              checked={withBindings}
-              onChange={(e) => setWithBindings(e.target.checked)}
-            />
-            <label htmlFor="withBindings">Comes with Bindings</label>
-          </div>
+          
         </div>
 
         <div className="create-listing_step2">

@@ -113,6 +113,29 @@
       gap: 0;
     }
   }
+  .type-select,
+  .kind-select {
+    margin-bottom: 20px;
+  }
+
+  .size-input {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .size-input input {
+    padding-right: 30px;
+  }
+  
+  .size-input span {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #999;
+  }
   
   .create-listing_step1 .location p {
     font-weight: 700;
@@ -143,6 +166,7 @@
     .create-listing_step2 {
       padding: 30px 20px;
     }
+    
   }
   
   .create-listing_step2 h2 {

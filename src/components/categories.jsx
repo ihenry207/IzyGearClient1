@@ -1,10 +1,6 @@
 import React from 'react';
 import '../styles/categories.css';
 import { Link } from 'react-router-dom';
-// import BikeIcon from '../profile/BikeIcon.jpg';
-// import CampingIcon from '../profile/CampingIcon.png';
-// import SkiingIcon from '../profile/SkiingIcon.png';
-// import SnowboardingIcon from '../profile/snowboardingIcon.png';
 
 const Categories = () => {
   return (
@@ -56,6 +52,16 @@ const Categories = () => {
             <div className="category-text">
               
               <p>Biking</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link to="/gears/category/all">
+          <div className="category browse-all">
+            <div className="overlay"></div>
+            <div className="category-text">
+              <p>Browse All</p>
+              <span className="arrow">&#8594;</span>
             </div>
           </div>
         </Link>

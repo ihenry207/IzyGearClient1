@@ -77,3 +77,23 @@
     width: 80%;
     height: 80%;
   }
+
+  .browse-all {
+    height: 100px; /* Adjust the height as needed */
+    background-color: #d0cdcd; /* Choose a suitable background color */
+  }
+  
+  .browse-all .category-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .browse-all .arrow {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .browse-all:hover .arrow {
+    transform: scale(1.3);
+  }
