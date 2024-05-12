@@ -23,6 +23,7 @@ const CreateListing = () =>{
   const [subcategory, setSubcategory] = useState("");
   const [otherSubcategory, setOtherSubcategory] = useState("");
   const [name, setName] = useState("");
+  const [customBrand, setCustomBrand] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   /* LOCATION */
   const [formLocation, setFormLocation] = useState({
@@ -78,7 +79,8 @@ const CreateListing = () =>{
     // Check if all required fields are filled
     const missingFields = [];
     if (!category) missingFields.push("Category");
-    if (!brand) missingFields.push("Brand");
+    if (!brand && brand !== 'Other') missingFields.push("Brand");
+    if (brand === 'Other' && !customBrand) missingFields.push("Custom Brand");
     if (!gender) missingFields.push("Gender");
     if (!size) missingFields.push("Size");
     if (!price) missingFields.push("Price");
@@ -101,7 +103,7 @@ const CreateListing = () =>{
       const listingForm = new FormData();
       listingForm.append("creator", creatorId);
       listingForm.append("category", category);
-      listingForm.append("brand", brand);
+      listingForm.append("brand", brand === 'Other' ? customBrand : brand);
       listingForm.append("gender", gender);
       listingForm.append("size", size);
       listingForm.append("price", price);
@@ -153,7 +155,8 @@ const CreateListing = () =>{
       if (response.ok) {
         navigate("/");
       } else {
-        setErrorMessage("An error occurred. Please try again.");
+        const errorData = await response.json();
+        setErrorMessage(errorData.message);
       }
     } catch (err) {
       console.log("Publish Listing failed", err.message);
@@ -163,7 +166,14 @@ const CreateListing = () =>{
   return(
     <>
     <Navbar />
-
+    {errorMessage && (
+      <div className="error-message">
+        <p>{errorMessage}</p>
+        <button className="close-button" onClick={() => setErrorMessage("")}>
+        ✖
+        </button>
+      </div>
+    )}
     <div className="create-listing">
       <h1>Publish Your Gear</h1>
       <form onSubmit={handlePost}>
@@ -203,7 +213,12 @@ const CreateListing = () =>{
               <h3>Brand</h3>
               <select
                 value={brand}
-                onChange={(e) => setBrand(e.target.value)}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  if (e.target.value !== 'Other') {
+                    setCustomBrand('');
+                  }
+                }}
                 required
               >
                 <option value="">Select a brand</option>
@@ -219,11 +234,13 @@ const CreateListing = () =>{
                 <option value="Lib Tech">Lib Tech</option>
                 <option value="Other">Other</option>
               </select>
-              {brand === "Other" && (
+              {brand === 'Other' && (
                 <input
                   type="text"
                   placeholder="Enter brand name"
                   maxLength={15}
+                  value={customBrand}
+                  onChange={(e) => setCustomBrand(e.target.value)}
                   required
                 />
               )}
@@ -294,7 +311,12 @@ const CreateListing = () =>{
               <h3>Brand</h3>
               <select
                 value={brand}
-                onChange={(e) => setBrand(e.target.value)}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  if (e.target.value !== 'Other') {
+                    setCustomBrand('');
+                  }
+                }}
                 required
               >
                 <option value="">Select a brand</option>
@@ -310,11 +332,13 @@ const CreateListing = () =>{
                 <option value="Dynastar">Dynastar</option>
                 <option value="Other">Other</option>
               </select>
-              {brand === "Other" && (
+              {brand === 'Other' && (
                 <input
                   type="text"
                   placeholder="Enter brand name"
                   maxLength={15}
+                  value={customBrand}
+                  onChange={(e) => setCustomBrand(e.target.value)}
                   required
                 />
               )}

@@ -1,0 +1,103 @@
+.listing-card {
+  position: relative;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  font-family:  'Nunito Sans', sans-serif;
+  width: 300px; 
+  height: 400px; 
+  overflow: hidden;
+  background-color:rgba(203, 207, 219, 0.149);
+}
+
+.listing-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.listing-card .slider-container {
+  width: 100%;
+  height: 270px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.listing-card .slider {
+  display: flex;
+  transition: transform 0.5s ease;
+  height: 100%;
+}
+
+.listing-card .slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center; /*center the contents horizontally */
+}
+
+.listing-card .slide img {
+  width: 100%;
+  height: 100%;
+  filter: brightness(98%);
+  object-fit: cover;
+  
+}
+
+.listing-card .prev-button,
+.listing-card .next-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 9999;
+}
+
+.listing-card .prev-button:hover,
+.listing-card .next-button:hover {
+  background-color: white;
+}
+
+.listing-card .prev-button {
+  left: 10px;
+}
+
+.listing-card .next-button {
+  right: 10px;
+}
+
+.listing-card h3 {
+  font-size: 18px;
+}
+
+.listing-card p {
+    font-size: 16px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.listing-card span {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.listing-card .favorite {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 999;
+  background: none;
+}
