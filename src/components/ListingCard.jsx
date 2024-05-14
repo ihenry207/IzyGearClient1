@@ -15,6 +15,8 @@ const ListingCard = ({
   country,
   title,
   type,
+  category,
+  condition,
   price,
   startDate,
   endDate,
@@ -86,7 +88,7 @@ const ListingCard = ({
     <div
       className="listing-card"
       onClick={() => {
-        navigate(`/gears/${listingId}`);
+        navigate(`/gears/${listingId}`, { state: { category } });//passing which category through state
       }}
     >
       <div className="slider-container"
@@ -133,7 +135,7 @@ const ListingCard = ({
       <p>{truncatedTitle}</p>
       {!booking ? (
         <>
-          <p>{type}</p>
+          <p>Condition: {condition}</p>
           <p>
             <span>${price}</span> per day
           </p>

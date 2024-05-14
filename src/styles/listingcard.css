@@ -7,6 +7,7 @@
   width: 300px; 
   height: 400px; 
   overflow: hidden;
+  max-width: 100%;
   background-color:rgba(203, 207, 219, 0.149);
 }
 

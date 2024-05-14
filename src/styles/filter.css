@@ -1,0 +1,138 @@
+/* filter.css */
+.filter-sidebar {
+    width: 15%;
+    position: fixed;
+    height: 100%;
+    border-right: 2px solid #e5e5e5;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.filter-sidebar h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.filter-sidebar div {
+    margin-bottom: 20px;
+}
+
+.filter-sidebar label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.filter-sidebar select,
+.filter-sidebar input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.filter-sidebar input[type="text"] {
+    margin-top: 5px;
+}
+
+.filter-sidebar button {
+    background-color: #2196f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.filter-sidebar button:hover {
+    background-color: #1976d2;
+}
+
+.listings {
+    margin-left: 15%;
+    padding: 20px;
+}
+
+.mobile-filter-button {
+    display: none;
+    background-color: green;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    width: 90%;
+    height: 50px;
+    margin: 20px auto;
+}
+
+.mobile-filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.mobile-filter-container {
+    background-color: white;
+    padding: 20px;
+    width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+    border-radius: 8px;
+}
+
+.mobile-filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: black
+}
+
+.mobile-filter-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 16px;
+}
+
+.apply-filters-button {
+    margin-top: 20px;
+    align-self: center;
+}
+
+@media (max-width: 768px) {
+    .filter-sidebar {
+        display: none;
+    }
+    
+    .mobile-filter-button {
+        display: block;
+    }
+}

@@ -119,8 +119,10 @@ const Listings = ({ category }) => {
                 state,
                 country,
                 title,
+                category,
                 type,
                 price,
+                condition,
                 booking = false,
               }) => (
                 <ListingCard
@@ -130,7 +132,9 @@ const Listings = ({ category }) => {
                   listingPhotoPaths={listingPhotoPaths}
                   city={city}
                   state={state}
+                  condition={condition}
                   country={country}
+                  category={category}
                   title={title}
                   type={type}
                   price={price}

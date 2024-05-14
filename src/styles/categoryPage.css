@@ -1,0 +1,38 @@
+/* categoryPage.css */
+.category-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .category-content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    
+}
+.listings-container {
+    flex-grow: 1;
+    padding: 0px;
+    align-items: center;
+}
+  .listings-container h1 {
+    margin-bottom: 20px;
+  }
+  @media (max-width: 768px){
+    .category-content {
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        justify-content: flex-start;
+       
+        
+    }
+    .listings-container {
+        flex-grow: 1;
+        /* padding: 20px; */
+        margin: 0;
+        
+    }
+  }
+  
