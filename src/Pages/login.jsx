@@ -3,7 +3,7 @@ import '../styles/login.css';
 import { setLogin } from "../redux/state";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import Navbar from "../components/Navbar";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +42,8 @@ const LoginPage = () => {
   };
 
   return (
+    <>\
+    <Navbar />
     <div className="login">
       <div className="login_content">
         <h1>Log In</h1>
@@ -76,6 +78,7 @@ const LoginPage = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

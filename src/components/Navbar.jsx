@@ -34,7 +34,8 @@ const Navbar = () => {
       <a href="/">
         <img src="/profile/logoi3.png" alt="logo" />
       </a>
-      <div className="navbar_search">
+      {/* I will add search later but for now I don't think I really need it */}
+      {/* <div className="navbar_search">
         <input type="text" 
         placeholder="Search ..." 
         value={search} 
@@ -43,7 +44,7 @@ const Navbar = () => {
           <Search sx={{ color: "#1E88E5" }} 
           onClick={() => { navigate(`/gears/search/${search}`); }} />
         </IconButton>
-      </div>
+      </div> */}
 
       <div className="navbar_right">
         {user ? (
@@ -72,10 +73,13 @@ const Navbar = () => {
 
         {dropdownMenu && user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
+            {/* Gears will hold the list of approved gears by renters */}
+            {/* and when time is up I will remove them */}
             <Link to={`/${user._id}/gears`}>Gear List</Link>
             <Link to={`/${user._id}/wishList`}>Wish List</Link>
             <Link to={`/${user._id}/listings`}>Listed Gears</Link>
-            <Link to={`/${user._id}/reservations`}>Reservation List</Link>
+            {/* Reservation will hold the request sent to host. but haven't been approved yet */}
+            {/* <Link to={`/${user._id}/reservations`}>Reservation List</Link> */}
             <Link to="/create-listing">List Your Gears</Link>
             <Link to="/login" onClick={() => { dispatch(setLogout()); }}>Log Out</Link>
           </div>

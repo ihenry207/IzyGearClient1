@@ -19,7 +19,7 @@ import Contacts from "./Pages/contact"
 import Privacy from "./Pages/privacy"
 import Terms from "./Pages/Terms"
 //import Footer from "./components/footer"
-function App() {
+function App() { 
   return (
     <div>
       <BrowserRouter>

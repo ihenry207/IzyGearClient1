@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import '../styles/register.css';
-
+import Navbar from "../components/Navbar";
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -68,6 +68,8 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="register">
     <div className="register_content">
       <h1>Create an Account</h1>
@@ -158,6 +160,7 @@ const Register = () => {
       </p>
     </div>
   </div>
+  </>
   );
 };
 

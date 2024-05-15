@@ -1,6 +1,6 @@
-import { useState, useRef  } from "react";
+import { useState, useRef } from "react";
 import "../styles/listingcard.css";
-import { truncateText } from "./utils"
+import { truncateText } from "./utils";
 import { ArrowForwardIos, ArrowBackIosNew, Favorite } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,7 +14,6 @@ const ListingCard = ({
   state,
   country,
   title,
-  type,
   category,
   condition,
   price,
@@ -72,17 +71,36 @@ const ListingCard = ({
         `http://10.1.82.57:3001/users/${user?._id}/${listingId}`,
         {
           method: "PATCH",
-          header: {
+          headers: {
             "Content-Type": "application/json",
           },
         }
       );
       const data = await response.json();
+      console.log("Updated wishList:", data.wishList);//see where its going bad
       dispatch(setWishList(data.wishList));
     } else {
       return;
     }
   };
+
+  // Debugging logs
+  console.log("ListingCard props:", {
+    listingId,
+    creator,
+    listingPhotoPaths,
+    city,
+    state,
+    country,
+    title,
+    category,
+    condition,
+    price,
+    startDate,
+    endDate,
+    totalPrice,
+    booking,
+  });
 
   return (
     <div
@@ -91,11 +109,12 @@ const ListingCard = ({
         navigate(`/gears/${listingId}`, { state: { category } });//passing which category through state
       }}
     >
-      <div className="slider-container"
-      ref={sliderRef}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      <div
+        className="slider-container"
+        ref={sliderRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           className="slider"

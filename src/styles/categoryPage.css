@@ -25,14 +25,14 @@
         flex-grow: 1;
         flex-direction: column;
         justify-content: flex-start;
-       
         
     }
     .listings-container {
-        flex-grow: 1;
-        /* padding: 20px; */
-        margin: 0;
-        
+        padding: 0 200px 120px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
     }
   }
   
