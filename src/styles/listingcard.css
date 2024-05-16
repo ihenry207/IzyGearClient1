@@ -102,3 +102,53 @@
   z-index: 999;
   background: none;
 }
+
+.error-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 10px 20px; /* Increased padding to provide more space */
+  border-radius: 5px;
+  text-align: center;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 200px; /* Added minimum width to ensure enough space for the close button */
+}
+
+.error-message p {
+  margin: 0;
+  flex-grow: 1; /* Added flex-grow to allow the text to expand and occupy available space */
+  text-align: left; /* Aligned the text to the left */
+  margin-right: 20px; /* Added right margin to create space between the text and close button */
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px; /* Increased font size for better visibility */
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  margin-left: auto; /* Added margin-left: auto to push the close button to the right */
+}
+
+.close-button:hover {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .error-message {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+  }
+}

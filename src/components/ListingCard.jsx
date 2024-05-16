@@ -27,6 +27,7 @@ const ListingCard = ({
   const sliderRef = useRef(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
   const truncatedTitle = truncateText(title, 30);
   const goToPrevSlide = () => {
     setCurrentIndex(
@@ -67,42 +68,47 @@ const ListingCard = ({
 
   const patchWishList = async () => {
     if (user?._id !== creator._id) {
-      const response = await fetch(
-        `http://10.1.82.57:3001/users/${user?._id}/${listingId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      try {
+        const response = await fetch(
+          `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
         }
-      );
-      const data = await response.json();
-      console.log("Updated wishList:", data.wishList);//see where its going bad
-      dispatch(setWishList(data.wishList));
+  
+        const data = await response.json();
+        console.log("Updated wishList:", data.wishList);
+        dispatch(setWishList(data.wishList));
+        setErrorMessage("");
+      } catch (error) {
+        console.log("Error updating wishlist:", error);
+        //setErrorMessage(error.message);
+      }
     } else {
-      return;
+      setErrorMessage("Error! You can't like your own gear.");
     }
   };
 
-  // Debugging logs
-  console.log("ListingCard props:", {
-    listingId,
-    creator,
-    listingPhotoPaths,
-    city,
-    state,
-    country,
-    title,
-    category,
-    condition,
-    price,
-    startDate,
-    endDate,
-    totalPrice,
-    booking,
-  });
-
+ 
   return (
+    <>
+    {errorMessage && (
+      <div className="error-message">
+        <p>{errorMessage}</p>
+        <button className="close-button" onClick={() => setErrorMessage("")}>
+        ✖
+        </button>
+      </div>
+    )}
+    
     <div
       className="listing-card"
       onClick={() => {
@@ -184,6 +190,7 @@ const ListingCard = ({
         )}
       </button>
     </div>
+    </>
   );
 };
 
