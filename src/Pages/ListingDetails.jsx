@@ -26,7 +26,6 @@ const ListingDetails = () => {
     setSelectedImage(null);
   };
 
-
   const getListingDetails = async () => {
     try {
       let apiUrl = "";
@@ -112,20 +111,18 @@ const ListingDetails = () => {
           <h1>{listing.title}</h1>
         </div>
         <div className="photos">
-          {listing.listingPhotoPaths?.map((item, index) => (
+          {listing.listingPhotoPaths?.map((imageUrl, index) => (
             <img
               key={index}
-              src={`http://10.1.82.57:3001/${item.replace("public", "")}`}
+              src={imageUrl}
               alt="listing photo"
-              onClick={() => openImageGallery(`http://10.1.82.57:3001/${item.replace("public", "")}`)}
+              onClick={() => openImageGallery(imageUrl)}
             />
           ))}
         </div>
         {selectedImage && (
           <ImageGallery
-            images={listing.listingPhotoPaths.map(
-              (item) => `http://10.1.82.57:3001/${item.replace("public", "")}`
-            )}
+            images={listing.listingPhotoPaths}
             onClose={closeImageGallery}
           />
         )}
@@ -135,10 +132,7 @@ const ListingDetails = () => {
         <p>Category: {category}</p>
         <div className="profile">
           <img
-            src={`http://10.1.82.57:3001/${listing.creator.profileImagePath.replace(
-              "public",
-              ""
-            )}`}
+            src={listing.creator.profileImagePath}
             alt="Owner profile"
           />
           <h3>
@@ -164,7 +158,7 @@ const ListingDetails = () => {
             <p>Start Date: {dateRange[0].startDate.toDateString()}</p>
             <p>End Date: {dateRange[0].endDate.toDateString()}</p>
             <button className="button" type="submit" onClick={handleSubmit}>
-              BOOKING
+              BOOK
             </button>
           </div>
         </div>

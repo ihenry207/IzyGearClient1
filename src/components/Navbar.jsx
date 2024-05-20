@@ -15,15 +15,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
+  //console.log("Here is the pf images url: ", user?.profileImagePath);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownMenu(false);
       }
     };
-  
     document.addEventListener('mousedown', handleClickOutside);
-  
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -34,54 +34,47 @@ const Navbar = () => {
       <a href="/">
         <img src="/profile/logoi3.png" alt="logo" />
       </a>
-      {/* I will add search later but for now I don't think I really need it */}
-      {/* <div className="navbar_search">
-        <input type="text" 
-        placeholder="Search ..." 
-        value={search} 
-        onChange={(e) => setSearch(e.target.value)} />
-        <IconButton disabled={search === ""}>
-          <Search sx={{ color: "#1E88E5" }} 
-          onClick={() => { navigate(`/gears/search/${search}`); }} />
-        </IconButton>
-      </div> */}
-
       <div className="navbar_right">
         {user ? (
           <Link to="/create-listing" className="host">List your Gear</Link>
         ) : (
           <Link to="/login" className="host">List your Gear</Link>
         )}
-        <button className="navbar_right_account" 
-        onClick={() => setDropdownMenu(!dropdownMenu)}>
+        <button className="navbar_right_account" onClick={() => setDropdownMenu(!dropdownMenu)}>
           <Menu sx={{ color: "#969393" }} />
-          {!user ? (
-            <Person sx={{ color: "#969393" }} />
+          {user ? (
+            user.profileImagePath ? (
+              <img
+                src={user.profileImagePath}
+                alt="profile photo"
+                style={{ objectFit: "cover", borderRadius: "50%" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownMenu(false);
+                }}
+              />
+            ) : (
+              <Person sx={{ color: "#969393" }} />
+            )
           ) : (
-            <img src={`http://10.1.82.57:3001/${user.profileImagePath.replace("public", "")}`} 
-            alt="profile photo" 
-            style={{ objectFit: "cover", borderRadius: "50%" }} />
+            <Person sx={{ color: "#969393" }} />
           )}
         </button>
-
         {dropdownMenu && !user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
             <Link to="/login">Log In</Link>
             <Link to="/register">Sign Up</Link>
           </div>
         )}
-
         {dropdownMenu && user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
-            {/* Gears will hold the list of approved gears by renters */}
-            {/* and when time is up I will remove them */}
             <Link to={`/${user._id}/gears`}>Gear List</Link>
             <Link to={`/${user._id}/wishList`}>Wish List</Link>
             <Link to={`/${user._id}/listings`}>Listed Gears</Link>
-            {/* Reservation will hold the request sent to host. but haven't been approved yet */}
-            {/* <Link to={`/${user._id}/reservations`}>Reservation List</Link> */}
             <Link to="/create-listing">List Your Gears</Link>
-            <Link to="/login" onClick={() => { dispatch(setLogout()); }}>Log Out</Link>
+            <Link to="/login" onClick={() => {
+              dispatch(setLogout());
+            }}>Log Out</Link>
           </div>
         )}
       </div>
@@ -90,4 +83,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

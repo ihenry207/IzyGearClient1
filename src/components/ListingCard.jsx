@@ -100,96 +100,81 @@ const ListingCard = ({
  
   return (
     <>
-    {errorMessage && (
-      <div className="error-message">
-        <p>{errorMessage}</p>
-        <button className="close-button" onClick={() => setErrorMessage("")}>
-        ✖
-        </button>
-      </div>
-    )}
-    
-    <div
-      className="listing-card"
-      onClick={() => {
-        navigate(`/gears/${listingId}`, { state: { category } });//passing which category through state
-      }}
-    >
+      {errorMessage && (
+        <div className="error-message">
+          <p>{errorMessage}</p>
+          <button className="close-button" onClick={() => setErrorMessage("")}>
+            ✖
+          </button>
+        </div>
+      )}
       <div
-        className="slider-container"
-        ref={sliderRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        className="listing-card"
+        onClick={() => {
+          navigate(`/gears/${listingId}`, { state: { category } });
+        }}
       >
         <div
-          className="slider"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          className="slider-container"
+          ref={sliderRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          {listingPhotoPaths?.map((photo, index) => (
-            <div key={index} className="slide">
-              <img
-                src={`http://10.1.82.57:3001/${photo?.replace("public", "")}`}
-                alt={`photo ${index + 1}`}
-              />
-              <div
-                className="prev-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToPrevSlide(e);
-                }}
-              >
-                <ArrowBackIosNew sx={{ fontSize: "15px" }} />
-              </div>
-              <div
-                className="next-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToNextSlide(e);
-                }}
-              >
-                <ArrowForwardIos sx={{ fontSize: "15px" }} />
-              </div>
+          {listingPhotoPaths.length > 0 ? (
+            <div className="slider" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+              {listingPhotoPaths.map((photo, index) => (
+                <div key={index} className="slide">
+                  <img src={photo} alt={`photo ${index + 1}`} />
+                  {listingPhotoPaths.length > 1 && (
+                    <>
+                      <div className="prev-button" onClick={(e) => { e.stopPropagation(); goToPrevSlide(e); }}>
+                        <ArrowBackIosNew sx={{ fontSize: "15px" }} />
+                      </div>
+                      <div className="next-button" onClick={(e) => { e.stopPropagation(); goToNextSlide(e); }}>
+                        <ArrowForwardIos sx={{ fontSize: "15px" }} />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className="no-image">
+              <p>No images available</p>
+            </div>
+          )}
         </div>
-      </div>
-      <h3>
-        {city}, {state}, {country}
-      </h3>
-      <p>{truncatedTitle}</p>
-      {!booking ? (
-        <>
-          <p>Condition: {condition}</p>
-          <p>
-            <span>${price}</span> per day
-          </p>
-        </>
-      ) : (
-        <>
-          <p>
-            {startDate} - {endDate}
-          </p>
-          <p>
-            <span>${totalPrice}</span> total
-          </p>
-        </>
-      )}
-      <button
-        className="favorite"
-        onClick={(e) => {
-          e.stopPropagation();
-          patchWishList();
-        }}
-        disabled={!user}
-      >
-        {isLiked ? (
-          <Favorite sx={{ color: "red" }} />
+        <h3>{city}, {state}, {country}</h3>
+        <p>{truncatedTitle}</p>
+        {!booking ? (
+          <>
+            <p>Condition: {condition}</p>
+            <p>
+              <span>${price}</span> per day
+            </p>
+          </>
         ) : (
-          <Favorite sx={{ color: "white" }} />
+          <>
+            <p>
+              {startDate} - {endDate}
+            </p>
+            <p>
+              <span>${totalPrice}</span> total
+            </p>
+          </>
         )}
-      </button>
-    </div>
+        <button
+          className="favorite"
+          onClick={(e) => {
+            e.stopPropagation();
+            patchWishList();
+          }}
+          disabled={!user}
+        >
+          {isLiked ? <Favorite sx={{ color: "red" }} /> : <Favorite sx={{ color: "white" }} />}
+        </button>
+      </div>
     </>
   );
 };

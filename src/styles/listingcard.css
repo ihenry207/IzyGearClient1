@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 200px; /* Added minimum width to ensure enough space for the close button */
+  min-width: 20px; /* Added minimum width to ensure enough space for the close button */
 }
 
 .error-message p {

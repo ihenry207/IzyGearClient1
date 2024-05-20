@@ -15,7 +15,7 @@ const Categories = () => {
         
         <Link to="/gears/category/camping">
           <div className="category">
-            <img src="/profile/Campin.jpg" alt="Camping" />
+            <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Campin.jpg" alt="Camping" />
             <div className="overlay"></div>
             <div className="category-text">
               
@@ -26,7 +26,7 @@ const Categories = () => {
 
         <Link to="/gears/category/skiing">
           <div className="category">
-            <img src="/profile/Skiing1.jpg" alt="Skiing" />
+            <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/skiing1.jpg" alt="Skiing" />
             <div className="overlay"></div>
             <div className="category-text">
               
@@ -36,7 +36,7 @@ const Categories = () => {
         </Link>
         <Link to="/gears/category/snowboarding">
           <div className="category">
-            <img src="/profile/Snowboarding.jpg" alt="Snowboarding" />
+            <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Snowboarding.jpg" alt="Snowboarding" />
             <div className="overlay"></div>
             <div className="category-text">
               
@@ -47,7 +47,7 @@ const Categories = () => {
 
         <Link to="/gears/category/biking">
           <div className="category">
-            <img src="/profile/Bike2.jpg" alt="Biking" />
+            <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Bike2.jpg" alt="Biking" />
             <div className="overlay"></div>
             <div className="category-text">
               

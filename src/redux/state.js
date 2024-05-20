@@ -24,7 +24,6 @@ export const userSlice = createSlice({
       state.user.GearList = action.payload;
     },
     setWishList: (state, action) => {
-      console.log("Updated wishList in Redux:", action.payload);
       state.user.wishList = action.payload;
     },
     setOwnerGearList: (state, action) => {

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 import '../styles/register.css';
 import Navbar from "../components/Navbar";
 const Register = () => {
@@ -12,8 +15,8 @@ const Register = () => {
     profileImage: null,
   });
 
-  const [showPassword, setShowPassword] = useState(true);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -47,18 +50,14 @@ const Register = () => {
     try {
       const register_form = new FormData();
       for (var key in formData) {
-        if (key === "profileImage" && formData[key]) {
-          register_form.append(key, formData[key]);
-        } else if (key !== "profileImage") {
-          register_form.append(key, formData[key]);
-        }
+        register_form.append(key, formData[key]);
       }
-
+  
       const response = await fetch("http://10.1.82.57:3001/auth/register", {
         method: "POST",
         body: register_form,
       });
-
+  
       if (response.ok) {
         navigate("/login");
       }
@@ -97,36 +96,36 @@ const Register = () => {
           required
         />
         <div className="password-input">
-            <img
-              src="/assets/eye.jpg"
-              alt="Toggle Password"
-              className="password-eye"
-              onClick={togglePasswordVisibility}
-            />
             <input
               placeholder="Password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              type={showPassword ? 'password' : 'text'} // Change the condition
+              type={showPassword ? 'text' : 'password'}
               required
             />
+            <IconButton
+              className="password-eye"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
           </div>
           <div className="password-input">
-            <img
-              src="/assets/eye.jpg"
-              alt="Toggle Password"
-              className="password-eye"
-              onClick={toggleConfirmPasswordVisibility}
-            />
             <input
               placeholder="Confirm Password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              type={showConfirmPassword ? 'password' : 'text'} // Change the condition
+              type={showConfirmPassword ? 'text' : 'password'}
               required
             />
+            <IconButton
+              className="password-eye"
+              onClick={toggleConfirmPasswordVisibility}
+            >
+              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
           </div>
         {!passwordMatch && (
           <p className="error-message">Passwords do not match!</p>

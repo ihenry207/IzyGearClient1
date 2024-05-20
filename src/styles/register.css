@@ -74,7 +74,7 @@
   font-size: 18px;
 }
 .register_content_form button:hover {
-  background-color: #45a049;
+   /* background-color: #1acd20; */
 }
 
 .register_content_form button:disabled {
@@ -103,6 +103,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: black;
+  background-color: transparent; /* Add this line to set the background color */
+  border-radius: 50%; /* Add this line to make the background circular */
+  padding: 5px; /* Add this line to add some padding around the icon */
+  padding-bottom: 25px;
+  padding-right: 25px;
 }
 
 .register_content .login-link {

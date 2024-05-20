@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import '../styles/login.css';
-import { setLogin } from "../redux/state";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import '../styles/login.css';
+import { setLogin } from "../redux/state";
 import Navbar from "../components/Navbar";
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const togglePasswordVisibility = () => {
@@ -20,7 +24,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://10.1.82.57:3001/auth/login", {//add server's address
+      const response = await fetch("http://10.1.82.57:3001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,42 +46,42 @@ const LoginPage = () => {
   };
 
   return (
-    <>\
-    <Navbar />
-    <div className="login">
-      <div className="login_content">
-        <h1>Log In</h1>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <form className="login_content_form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <div className="password-input">
+    <>
+      <Navbar />
+      <div className="login">
+        <div className="login_content">
+          <h1>Log In</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <form className="login_content_form" onSubmit={handleSubmit}>
             <input
-              type={showPassword ? 'password' : 'text'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <img
-              src="/assets/eye.jpg"
-              alt="Toggle Password"
-              className="password-eye"
-              onClick={togglePasswordVisibility}
-            />
-          </div>
-          <button type="submit">LOG IN</button>
-        </form>
-        <p className="signup-link">
-          Don't have an account? <a href="/register">Sign Up Here</a>
-        </p>
+            <div className="password-input">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <IconButton
+                className="password-eye"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </div>
+            <button type="submit">LOG IN</button>
+          </form>
+          <p className="signup-link">
+            Don't have an account? <a href="/register">Sign Up Here</a>
+          </p>
+        </div>
       </div>
-    </div>
     </>
   );
 };

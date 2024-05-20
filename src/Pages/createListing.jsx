@@ -1,6 +1,7 @@
 import "../styles/createListing.css";
 import Navbar from "../components/Navbar";
 import { RemoveCircleOutline, AddCircleOutline } from "@mui/icons-material";
+import { LoadScript, GoogleMap, Autocomplete } from "@react-google-maps/api";//google api for address
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { IoImageOutline } from 'react-icons/io5';
 import { useState } from "react";
@@ -8,6 +9,8 @@ import { BiTrash } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
+import loader from "../components/loader";
+const libraries = ["places"];
 //IoIosImages
 const CreateListing = () =>{
   const [category, setCategory] = useState("");
@@ -25,6 +28,7 @@ const CreateListing = () =>{
   const [name, setName] = useState("");
   const [customBrand, setCustomBrand] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   /* LOCATION */
   const [formLocation, setFormLocation] = useState({
     country: "",
@@ -39,6 +43,20 @@ const CreateListing = () =>{
     setFormLocation({
       ...formLocation,
       [name]: value,
+    });
+  };
+  const handlePlaceChanged = (place) => {
+    const addressComponents = place.address_components;
+    const getComponent = (type) =>
+      addressComponents.find((component) => component.types.includes(type))?.long_name || "";
+
+    setFormLocation({
+      country: getComponent("country"),
+      state: getComponent("administrative_area_level_1"),
+      city: getComponent("locality"),
+      zip: getComponent("postal_code"),
+      streetAddress:  getComponent("street_number")+ " " + getComponent("route"),
+      aptSuite: "", // This will still need to be manually entered
     });
   };
 
@@ -97,7 +115,7 @@ const CreateListing = () =>{
       setErrorMessage(`Please fill in the following fields: ${missingFields.join(", ")}`);
       return;
     }
-  
+    setIsLoading(true); // Show the loader when the form is submitted
     try {
       /* Create a new FormData object to handle file uploads */
       const listingForm = new FormData();
@@ -153,6 +171,7 @@ const CreateListing = () =>{
       console.log("Response:", response);
   
       if (response.ok) {
+        setIsLoading(false);
         navigate("/");
       } else {
         const errorData = await response.json();
@@ -162,6 +181,7 @@ const CreateListing = () =>{
       console.log("Publish Listing failed", err.message);
       setErrorMessage("An error occurred. Please try again.");
     }
+    
   };
   return(
     <>
@@ -174,6 +194,7 @@ const CreateListing = () =>{
         </button>
       </div>
     )}
+    {isLoading && <loader />} {/* Show the loader when isLoading is true */}
     <div className="create-listing">
       <h1>Publish Your Gear</h1>
       <form onSubmit={handlePost}>
@@ -573,88 +594,106 @@ const CreateListing = () =>{
           )}
 
           
+<div className="create-listing">
+        <h3>Where's your gear located?</h3>
+        <p style={{ fontSize: "18px", fontWeight: "normal" }}>
+          Your address is only shared with renters after they've made a reservation.
+        </p>
 
-          <h3>Where's your gear located?</h3>
-          <p style={{ fontSize: "18px", fontWeight: "normal" }}>
-            Your address is only shared with renters after they've made a reservation.
-          </p>
-          <div className="full">
-            <div className="location">
-              <p>Country</p>
-              <input
-                type="text"
-                placeholder="Country"
-                name="country"
-                value={formLocation.country}
-                onChange={handleChangeLocation}
-                required
-              />
-            </div>
-          </div>
+        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={libraries}>
+          <Autocomplete
+            onLoad={(autocomplete) => {
+              autocomplete.setFields(["address_components"]);
+              autocomplete.addListener("place_changed", () => {
+                handlePlaceChanged(autocomplete.getPlace());
+              });
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Enter your address"
+              style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+            />
+          </Autocomplete>
+        </LoadScript>
 
-          <div className="half">
-            <div className="location">
-              <p>State</p>
-              <input
-                type="text"
-                placeholder="State"
-                name="state"
-                value={formLocation.state}
-                onChange={handleChangeLocation}
-                required
-              />
-            </div>
-            <div className="location">
-              <p>City</p>
-              <input
-                type="text"
-                placeholder="City"
-                name="city"
-                value={formLocation.city}
-                onChange={handleChangeLocation}
-                required
-              />
-            </div>
+        <div className="full">
+          <div className="location">
+            <p>Country</p>
+            <input
+              type="text"
+              placeholder="Country"
+              name="country"
+              value={formLocation.country}
+              onChange={handleChangeLocation}
+              required
+            />
           </div>
+        </div>
 
-          <div className="half">
-            <div className="location">
-              <p>Zip Code</p>
-              <input
-                type="text"
-                placeholder="Zip Code"
-                name="zip"
-                value={formLocation.zip}
-                onChange={handleChangeLocation}
-                
-              />
-            </div>
-            <div className="location">
-              <p>Street Address</p>
-              <input
-                type="text"
-                placeholder="Street Address"
-                name="streetAddress"
-                value={formLocation.streetAddress}
-                onChange={handleChangeLocation}
-                required
-              />
-            </div>
+        <div className="half">
+          <div className="location">
+            <p>State</p>
+            <input
+              type="text"
+              placeholder="State"
+              name="state"
+              value={formLocation.state}
+              onChange={handleChangeLocation}
+              required
+            />
           </div>
+          <div className="location">
+            <p>City</p>
+            <input
+              type="text"
+              placeholder="City"
+              name="city"
+              value={formLocation.city}
+              onChange={handleChangeLocation}
+              required
+            />
+          </div>
+        </div>
 
-          <div className="full">
-            <div className="location">
-              <p>Apartment, Suite, etc. (if applicable)</p>
-              <input
-                type="text"
-                placeholder="Apt, Suite, etc. (if applicable)"
-                name="aptSuite"
-                value={formLocation.aptSuite}
-                onChange={handleChangeLocation}
-                
-              />
-            </div>
+        <div className="half">
+          <div className="location">
+            <p>Zip Code</p>
+            <input
+              type="text"
+              placeholder="Zip Code"
+              name="zip"
+              value={formLocation.zip}
+              onChange={handleChangeLocation}
+            />
           </div>
+          <div className="location">
+            <p>Street Address</p>
+            <input
+              type="text"
+              placeholder="Street Address"
+              name="streetAddress"
+              value={formLocation.streetAddress}
+              onChange={handleChangeLocation}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="full">
+          <div className="location">
+            <p>Apartment, Suite, etc. (if applicable)</p>
+            <input
+              type="text"
+              placeholder="Apt, Suite, etc. (if applicable)"
+              name="aptSuite"
+              value={formLocation.aptSuite}
+              onChange={handleChangeLocation}
+            />
+          </div>
+        </div>
+      </div>
+         
 
           <h3>Condition</h3>
           <select
@@ -675,6 +714,14 @@ const CreateListing = () =>{
         <div className="create-listing_step2">
           <h2>Step 2: Make your gear stand out</h2>
           <hr />
+
+          <h3>Description</h3>
+          <textarea
+            placeholder="Enter a description of your gear"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          ></textarea>
 
           <h3>Add some photos of your gear</h3>
           <DragDropContext onDragEnd={handleDragPhoto}>
@@ -756,13 +803,13 @@ const CreateListing = () =>{
             </Droppable>
           </DragDropContext>
 
-          <h3>Description</h3>
+          {/* <h3>Description</h3>
           <textarea
             placeholder="Enter a description of your gear"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
-          ></textarea>
+          ></textarea> */}
         </div>
 
         <button className="submit_btn" type="submit">
