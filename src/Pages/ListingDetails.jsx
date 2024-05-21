@@ -9,7 +9,7 @@ import Navbar from "../components/Navbar";
 import { useSelector, useDispatch } from "react-redux";
 import Footer from "../components/footer";
 import ImageGallery from "../components/ImageGallery";
-import { Favorite } from "@mui/icons-material";
+import { Favorite, FavoriteBorder  } from "@mui/icons-material";
 import { setWishList } from "../redux/state";
 
 const ListingDetails = () => {
@@ -158,7 +158,11 @@ const ListingDetails = () => {
             onClick={toggleFavorite}
             disabled={!user}
           >
-            <Favorite sx={{ color: isFavorite ? "red" : "black" }} />
+            {isFavorite ? (
+            <Favorite sx={{ color: "red" }} />
+          ) : (
+            <FavoriteBorder sx={{ color: "black" }} />
+          )}
           </button>
         </div>
         <div className="photos">

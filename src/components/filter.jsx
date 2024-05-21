@@ -61,6 +61,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
 
   const handleApplyFilter = () => {
     const filters = {
+      //we will also add location
       category: selectedCategory,
       brand: selectedBrand,
       gender: selectedGender,
@@ -76,7 +77,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
   };
 
   const renderBrandOptions = () => {
-    if (selectedCategory === 'ski') {
+    if (selectedCategory === 'Ski') {
       return (
         <>
           <option value="">All</option>
@@ -93,7 +94,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
           <option value="other">Other</option>
         </>
       );
-    } else if (selectedCategory === 'snowboarding') {
+    } else if (selectedCategory === 'Snowboard') {
       return (
         <>
           <option value="">All</option>
@@ -114,7 +115,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
     return null;
   };
   const renderFilterOptions = () => {
-    if (selectedCategory === 'ski' || selectedCategory === 'snowboarding') {
+    if (selectedCategory === 'Ski' || selectedCategory === 'Snowboard') {
       return (
         <>
           <div>
@@ -170,7 +171,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
           </div>
         </>
       );
-    } else if (selectedCategory === 'bike') {
+    } else if (selectedCategory === 'biking') {
       return (
         <>
           <div>
@@ -178,7 +179,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
             <select id="type" value={selectedType} onChange={handleTypeChange}>
               <option value="">All</option>
               <option value="Scooter">Scooter</option>
-              <option value="Bike">Bike</option>
+              <option value="Biking">Bike</option>
             </select>
           </div>
           <div>
@@ -328,9 +329,9 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
                 <label htmlFor="category">Category:</label>
                 <select id="category" value={selectedCategory} onChange={handleCategoryChange}>
                   <option value="">All</option>
-                  <option value="ski">Ski</option>
-                  <option value="snowboarding">Snowboarding</option>
-                  <option value="bike">Bike/eScooter</option>
+                  <option value="Ski">Ski</option>
+                  <option value="Snowboard">Snowboarding</option>
+                  <option value="biking">Bike/eScooter</option>
                   <option value="camping">Camping</option>
                 </select>
               </div>
@@ -346,9 +347,9 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
             <label htmlFor="category">Category:</label>
             <select id="category" value={selectedCategory} onChange={handleCategoryChange}>
               <option value="">All</option>
-              <option value="ski">Ski</option>
-              <option value="snowboarding">Snowboarding</option>
-              <option value="bike">Bike/eScooter</option>
+              <option value="Ski">Ski</option>
+              <option value="Snowboard">Snowboarding</option>
+              <option value="biking">Bike/eScooter</option>
               <option value="camping">Camping</option>
             </select>
           </div>

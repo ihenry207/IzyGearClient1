@@ -7,16 +7,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { setListings } from "../redux/state";
 //import { useParams } from "react-router-dom";
 
-const Listings = ({ category }) => {
+const Listings = ({ category, selectedFilters }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const listings = useSelector((state) => state.listings);
-  
+    
+    
     const getFeedListings = async () => {
       try {
         let response;
         let listings = [];
-  
+        if (selectedFilters) {
+          //console to see if I'm getting right filter in this
+          console.log("now we inside listing.jsx, trying to gather data through filters: ", selectedFilters)
+          
+        }
+        console.log("Listing.jsx category: ",category)
         if (category === "biking") {
           response = await fetch("http://10.1.82.57:3001/gears/biking", {
             method: "GET",
@@ -102,7 +108,7 @@ const Listings = ({ category }) => {
   
     useEffect(() => {
       getFeedListings();
-    }, [category]);
+    }, [category, selectedFilters]);
   
     return (
       <>
