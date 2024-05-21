@@ -6,9 +6,11 @@ import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
 import Loader from "../components/loader";
 import Navbar from "../components/Navbar";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Footer from "../components/footer";
 import ImageGallery from "../components/ImageGallery";
+import { Favorite } from "@mui/icons-material";
+import { setWishList } from "../redux/state";
 
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
@@ -63,7 +65,12 @@ const ListingDetails = () => {
   ]);
 
   const handleSelect = (ranges) => {
-    setDateRange([ranges.selection]);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (ranges.selection.startDate >= today) {
+      setDateRange([ranges.selection]);
+    }
   };
 
   const start = new Date(dateRange[0].startDate);
@@ -101,14 +108,58 @@ const ListingDetails = () => {
     }
   };
 
+  /* ADD TO WISHLIST */
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const wishList = user?.wishList || [];
+  const isLiked = wishList?.find((item) => item?._id === listingId);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    setIsFavorite(isLiked !== undefined);
+  }, [isLiked]);
+
+  const toggleFavorite = async () => {
+    try {
+      setIsFavorite(!isFavorite);
+      const response = await fetch(
+        `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData.message);
+      }
+
+      const data = await response.json();
+      console.log("Updated wishList:", data.wishList);
+      dispatch(setWishList(data.wishList));
+    } catch (error) {
+      console.log("Error updating wishlist:", error);
+    }
+  };
+
   return loading ? (
     <Loader />
   ) : (
     <>
       <Navbar />
       <div className="listing-details">
-        <div className="title">
+        <div className="title-container">
           <h1>{listing.title}</h1>
+          <button
+            className="favorite-icon"
+            onClick={toggleFavorite}
+            disabled={!user}
+          >
+            <Favorite sx={{ color: isFavorite ? "red" : "black" }} />
+          </button>
         </div>
         <div className="photos">
           {listing.listingPhotoPaths?.map((imageUrl, index) => (
@@ -144,7 +195,7 @@ const ListingDetails = () => {
         <div className="booking">
           <h2>How long do you want to book?</h2>
           <div className="date-range-calendar">
-            <DateRange ranges={dateRange} onChange={handleSelect} />
+            <DateRange ranges={dateRange} onChange={handleSelect} minDate={new Date()} />
             {dayCount > 1 ? (
               <h2>
                 ${listing.price} x {dayCount} days

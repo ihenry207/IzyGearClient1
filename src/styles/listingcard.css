@@ -1,108 +1,97 @@
-.listing-card {
-  position: relative;
-  cursor: pointer;
-  padding: 10px;
+.listing-card-container {
+  width: 300px;
   border-radius: 10px;
-  font-family:  'Nunito Sans', sans-serif;
-  width: 300px; 
-  height: 400px; 
-  overflow: hidden;
-  max-width: 100%;
-  background-color:rgba(203, 207, 219, 0.149);
-}
-
-.listing-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.listing-card .slider-container {
-  width: 100%;
-  height: 270px;
-  overflow: hidden;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.listing-card .slider {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+  background-color: white;
+  height: fit-content;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.listing-card-image-container {
+  position: relative;
+}
+
+.listing-card-slider {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: 200px;
+  border-radius: 10px 10px 0 0;
   transition: transform 0.5s ease;
-  height: 100%;
 }
 
-.listing-card .slide {
-  position: relative;
-  flex: 0 0 100%;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center; /*center the contents horizontally */
+.listing-card-slide {
+  min-width: 100%;
+  height: 200px;
+  transition: transform 0.5s ease;
 }
 
-.listing-card .slide img {
+.listing-card-slide img {
   width: 100%;
   height: 100%;
-  filter: brightness(98%);
   object-fit: cover;
-  
 }
 
-.listing-card .prev-button,
-.listing-card .next-button {
+.listing-card-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding: 6px;
-  border-radius: 50%;
+  background: none;
   border: none;
+  color: white;
+  font-size: 24px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.7);
-  z-index: 9999;
+  padding: 5px;
 }
 
-.listing-card .prev-button:hover,
-.listing-card .next-button:hover {
-  background-color: white;
-}
-
-.listing-card .prev-button {
+.listing-card-arrow.prev {
   left: 10px;
 }
 
-.listing-card .next-button {
+.listing-card-arrow.next {
   right: 10px;
 }
 
-.listing-card h3 {
-  font-size: 18px;
-}
-
-.listing-card p {
-    font-size: 16px;
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-}
-
-.listing-card span {
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.listing-card .favorite {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  border: none;
-  font-size: 20px;
+.listing-card-content {
+  padding: 1rem;
   cursor: pointer;
-  z-index: 999;
-  background: none;
 }
 
+.listing-card-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.listing-card-description {
+  margin: 0.5rem 0;
+  font-size: 16px;
+}
+
+.listing-card-details {
+  margin: 0.5rem 0;
+  font-size: 14px;
+}
+
+.listing-card-price {
+  margin: 0.5rem 0;
+  font-size: 16px;
+}
+
+.listing-card-price span {
+  font-weight: bold;
+}
+
+.listing-card-favorite {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 .error-message {
   position: fixed;
   top: 20px;
@@ -125,30 +114,4 @@
   flex-grow: 1; /* Added flex-grow to allow the text to expand and occupy available space */
   text-align: left; /* Aligned the text to the left */
   margin-right: 20px; /* Added right margin to create space between the text and close button */
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-size: 20px; /* Increased font size for better visibility */
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  margin-left: auto; /* Added margin-left: auto to push the close button to the right */
-}
-
-.close-button:hover {
-  color: #ffffff;
-  opacity: 0.8;
-}
-
-@media (max-width: 768px) {
-  .error-message {
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    transform: none;
-  }
 }

@@ -108,3 +108,31 @@
     width: 100%;
     margin-top: 30px;
   }
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .title-container h1 {
+    margin: 0;
+  }
+  
+  .favorite-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+  
+  .favorite-icon svg {
+    font-size: 40px;
+  }
+  @media (max-width: 576px){
+    .title-container h1 {
+      margin: 0;
+      font-size: 24px; /* Reduced the font size of the title */
+    }
+  }
+  

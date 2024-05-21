@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../styles/listingcard.css";
-import { truncateText } from "./utils";
 import { ArrowForwardIos, ArrowBackIosNew, Favorite } from "@mui/icons-material";
+import { truncateText } from "./utils";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setWishList } from "../redux/state";
@@ -22,13 +22,13 @@ const ListingCard = ({
   totalPrice,
   booking,
 }) => {
-  /* SLIDER FOR IMAGES */
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef(null);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const truncatedTitle = truncateText(title, 30);
+
   const goToPrevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
@@ -65,39 +65,39 @@ const ListingCard = ({
   const user = useSelector((state) => state.user);
   const wishList = user?.wishList || [];
   const isLiked = wishList?.find((item) => item?._id === listingId);
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const patchWishList = async () => {
-    if (user?._id !== creator._id) {
-      try {
-        const response = await fetch(
-          `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-  
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message);
+  useEffect(() => {
+    setIsFavorite(isLiked !== undefined);
+  }, [isLiked]);
+
+  const toggleFavorite = async () => {
+    try {
+      setIsFavorite(!isFavorite);
+      const response = await fetch(
+        `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-  
-        const data = await response.json();
-        console.log("Updated wishList:", data.wishList);
-        dispatch(setWishList(data.wishList));
-        setErrorMessage("");
-      } catch (error) {
-        console.log("Error updating wishlist:", error);
-        //setErrorMessage(error.message);
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData.message);
       }
-    } else {
-      setErrorMessage("Error! You can't like your own gear.");
+
+      const data = await response.json();
+      console.log("Updated wishList:", data.wishList);
+      dispatch(setWishList(data.wishList));
+      setErrorMessage("");
+    } catch (error) {
+      console.log("Error updating wishlist:", error);
     }
   };
 
- 
   return (
     <>
       {errorMessage && (
@@ -108,72 +108,77 @@ const ListingCard = ({
           </button>
         </div>
       )}
-      <div
-        className="listing-card"
-        onClick={() => {
-          navigate(`/gears/${listingId}`, { state: { category } });
-        }}
-      >
+
+      <div className="listing-card-container">
+        <div className="listing-card-image-container">
+          <div
+            className="listing-card-slider"
+            ref={sliderRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {listingPhotoPaths.map((photo, index) => (
+              <div
+                key={index}
+                className={`listing-card-slide ${
+                  index === currentIndex ? "active" : ""
+                }`}
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                <img src={photo} alt={`${title} photo ${index + 1}`} />
+              </div>
+            ))}
+          </div>
+          {listingPhotoPaths.length > 1 && (
+            <>
+              <div className="listing-card-arrow prev" onClick={goToPrevSlide}>
+                <ArrowBackIosNew />
+              </div>
+              <div className="listing-card-arrow next" onClick={goToNextSlide}>
+                <ArrowForwardIos />
+              </div>
+            </>
+          )}
+          <button
+            className="listing-card-favorite"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite();
+            }}
+            disabled={!user}
+          >
+            <Favorite sx={{ color: isFavorite ? "red" : "white" }} />
+          </button>
+        </div>
         <div
-          className="slider-container"
-          ref={sliderRef}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          className="listing-card-content"
+          onClick={() => {
+            navigate(`/gears/${listingId}`, { state: { category } });
+          }}
         >
-          {listingPhotoPaths.length > 0 ? (
-            <div className="slider" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-              {listingPhotoPaths.map((photo, index) => (
-                <div key={index} className="slide">
-                  <img src={photo} alt={`photo ${index + 1}`} />
-                  {listingPhotoPaths.length > 1 && (
-                    <>
-                      <div className="prev-button" onClick={(e) => { e.stopPropagation(); goToPrevSlide(e); }}>
-                        <ArrowBackIosNew sx={{ fontSize: "15px" }} />
-                      </div>
-                      <div className="next-button" onClick={(e) => { e.stopPropagation(); goToNextSlide(e); }}>
-                        <ArrowForwardIos sx={{ fontSize: "15px" }} />
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
+          <h3 className="listing-card-title">
+            {city}, {state}, {country}
+          </h3>
+          <p className="listing-card-description">{truncatedTitle}</p>
+          {!booking ? (
+            <>
+              <p className="listing-card-details">Condition: {condition}</p>
+              <p className="listing-card-price">
+                <span>${price}</span> per day
+              </p>
+            </>
           ) : (
-            <div className="no-image">
-              <p>No images available</p>
-            </div>
+            <>
+              <p className="listing-card-details">
+                {startDate} - {endDate}
+              </p>
+              <p className="listing-card-price">
+                <span>${totalPrice}</span> total
+              </p>
+            </>
           )}
         </div>
-        <h3>{city}, {state}, {country}</h3>
-        <p>{truncatedTitle}</p>
-        {!booking ? (
-          <>
-            <p>Condition: {condition}</p>
-            <p>
-              <span>${price}</span> per day
-            </p>
-          </>
-        ) : (
-          <>
-            <p>
-              {startDate} - {endDate}
-            </p>
-            <p>
-              <span>${totalPrice}</span> total
-            </p>
-          </>
-        )}
-        <button
-          className="favorite"
-          onClick={(e) => {
-            e.stopPropagation();
-            patchWishList();
-          }}
-          disabled={!user}
-        >
-          {isLiked ? <Favorite sx={{ color: "red" }} /> : <Favorite sx={{ color: "white" }} />}
-        </button>
       </div>
     </>
   );
