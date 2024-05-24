@@ -7,108 +7,117 @@ import { useDispatch, useSelector } from "react-redux";
 import { setListings } from "../redux/state";
 //import { useParams } from "react-router-dom";
 
-const Listings = ({ category, selectedFilters }) => {
+const Listings = ({ pcategory, selectedFilters }) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const listings = useSelector((state) => state.listings);
-    
+    console.log("Here is pcat: ", selectedFilters)
     
     const getFeedListings = async () => {
       try {
+        const baseUrl = "http://10.1.82.57:3001/gears";
         let response;
         let listings = [];
+    
         if (selectedFilters) {
-          //console to see if I'm getting right filter in this
-          console.log("now we inside listing.jsx, trying to gather data through filters: ", selectedFilters)
-          
-        }
-        console.log("Listing.jsx category: ",category)
-        if (category === "biking") {
-          response = await fetch("http://10.1.82.57:3001/gears/biking", {
-            method: "GET",
-          });
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.log("Error fetching biking listings:", errorData.error);
-            throw new Error("Failed to fetch biking listings");
-          }
-          listings = await response.json();
-        } else if (category === "skiing") {
-            response = await fetch("http://10.1.82.57:3001/gears/skisnow?category=Ski", {
-              method: "GET",
-            });
-            if (!response.ok) {
-              const errorData = await response.json();
-              console.log("Error fetching skiing listings:", errorData.error);
-              throw new Error("Failed to fetch skiing listings");
+          const {
+            category,
+            brand,
+            gender,
+            size,
+            condition,
+            price,
+            type,
+            kind,
+            subcategory,
+            name,
+          } = selectedFilters;
+    
+          const filterParams = new URLSearchParams();
+    
+          if (category) filterParams.append("category", category);
+          if (brand) filterParams.append("brand", brand);
+          if (gender) filterParams.append("gender", gender);
+          if (size) filterParams.append("size", size);
+          if (condition) filterParams.append("condition", condition);
+          if (price) filterParams.append("price", price);
+          if (type) filterParams.append("type", type);
+          if (kind) filterParams.append("kind", kind);
+          if (subcategory) filterParams.append("subcategory", subcategory);
+          if (name) filterParams.append("name", name);
+
+          console.log("Here is the filter params",filterParams)
+    
+          if (category === "all" || category === "") {
+            const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
+              fetch(`${baseUrl}/skisnow`, { method: "GET" }),
+              fetch(`${baseUrl}/biking`, { method: "GET" }),
+              fetch(`${baseUrl}/camping`, { method: "GET" }),
+            ]);
+    
+            if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok) {
+              throw new Error("Failed to fetch listings");
             }
-            listings = await response.json();
-          } else if (category === "snowboarding") {
-            response = await fetch("http://10.1.82.57:3001/gears/skisnow?category=Snowboard", {
-              method: "GET",
-            });
-            if (!response.ok) {
-              const errorData = await response.json();
-              console.log("Error fetching snowboarding listings:", errorData.error);
-              throw new Error("Failed to fetch snowboarding listings");
-            }
-            listings = await response.json();
-        } else if (category === "camping") {
-          response = await fetch("http://10.1.82.57:3001/gears/camping", {
-            method: "GET",
-          });
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.log("Error fetching camping listings:", errorData.error);
-            throw new Error("Failed to fetch camping listings");
+    
+            const skiSnowListings = await skiSnowResponse.json();
+            const bikingListings = await bikingResponse.json();
+            const campingListings = await campingResponse.json();
+    
+            listings = [...skiSnowListings, ...bikingListings, ...campingListings];
           }
-          listings = await response.json();
-        } else if (category === "all") {
+    
+          if (category === "Camping") {
+            
+            const url = `${baseUrl}/camping?${filterParams.toString()}`;
+            console.log("we are in camping url", url)
+            response = await fetch(url, { method: "GET" });
+            listings = await response.json();
+          }
+    
+          if (category === "Biking") {
+            
+            const url = `${baseUrl}/biking?${filterParams.toString()}`;
+            console.log("we are in biking url: ", url)
+            response = await fetch(url, { method: "GET" });
+            listings = await response.json();
+          }
+    
+          if (category === "Ski" || category === "Snowboard") {
+            const url = `${baseUrl}/skisnow?${filterParams.toString()}`;
+            console.log("we are in ski or snowboard url: ", url)
+            response = await fetch(url, { method: "GET" });
+            listings = await response.json();
+          }
+        } else {
           const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
-            fetch("http://10.1.82.57:3001/gears/skisnow", { method: "GET" }),
-            fetch("http://10.1.82.57:3001/gears/biking", { method: "GET" }),
-            fetch("http://10.1.82.57:3001/gears/camping", { method: "GET" }),
+            fetch(`${baseUrl}/skisnow`, { method: "GET" }),
+            fetch(`${baseUrl}/biking`, { method: "GET" }),
+            fetch(`${baseUrl}/camping`, { method: "GET" }),
           ]);
-  
-          if (!skiSnowResponse.ok) {
-            const errorData = await skiSnowResponse.json();
-            console.log("Error fetching ski/snowboarding listings:", errorData.error);
-            throw new Error("Failed to fetch ski/snowboarding listings");
+    
+          if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok) {
+            throw new Error("Failed to fetch listings");
           }
-          if (!bikingResponse.ok) {
-            const errorData = await bikingResponse.json();
-            console.log("Error fetching biking listings:", errorData.error);
-            throw new Error("Failed to fetch biking listings");
-          }
-          if (!campingResponse.ok) {
-            const errorData = await campingResponse.json();
-            console.log("Error fetching camping listings:", errorData.error);
-            throw new Error("Failed to fetch camping listings");
-          }
-  
+    
           const skiSnowListings = await skiSnowResponse.json();
           const bikingListings = await bikingResponse.json();
           const campingListings = await campingResponse.json();
-  
+    
           listings = [...skiSnowListings, ...bikingListings, ...campingListings];
-        } else {
-          console.log("Invalid or missing category");
-          setLoading(false);
-          return;
         }
-  
+    
         dispatch(setListings({ listings }));
+        console.log("Here are some listings: ",listings);
         setLoading(false);
       } catch (err) {
         console.log("Fetch Listings Failed:", err.message);
         setLoading(false);
-        // You can display an error message to the user or handle the error in any other way
       }
     };
   
     useEffect(() => {
       getFeedListings();
-    }, [category, selectedFilters]);
+    }, [pcategory, selectedFilters]);
   
     return (
       <>
@@ -121,9 +130,7 @@ const Listings = ({ category, selectedFilters }) => {
                 _id,
                 creator,
                 listingPhotoPaths,
-                city,
-                state,
-                country,
+                address,
                 title,
                 category,
                 type,
@@ -136,10 +143,8 @@ const Listings = ({ category, selectedFilters }) => {
                   listingId={_id}
                   creator={creator}
                   listingPhotoPaths={listingPhotoPaths}
-                  city={city}
-                  state={state}
+                  address={address}
                   condition={condition}
-                  country={country}
                   category={category}
                   title={title}
                   type={type}

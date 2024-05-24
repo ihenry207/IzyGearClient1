@@ -13,7 +13,7 @@ const Categories = () => {
       </p>
       <div className="categories-list">
         
-        <Link to="/gears/category/camping">
+        <Link to="/gears/category/Camping">
           <div className="category">
             <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Campin.jpg" alt="Camping" />
             <div className="overlay"></div>
@@ -24,7 +24,7 @@ const Categories = () => {
           </div>
         </Link>
 
-        <Link to="/gears/category/skiing">
+        <Link to="/gears/category/Ski">
           <div className="category">
             <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/skiing1.jpg" alt="Skiing" />
             <div className="overlay"></div>
@@ -34,7 +34,7 @@ const Categories = () => {
             </div>
           </div>
         </Link>
-        <Link to="/gears/category/snowboarding">
+        <Link to="/gears/category/Snowboard">
           <div className="category">
             <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Snowboarding.jpg" alt="Snowboarding" />
             <div className="overlay"></div>
@@ -45,7 +45,7 @@ const Categories = () => {
           </div>
         </Link>
 
-        <Link to="/gears/category/biking">
+        <Link to="/gears/category/Biking">
           <div className="category">
             <img src="https://izygear.s3.us-east-2.amazonaws.com/profile-images/Bike2.jpg" alt="Biking" />
             <div className="overlay"></div>

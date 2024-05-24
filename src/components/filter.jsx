@@ -1,11 +1,13 @@
 // filter.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/filter.css';
+import {debounce} from 'lodash';
 
-const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
+const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
     const [showMobileFilter, setShowMobileFilter] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(pcategory);
     const [selectedBrand, setSelectedBrand] = useState('');
+    const [otherBrand, setOtherBrand] = useState(''); 
     const [selectedGender, setSelectedGender] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedCondition, setSelectedCondition] = useState('');
@@ -14,15 +16,41 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
     const [selectedKind, setSelectedKind] = useState('');
     const [selectedSubcategory, setSelectedSubcategory] = useState('');
     const [otherSubcategory, setOtherSubcategory] = useState('');
+
+    
   
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-    setSelectedBrand('');
-  };
+    useEffect(() => {
+      setSelectedCategory(pcategory);
+    }, [pcategory]);
+    const handleCategoryChange = (e) => {
+      setSelectedCategory(e.target.value);
+      setSelectedBrand(''); // Reset brand when category changes
+      setOtherBrand(''); // Reset otherBrand when category changes
+      setSelectedSubcategory(''); // Reset subcategory when category changes
+      setOtherSubcategory(''); // Reset otherSubcategory when category changes
+      setSelectedGender('');
+      setSelectedSize('');
+      setSelectedType('')
+    };
+    const handleSubcategoryChange = (e) => {
+      setSelectedSubcategory(e.target.value);
+      if (e.target.value !== 'Others') {
+        setOtherSubcategory(''); // Clear otherSubcategory if not selecting "Others"
+      }
+    };
+    const handleOtherSubcategoryChange = (e) => {
+      setOtherSubcategory(e.target.value);
+    };
+    
+    
 
   const handleBrandChange = (e) => {
     setSelectedBrand(e.target.value);
+      if (e.target.value !== 'other') {
+        setOtherBrand(''); // Clear otherBrand if not selecting "Other"
+      }
   };
+  
 
   const handleGenderChange = (e) => {
     setSelectedGender(e.target.value);
@@ -55,19 +83,24 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
     setSelectedKind(e.target.value);
   };
 
-  const handleSubcategoryChange = (e) => {
-    setSelectedSubcategory(e.target.value);
-  };
+  
 
   const handleApplyFilter = () => {
+      const brandToApply = selectedBrand === 'other' ? otherBrand : selectedBrand;
+  const subcategoryToApply = selectedSubcategory === 'Others' ? otherSubcategory : selectedSubcategory;
+
     const filters = {
       //we will also add location
       category: selectedCategory,
-      brand: selectedBrand,
+      brand: brandToApply,
       gender: selectedGender,
       size: selectedSize,
       condition: selectedCondition,
       price: selectedPrice,
+      type: selectedType,
+      kind: selectedKind,
+      subcategory: subcategoryToApply,
+     
     };
     onApplyFilter(filters);
   };
@@ -124,7 +157,12 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
               {renderBrandOptions()}
             </select>
             {selectedBrand === 'other' && (
-              <input type="text" placeholder="Enter brand" />
+              <input         
+                type="text"
+                placeholder="Enter brand"
+                value={otherBrand}
+                onChange={(e) => setOtherBrand(e.target.value)}
+                />
             )}
           </div>
           <div>
@@ -171,7 +209,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
           </div>
         </>
       );
-    } else if (selectedCategory === 'biking') {
+    } else if (selectedCategory === 'Biking') {
       return (
         <>
           <div>
@@ -233,7 +271,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
           </div>
         </>
       );
-    } else if (selectedCategory === 'camping') {
+    } else if (selectedCategory === 'Camping') {
       return (
         <>
           <div>
@@ -255,7 +293,7 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
                 type="text"
                 placeholder="Specify subcategory"
                 value={otherSubcategory}
-                onChange={(e) => setOtherSubcategory(e.target.value)}
+                onChange={handleOtherSubcategoryChange}
                 required
               />
             )}
@@ -331,8 +369,8 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
                   <option value="">All</option>
                   <option value="Ski">Ski</option>
                   <option value="Snowboard">Snowboarding</option>
-                  <option value="biking">Bike/eScooter</option>
-                  <option value="camping">Camping</option>
+                  <option value="Biking">Bike/eScooter</option>
+                  <option value="Camping">Camping</option>
                 </select>
               </div>
               {selectedCategory && renderFilterOptions()}
@@ -349,8 +387,8 @@ const Filter = ({ category, onApplyFilter, onApplyFilterAndClose }) => {
               <option value="">All</option>
               <option value="Ski">Ski</option>
               <option value="Snowboard">Snowboarding</option>
-              <option value="biking">Bike/eScooter</option>
-              <option value="camping">Camping</option>
+              <option value="Biking">Bike/eScooter</option>
+              <option value="Camping">Camping</option>
             </select>
           </div>
           {selectedCategory && renderFilterOptions()}

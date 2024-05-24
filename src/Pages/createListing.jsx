@@ -1,7 +1,7 @@
 import "../styles/createListing.css";
 import Navbar from "../components/Navbar";
 import { RemoveCircleOutline, AddCircleOutline } from "@mui/icons-material";
-import { LoadScript, GoogleMap, Autocomplete } from "@react-google-maps/api";//google api for address
+import { LoadScript, GoogleMap, Autocomplete } from "@react-google-maps/api"; //google api for address
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { IoImageOutline } from 'react-icons/io5';
 import { useState } from "react";
@@ -10,9 +10,10 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
 import loader from "../components/loader";
-const libraries = ["places"];
-//IoIosImages
-const CreateListing = () =>{
+
+const libraries = ["places"]; //IoIosImages
+
+const CreateListing = () => {
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("");
@@ -29,14 +30,10 @@ const CreateListing = () =>{
   const [customBrand, setCustomBrand] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false); // Add loading state
+
   /* LOCATION */
   const [formLocation, setFormLocation] = useState({
-    country: "",
-    state: "",
-    city: "",
-    zip: "",
-    streetAddress: "",
-    aptSuite: "",
+    address: "", //this is supposed to be the only address
   });
   const handleChangeLocation = (e) => {
     const { name, value } = e.target;
@@ -45,18 +42,10 @@ const CreateListing = () =>{
       [name]: value,
     });
   };
-  const handlePlaceChanged = (place) => {
-    const addressComponents = place.address_components;
-    const getComponent = (type) =>
-      addressComponents.find((component) => component.types.includes(type))?.long_name || "";
 
+  const handlePlaceChanged = (place) => {
     setFormLocation({
-      country: getComponent("country"),
-      state: getComponent("administrative_area_level_1"),
-      city: getComponent("locality"),
-      zip: getComponent("postal_code"),
-      streetAddress:  getComponent("street_number")+ " " + getComponent("route"),
-      aptSuite: "", // This will still need to be manually entered
+      address: place.formatted_address,
     });
   };
 
@@ -93,7 +82,6 @@ const CreateListing = () =>{
   const handlePost = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
-  
     // Check if all required fields are filled
     const missingFields = [];
     if (!category) missingFields.push("Category");
@@ -102,20 +90,18 @@ const CreateListing = () =>{
     if (!gender) missingFields.push("Gender");
     if (!size) missingFields.push("Size");
     if (!price) missingFields.push("Price");
-    if (!formLocation.country) missingFields.push("Country");
-    if (!formLocation.state) missingFields.push("State");
-    if (!formLocation.city) missingFields.push("City");
-    if (!formLocation.zip) missingFields.push("Zip Code");
-    if (!formLocation.streetAddress) missingFields.push("Street Address");
+    if (!formLocation.address) missingFields.push("address");
     if (!condition) missingFields.push("Condition");
     if (!description) missingFields.push("Description");
-  
+
     if (missingFields.length > 0) {
       console.log("missing fields", missingFields);
       setErrorMessage(`Please fill in the following fields: ${missingFields.join(", ")}`);
       return;
     }
+
     setIsLoading(true); // Show the loader when the form is submitted
+
     try {
       /* Create a new FormData object to handle file uploads */
       const listingForm = new FormData();
@@ -125,20 +111,15 @@ const CreateListing = () =>{
       listingForm.append("gender", gender);
       listingForm.append("size", size);
       listingForm.append("price", price);
-      listingForm.append("country", formLocation.country);
-      listingForm.append("state", formLocation.state);
-      listingForm.append("city", formLocation.city);
-      listingForm.append("zip", formLocation.zip);
-      listingForm.append("streetAddress", formLocation.streetAddress);
-      listingForm.append("aptSuite", formLocation.aptSuite);
+      listingForm.append("address", formLocation.address);
       listingForm.append("condition", condition);
       listingForm.append("description", description);
-  
+
       if (category === "Snowboard" || category === "Ski") {
         listingForm.append("boots", withBoots);
         listingForm.append("bindings", withBindings);
       }
-  
+
       if (category === "Biking") {
         listingForm.append("type", type);
         listingForm.append("kind", kind);
@@ -147,41 +128,38 @@ const CreateListing = () =>{
       if (category === "Camping") {
         listingForm.append("subcategory", subcategory === "Others" ? otherSubcategory : subcategory);
         listingForm.append("name", name);
-       
       }
-  
-  
+
       /* Append each selected photo to the FormData object */
       photos.forEach((photo) => {
         listingForm.append("listingPhotos", photo);
       });
-  
+
       /* Send a POST request to server 10.1.82.57:3001*/
       const response = await fetch(
-        category === "Biking"
-          ? "http://10.1.82.57:3001/gears/biking/create"
-          : category === "Camping"
-          ? "http://10.1.82.57:3001/gears/camping/create"
-          : "http://10.1.82.57:3001/gears/skisnow/create",
+        category === "Biking" ? "http://10.1.82.57:3001/gears/biking/create" :
+        category === "Camping" ? "http://10.1.82.57:3001/gears/camping/create" :
+        "http://10.1.82.57:3001/gears/skisnow/create",
         {
           method: "POST",
           body: listingForm,
         }
       );
+
       console.log("Response:", response);
-  
       if (response.ok) {
         setIsLoading(false);
         navigate("/");
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message);
+        setIsLoading(false);
       }
     } catch (err) {
       console.log("Publish Listing failed", err.message);
       setErrorMessage("An error occurred. Please try again.");
+      setIsLoading(false);
     }
-    
   };
   return(
     <>
@@ -253,6 +231,23 @@ const CreateListing = () =>{
                 <option value="Jones">Jones</option>
                 <option value="K2">K2</option>
                 <option value="Lib Tech">Lib Tech</option>
+                <option value="Moss Snowstick">Moss Snowstick</option>
+                <option value="Never Summer">Never Summer</option>
+                <option value="Nidecker">Nidecker</option>
+                <option value="Nitro">Nitro</option>
+                <option value="Public Snowboards">Public Snowboards</option>
+                <option value="Ride">Ride</option>
+                <option value="Rome">Rome</option>
+                <option value="Rossignol">Rossignol</option>
+                <option value="Roxy">Roxy</option>
+                <option value="Salomon">Salomon</option>
+                <option value="Season">Season</option>
+                <option value="Sims">Sims</option>
+                <option value="Slash">Slash</option>
+                <option value="United Shapes">United Shapes</option>
+                <option value="Weston">Weston</option>
+                <option value="WNDR Alpine">WNDR Alpine</option>
+                <option value="Yes.">Yes.</option>
                 <option value="Other">Other</option>
               </select>
               {brand === 'Other' && (
@@ -341,16 +336,46 @@ const CreateListing = () =>{
                 required
               >
                 <option value="">Select a brand</option>
-                <option value="Armada">Armada</option>
+                <option value="4FRNT">4FRNT</option>
+                <option value="Armada Skis">Armada Skis</option>
                 <option value="Atomic">Atomic</option>
                 <option value="Black Crows">Black Crows</option>
-                <option value="Black Diamond">Black Diamond</option>
+                <option value="Black Diamond Equipment">Black Diamond Equipment</option>
                 <option value="Blizzard">Blizzard</option>
-                <option value="CANDIDE">CANDIDE</option>
-                <option value="Coalition Snow">Coalition Snow</option>
-                <option value="DPS">DPS</option>
-                <option value="Dynafit">Dynafit</option>
+                <option value="Blossom">Blossom</option>
+                <option value="DPS Skis">DPS Skis</option>
                 <option value="Dynastar">Dynastar</option>
+                <option value="Elan">Elan</option>
+                <option value="Faction Skis">Faction Skis</option>
+                <option value="Fischer">Fischer</option>
+                <option value="Forest Skis">Forest Skis</option>
+                <option value="Freyrie">Freyrie</option>
+                <option value="Friztmeir Skis">Friztmeir Skis</option>
+                <option value="Hart">Hart</option>
+                <option value="Head">Head</option>
+                <option value="Identity One / Id One">Identity One / Id One</option>
+                <option value="J Skis">J Skis</option>
+                <option value="K2">K2</option>
+                <option value="Kneissl">Kneissl</option>
+                <option value="Liberty Skis">Liberty Skis</option>
+                <option value="Line Skis">Line Skis</option>
+                <option value="Madshus">Madshus</option>
+                <option value="Moment Skis">Moment Skis</option>
+                <option value="Nordica">Nordica</option>
+                <option value="Ogasaka Skis">Ogasaka Skis</option>
+                <option value="Olin">Olin</option>
+                <option value="Paradise Skis">Paradise Skis</option>
+                <option value="Peltonen">Peltonen</option>
+                <option value="Romp Skis">Romp Skis</option>
+                <option value="Rønning Treski">Rønning Treski</option>
+                <option value="Rossignol">Rossignol</option>
+                <option value="Salomon">Salomon</option>
+                <option value="Slatnar">Slatnar</option>
+                <option value="Spalding Skis">Spalding Skis</option>
+                <option value="Stöckli">Stöckli</option>
+                <option value="Voit">Voit</option>
+                <option value="Volant">Volant</option>
+                <option value="Völkl">Völkl</option>
                 <option value="Other">Other</option>
               </select>
               {brand === 'Other' && (
@@ -593,17 +618,18 @@ const CreateListing = () =>{
             </>
           )}
 
-          
-<div className="create-listing">
+      <div className="create-listing">
         <h3>Where's your gear located?</h3>
         <p style={{ fontSize: "18px", fontWeight: "normal" }}>
           Your address is only shared with renters after they've made a reservation.
         </p>
-
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} libraries={libraries}>
+        <LoadScript
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+          libraries={libraries}
+        >
           <Autocomplete
             onLoad={(autocomplete) => {
-              autocomplete.setFields(["address_components"]);
+              autocomplete.setFields(["formatted_address"]);
               autocomplete.addListener("place_changed", () => {
                 handlePlaceChanged(autocomplete.getPlace());
               });
@@ -613,86 +639,15 @@ const CreateListing = () =>{
               type="text"
               placeholder="Enter your address"
               style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+              name="address"
+              value={formLocation.address}
+              onChange={handleChangeLocation}
+              required
             />
           </Autocomplete>
         </LoadScript>
-
-        <div className="full">
-          <div className="location">
-            <p>Country</p>
-            <input
-              type="text"
-              placeholder="Country"
-              name="country"
-              value={formLocation.country}
-              onChange={handleChangeLocation}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="half">
-          <div className="location">
-            <p>State</p>
-            <input
-              type="text"
-              placeholder="State"
-              name="state"
-              value={formLocation.state}
-              onChange={handleChangeLocation}
-              required
-            />
-          </div>
-          <div className="location">
-            <p>City</p>
-            <input
-              type="text"
-              placeholder="City"
-              name="city"
-              value={formLocation.city}
-              onChange={handleChangeLocation}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="half">
-          <div className="location">
-            <p>Zip Code</p>
-            <input
-              type="text"
-              placeholder="Zip Code"
-              name="zip"
-              value={formLocation.zip}
-              onChange={handleChangeLocation}
-            />
-          </div>
-          <div className="location">
-            <p>Street Address</p>
-            <input
-              type="text"
-              placeholder="Street Address"
-              name="streetAddress"
-              value={formLocation.streetAddress}
-              onChange={handleChangeLocation}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="full">
-          <div className="location">
-            <p>Apartment, Suite, etc. (if applicable)</p>
-            <input
-              type="text"
-              placeholder="Apt, Suite, etc. (if applicable)"
-              name="aptSuite"
-              value={formLocation.aptSuite}
-              onChange={handleChangeLocation}
-            />
-          </div>
-        </div>
       </div>
+
          
 
           <h3>Condition</h3>
@@ -802,19 +757,15 @@ const CreateListing = () =>{
               )}
             </Droppable>
           </DragDropContext>
-
-          {/* <h3>Description</h3>
-          <textarea
-            placeholder="Enter a description of your gear"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          ></textarea> */}
         </div>
 
-        <button className="submit_btn" type="submit">
-          PUBLISH YOUR GEAR
-        </button>
+        <button
+        className="submit_btn"
+        type="submit"
+        disabled={isLoading} // Disable the button while loading
+      >
+        {isLoading ? "Publishing..." : "Publish Your Gear"} {/* Update button text based on loading state */}
+      </button>
       </form>
     </div>
 

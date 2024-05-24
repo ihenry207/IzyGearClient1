@@ -61,9 +61,7 @@ const GearList = () => {
             listingId={listing._id}
             creator={hostId}
             listingPhotoPaths={listing.listingPhotoPaths}
-            city={listing.city}
-            state={listing.state}
-            country={listing.country}
+            address={listing.address}
             category={listing.category}
             condition={listing.condition}
             startDate={startDate}

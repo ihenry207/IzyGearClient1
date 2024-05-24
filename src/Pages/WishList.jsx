@@ -39,9 +39,7 @@ const WishList = () => {
             listingId={item._id}
             creator={item.creator}
             listingPhotoPaths={item.listingPhotoPaths}
-            city={item.city}
-            state={item.state}
-            country={item.country}
+            address={item.address}
             category={item.category}
             title={item.title}
             price={item.price}

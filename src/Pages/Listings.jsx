@@ -44,9 +44,7 @@ const Listings = () => {
             _id,
             creator,
             listingPhotoPaths,
-            city,
-            state,
-            country,
+            address,
             title,
             category,
             type,
@@ -59,10 +57,8 @@ const Listings = () => {
               listingId={_id}
               creator={creator}
               listingPhotoPaths={listingPhotoPaths}
-              city={city}
-              state={state}
+              address={address}
               condition={condition}
-              country={country}
               category={category}
               title={title}
               type={type}

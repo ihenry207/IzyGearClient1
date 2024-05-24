@@ -11,6 +11,7 @@ import Footer from "../components/footer";
 import ImageGallery from "../components/ImageGallery";
 import { Favorite, FavoriteBorder  } from "@mui/icons-material";
 import { setWishList } from "../redux/state";
+import parseAddress from "parse-address";
 
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,11 @@ const ListingDetails = () => {
   const location = useLocation();
   const category = location.state?.category;
   const [selectedImage, setSelectedImage] = useState(null);
+  let address = listing?.address;
+  const parsedAddress = address ? parseAddress.parseLocation(address) : {};
+  const { city, state } = parsedAddress;
+  const country = address ? address.split(", ").pop() : "";
+  const truncatedTitlenow = address ? `${city}, ${state}, ${country}` : "N/A";
 
   const openImageGallery = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -102,6 +108,7 @@ const ListingDetails = () => {
 
       if (response.ok) {
         navigate(`/${customerId}/gears`);
+        
       }
     } catch (err) {
       console.log("Submit Booking Failed.", err.message);
@@ -182,7 +189,7 @@ const ListingDetails = () => {
           />
         )}
         <h2>
-          {listing.city}, {listing.state}, {listing.country}
+          {truncatedTitlenow}
         </h2>
         <p>Category: {category}</p>
         <div className="profile">

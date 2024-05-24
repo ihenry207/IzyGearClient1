@@ -5,17 +5,16 @@ import { truncateText } from "./utils";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setWishList } from "../redux/state";
+import parseAddress from "parse-address";
 
 const ListingCard = ({
   listingId,
   creator,
   listingPhotoPaths,
-  city,
-  state,
-  country,
-  title,
+  address,
   category,
   condition,
+  title,
   price,
   startDate,
   endDate,
@@ -27,7 +26,24 @@ const ListingCard = ({
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const truncatedTitle = truncateText(title, 30);
+  // const truncatedTitle = truncateText(title, 30);
+  console.log("Address prop:", address);
+  let city, state, country;
+  if (address && address !== "N/A") {
+    const parsedAddress = parseAddress.parseLocation(address);
+    city = parsedAddress.city || "";
+    state = parsedAddress.state || "";
+    country = address.split(", ").pop() || "";
+  } else {
+    city = "";
+    state = "";
+    country = "";
+  }
+
+  const truncatedTitle = city && state && country
+    ? truncateText(`${city}, ${state}, ${country}`, 30)
+    : truncateText(title, 30);
+
 
   const goToPrevSlide = () => {
     setCurrentIndex(
@@ -158,9 +174,9 @@ const ListingCard = ({
           }}
         >
           <h3 className="listing-card-title">
-            {city}, {state}, {country}
+            {truncatedTitle}
           </h3>
-          <p className="listing-card-description">{truncatedTitle}</p>
+          <p className="listing-card-description">{truncateText(title, 30)}</p>
           {!booking ? (
             <>
               <p className="listing-card-details">Condition: {condition}</p>
