@@ -134,19 +134,19 @@ const ListingCard = ({
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {listingPhotoPaths.map((photo, index) => (
-              <div
-                key={index}
-                className={`listing-card-slide ${
-                  index === currentIndex ? "active" : ""
-                }`}
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-              >
-                <img src={photo} alt={`${title} photo ${index + 1}`} />
-              </div>
-            ))}
+            {listingPhotoPaths && listingPhotoPaths.map((photo, index) => (
+            <div
+              key={index}
+              className={`listing-card-slide ${
+                index === currentIndex ? "active" : ""
+              }`}
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              <img src={photo} alt={`${title} photo ${index + 1}`} />
+            </div>
+          ))}
           </div>
-          {listingPhotoPaths.length > 1 && (
+          {listingPhotoPaths && listingPhotoPaths.length > 1 && (
             <>
               <div className="listing-card-arrow prev" onClick={goToPrevSlide}>
                 <ArrowBackIosNew />

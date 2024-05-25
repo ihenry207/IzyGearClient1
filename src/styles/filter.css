@@ -2,14 +2,16 @@
 .filter-sidebar {
     width: 15%;
     position: fixed;
-    height: 100%;
+    top: 110px;
+    bottom: 60px; /* Adjust this value based on the height of your footer */
     border-right: 2px solid #e5e5e5;
     z-index: 3;
     display: flex;
     flex-direction: column;
     padding: 20px;
     font-family: 'Nunito Sans', sans-serif;
-}
+    overflow-y: auto;
+  }
 
 .filter-sidebar h2 {
     font-size: 22px;

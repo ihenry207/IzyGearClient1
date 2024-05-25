@@ -134,34 +134,36 @@ const Listings = ({ pcategory, selectedFilters }) => {
           <Loader />
         ) : (
           <div className="listings">
-            {listings.map(
-              ({
-                _id,
-                creator,
-                listingPhotoPaths,
-                address,
-                title,
-                category,
-                type,
-                price,
-                condition,
-                booking = false,
-              }) => (
-                <ListingCard
-                  key={_id}
-                  listingId={_id}
-                  creator={creator}
-                  listingPhotoPaths={listingPhotoPaths}
-                  address={address}
-                  condition={condition}
-                  category={category}
-                  title={title}
-                  type={type}
-                  price={price}
-                  booking={booking}
-                />
-              )
-            )}
+            {listings
+              .filter((listing) => listing && listing._id)
+              .map(
+                ({
+                  _id,
+                  creator,
+                  listingPhotoPaths,
+                  address,
+                  title,
+                  category,
+                  type,
+                  price,
+                  condition,
+                  booking = false,
+                }) => (
+                  <ListingCard
+                    key={_id}
+                    listingId={_id}
+                    creator={creator}
+                    listingPhotoPaths={listingPhotoPaths || []}
+                    address={address}
+                    condition={condition}
+                    category={category}
+                    title={title}
+                    type={type}
+                    price={price}
+                    booking={booking}
+                  />
+                )
+              )}
           </div>
         )}
       </>

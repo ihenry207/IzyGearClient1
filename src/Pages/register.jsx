@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import '../styles/register.css';
 import Navbar from "../components/Navbar";
 const Register = () => {
@@ -140,7 +141,7 @@ const Register = () => {
           
         />
         <label htmlFor="image" className="image-label">
-          <img src="/assets/addImage.png" alt="add profile" />
+        <FileUploadOutlinedIcon style={{ color: 'black', width: '40px', height: '40px', marginRight: '15px' }} />
           <p>Upload Your Profile Photo</p>
         </label>
         {formData.profileImage && (

@@ -33,23 +33,25 @@ const WishList = () => {
       <Navbar />
       <h1 className="title-list">Your Wish List</h1>
       <div className="list">
-        {wishListItems.map((item) => (
-          <ListingCard
-            key={item._id}
-            listingId={item._id}
-            creator={item.creator}
-            listingPhotoPaths={item.listingPhotoPaths}
-            address={item.address}
-            category={item.category}
-            title={item.title}
-            price={item.price}
-            condition={item.condition}
-            startDate={item.startDate}
-            endDate={item.endDate}
-            totalPrice={item.totalPrice}
-            booking={item.booking || false}
-          />
-        ))}
+        {wishListItems
+          .filter((item) => item && item._id)
+          .map((item) => (
+            <ListingCard
+              key={item._id}
+              listingId={item._id}
+              creator={item.creator}
+              listingPhotoPaths={item.listingPhotoPaths || []}
+              address={item.address}
+              category={item.category}
+              title={item.title}
+              price={item.price}
+              condition={item.condition}
+              startDate={item.startDate}
+              endDate={item.endDate}
+              totalPrice={item.totalPrice}
+              booking={item.booking || false}
+            />
+          ))}
       </div>
     </>
   );

@@ -89,6 +89,10 @@ const ListingDetails = () => {
 
   const handleSubmit = async () => {
     try {
+      if (!user) {
+        navigate("/login");
+        return;
+      }
       const bookingForm = {
         customerId,
         listingId,
@@ -128,6 +132,10 @@ const ListingDetails = () => {
 
   const toggleFavorite = async () => {
     try {
+      if (!user) {
+        navigate("/login");
+        return;
+      }
       setIsFavorite(!isFavorite);
       const response = await fetch(
         `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
@@ -173,14 +181,22 @@ const ListingDetails = () => {
           </button>
         </div>
         <div className="photos">
-          {listing.listingPhotoPaths?.map((imageUrl, index) => (
+          {listing.listingPhotoPaths?.slice(0, 3).map((imageUrl, index) => (
             <img
               key={index}
               src={imageUrl}
               alt="listing photo"
-              onClick={() => openImageGallery(imageUrl)}
+              onClick={openImageGallery}
+              className="photo-item"
             />
           ))}
+          {listing.listingPhotoPaths?.length > 3 && (
+            <div className="view-more" onClick={openImageGallery}>
+              <div className="view-more-overlay"></div>
+              <img src={listing.listingPhotoPaths[3]} alt="listing photo" className="photo-item" />
+              <span className="view-more-text">View {listing.listingPhotoPaths.length - 3}+ images</span>
+            </div>
+          )}
         </div>
         {selectedImage && (
           <ImageGallery

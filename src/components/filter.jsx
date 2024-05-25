@@ -101,7 +101,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
 
   const handleApplyFilter = () => {
       const brandToApply = selectedBrand === 'other' ? otherBrand : selectedBrand;
-  const subcategoryToApply = selectedSubcategory === 'Others' ? otherSubcategory : selectedSubcategory;
+      const subcategoryToApply = selectedSubcategory === 'Others' ? otherSubcategory : selectedSubcategory;
 
     const filters = {
       //we will also add location
@@ -427,6 +427,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
             <h2>Filters</h2>
             <div className="mobile-filter-content">
               <div>
+              <h4>Location:</h4>
                 <LoadScript
                   googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
                   libraries={libraries}
@@ -483,6 +484,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
         <div className="filter-sidebar">
           <h2>Filters</h2>
           <div>
+          <h3>Location:</h3>
             <LoadScript
               googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
               libraries={libraries}
@@ -498,7 +500,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
                 <input
                   type="text"
                   placeholder="Enter Location"
-                  style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                  style={{ width: "100%", padding: "5px", marginBottom: "5px" }}
                   name="address"
                   value={location.address}
                   onChange={handleChangeLocation}

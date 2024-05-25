@@ -1,18 +1,19 @@
 .login {
-  background-color: #212F3D;
+  background-color: #F5F5F5;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   font-size: 18px;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 .login_content {
-  background-color: #616A6B;
+  background-color: #fafbfc;
   padding: 60px;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.188em 1.550em rgb(156, 156, 156);
   max-width: 500px;
   width: 100%;
 }
@@ -21,6 +22,7 @@
   margin-bottom: 30px;
   text-align: center;
   font-size: 36px;
+  color: black;
 }
 
 .login_content_form {
@@ -90,6 +92,7 @@
   margin-top: 20px;
   transition: color 0.3s ease;
   font-size: 20px;
+  color: black;
 }
 
 .login_content .signup-link a {
