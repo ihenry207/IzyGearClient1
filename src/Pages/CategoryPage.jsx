@@ -5,13 +5,16 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/footer";
 import Filter from '../components/filter';
 import '../styles/categoryPage.css';
-
+import { LoadScript } from "@react-google-maps/api";
+const libraries = ["places"];
 const CategoryPage = () => {
   const { category } = useParams();
   
   const getInitialFilters = () => {
     if (category === 'Biking') {
       return {
+        location:'',
+        distance:'',
         category: category,
         type: '',
         kind: '',
@@ -23,6 +26,8 @@ const CategoryPage = () => {
       };
     } else if (category === 'Camping') {
       return {
+        location:'',
+        distance:'',
         category: category,
         subcategory: '',
         name: '',
@@ -34,6 +39,8 @@ const CategoryPage = () => {
       };
     } else {
       return {
+        location:'',
+        distance:'',
         category: category,
         brand: '',
         gender: '',
@@ -47,7 +54,7 @@ const CategoryPage = () => {
   const [selectedFilters, setSelectedFilters] = useState(getInitialFilters());
 
   const handleApplyFilter = (filters) => {
-    console.log(filters);
+    //console.log(filters);
     setSelectedFilters(filters);
   };
 
@@ -59,6 +66,7 @@ const CategoryPage = () => {
 
   return (
     <div className="category-page">
+      
       <Navbar />
       <div className="category-content">
         <Filter pcategory={category} onApplyFilter={handleApplyFilter} onApplyFilterAndClose={handleApplyFilterAndClose} />

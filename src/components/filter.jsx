@@ -1,28 +1,43 @@
 // filter.jsx
 import React, { useState, useEffect } from 'react';
 import '../styles/filter.css';
-import {debounce} from 'lodash';
+import { LoadScript, Autocomplete } from "@react-google-maps/api";
+
+const libraries = ["places"];
 
 const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
-    const [showMobileFilter, setShowMobileFilter] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(pcategory);
-    const [selectedBrand, setSelectedBrand] = useState('');
-    const [otherBrand, setOtherBrand] = useState(''); 
-    const [selectedGender, setSelectedGender] = useState('');
-    const [selectedSize, setSelectedSize] = useState('');
-    const [selectedCondition, setSelectedCondition] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState('');
-    const [selectedType, setSelectedType] = useState('');
-    const [selectedKind, setSelectedKind] = useState('');
-    const [selectedSubcategory, setSelectedSubcategory] = useState('');
-    const [otherSubcategory, setOtherSubcategory] = useState('');
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(pcategory);
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [otherBrand, setOtherBrand] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedCondition, setSelectedCondition] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedKind, setSelectedKind] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [otherSubcategory, setOtherSubcategory] = useState('');
+  const [location, setLocation] = useState({ address: "" });
+  const [distance, setDistance] = useState('');
 
-    
-  
-    useEffect(() => {
+  const handleChangeLocation = (e) => {
+    const { name, value } = e.target;
+    setLocation({ ...location, [name]: value });
+  };
+
+  const handlePlaceChanged = (place) => {
+    setLocation({ address: place.formatted_address });
+  };
+
+  const handleDistanceChange = (e) => {
+    setDistance(e.target.value);
+  };
+
+  useEffect(() => {
       setSelectedCategory(pcategory);
     }, [pcategory]);
-    const handleCategoryChange = (e) => {
+  const handleCategoryChange = (e) => {
       setSelectedCategory(e.target.value);
       setSelectedBrand(''); // Reset brand when category changes
       setOtherBrand(''); // Reset otherBrand when category changes
@@ -31,7 +46,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
       setSelectedGender('');
       setSelectedSize('');
       setSelectedType('')
-    };
+  };
     const handleSubcategoryChange = (e) => {
       setSelectedSubcategory(e.target.value);
       if (e.target.value !== 'Others') {
@@ -83,7 +98,6 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
     setSelectedKind(e.target.value);
   };
 
-  
 
   const handleApplyFilter = () => {
       const brandToApply = selectedBrand === 'other' ? otherBrand : selectedBrand;
@@ -100,6 +114,8 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
       type: selectedType,
       kind: selectedKind,
       subcategory: subcategoryToApply,
+      location: location.address,//this might need changing I don't know
+      distance: distance,
      
     };
     onApplyFilter(filters);
@@ -114,16 +130,46 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
       return (
         <>
           <option value="">All</option>
-          <option value="Armada">Armada</option>
-          <option value="Atomic">Atomic</option>
-          <option value="Black Crows">Black Crows</option>
-          <option value="Black Diamond">Black Diamond</option>
-          <option value="Blizzard">Blizzard</option>
-          <option value="Candide">Candide</option>
-          <option value="Coalition Snow">Coalition Snow</option>
-          <option value="DPS">DPS</option>
-          <option value="Dynafit">Dynafit</option>
-          <option value="Dynastar">Dynastar</option>
+          <option value="4FRNT">4FRNT</option>
+                <option value="Armada Skis">Armada Skis</option>
+                <option value="Atomic">Atomic</option>
+                <option value="Black Crows">Black Crows</option>
+                <option value="Black Diamond Equipment">Black Diamond Equipment</option>
+                <option value="Blizzard">Blizzard</option>
+                <option value="Blossom">Blossom</option>
+                <option value="DPS Skis">DPS Skis</option>
+                <option value="Dynastar">Dynastar</option>
+                <option value="Elan">Elan</option>
+                <option value="Faction Skis">Faction Skis</option>
+                <option value="Fischer">Fischer</option>
+                <option value="Forest Skis">Forest Skis</option>
+                <option value="Freyrie">Freyrie</option>
+                <option value="Friztmeir Skis">Friztmeir Skis</option>
+                <option value="Hart">Hart</option>
+                <option value="Head">Head</option>
+                <option value="Identity One / Id One">Identity One / Id One</option>
+                <option value="J Skis">J Skis</option>
+                <option value="K2">K2</option>
+                <option value="Kneissl">Kneissl</option>
+                <option value="Liberty Skis">Liberty Skis</option>
+                <option value="Line Skis">Line Skis</option>
+                <option value="Madshus">Madshus</option>
+                <option value="Moment Skis">Moment Skis</option>
+                <option value="Nordica">Nordica</option>
+                <option value="Ogasaka Skis">Ogasaka Skis</option>
+                <option value="Olin">Olin</option>
+                <option value="Paradise Skis">Paradise Skis</option>
+                <option value="Peltonen">Peltonen</option>
+                <option value="Romp Skis">Romp Skis</option>
+                <option value="Rønning Treski">Rønning Treski</option>
+                <option value="Rossignol">Rossignol</option>
+                <option value="Salomon">Salomon</option>
+                <option value="Slatnar">Slatnar</option>
+                <option value="Spalding Skis">Spalding Skis</option>
+                <option value="Stöckli">Stöckli</option>
+                <option value="Voit">Voit</option>
+                <option value="Volant">Volant</option>
+                <option value="Völkl">Völkl</option>
           <option value="other">Other</option>
         </>
       );
@@ -131,17 +177,34 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
       return (
         <>
           <option value="">All</option>
-          <option value="Arbor">Arbor</option>
-          <option value="Bataleon">Bataleon</option>
-          <option value="Burton">Burton</option>
-          <option value="CAPiTA">CAPiTA</option>
-          <option value="Cardiff">Cardiff</option>
-          <option value="DC">DC</option>
-          <option value="GNU">GNU</option>
-          <option value="Jones">Jones</option>
-          <option value="K2">K2</option>
-          <option value="Lib Tech">Lib Tech</option>
-          <option value="other">Other</option>
+                <option value="Arbor">Arbor</option>
+                <option value="Bataleon">Bataleon</option>
+                <option value="Burton">Burton</option>
+                <option value="CAPiTA">CAPiTA</option>
+                <option value="Cardiff">Cardiff</option>
+                <option value="DC">DC</option>
+                <option value="GNU">GNU</option>
+                <option value="Jones">Jones</option>
+                <option value="K2">K2</option>
+                <option value="Lib Tech">Lib Tech</option>
+                <option value="Moss Snowstick">Moss Snowstick</option>
+                <option value="Never Summer">Never Summer</option>
+                <option value="Nidecker">Nidecker</option>
+                <option value="Nitro">Nitro</option>
+                <option value="Public Snowboards">Public Snowboards</option>
+                <option value="Ride">Ride</option>
+                <option value="Rome">Rome</option>
+                <option value="Rossignol">Rossignol</option>
+                <option value="Roxy">Roxy</option>
+                <option value="Salomon">Salomon</option>
+                <option value="Season">Season</option>
+                <option value="Sims">Sims</option>
+                <option value="Slash">Slash</option>
+                <option value="United Shapes">United Shapes</option>
+                <option value="Weston">Weston</option>
+                <option value="WNDR Alpine">WNDR Alpine</option>
+                <option value="Yes.">Yes.</option>
+                <option value="other">Other</option>
         </>
       );
     }
@@ -364,6 +427,42 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
             <h2>Filters</h2>
             <div className="mobile-filter-content">
               <div>
+                <LoadScript
+                  googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                  libraries={libraries}
+                >
+                  <Autocomplete
+                    onLoad={(autocomplete) => {
+                      autocomplete.setFields(["formatted_address"]);
+                      autocomplete.addListener("place_changed", () => {
+                        handlePlaceChanged(autocomplete.getPlace());
+                      });
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Enter Location"
+                      style={{ width: "80%", padding: "10px", marginBottom: "10px" }}
+                      name="address"
+                      value={location.address}
+                      onChange={handleChangeLocation}
+                      required
+                    />
+                  </Autocomplete>
+                </LoadScript>
+              </div>
+              <div>
+                <label htmlFor="distance">Distance from Location:</label>
+                <select id="distance" value={distance} onChange={handleDistanceChange}>
+                  <option value="">Any</option>
+                  <option value="0-5">0 - 5 miles</option>
+                  <option value="0-15">5 - 15 miles</option>
+                  <option value="0-30">15 - 30 miles</option>
+                  <option value="0-60">30 - 60 miles</option>
+                  <option value="60+">60+ miles</option>
+                </select>
+              </div>
+              <div>
                 <label htmlFor="category">Category:</label>
                 <select id="category" value={selectedCategory} onChange={handleCategoryChange}>
                   <option value="">All</option>
@@ -374,13 +473,51 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
                 </select>
               </div>
               {selectedCategory && renderFilterOptions()}
-              <button className="apply-filters-button" onClick={handleApplyFilterAndClose}>Apply Filters</button>
+              <button className="apply-filters-button" onClick={handleApplyFilterAndClose}>
+                Apply Filters
+              </button>
             </div>
           </div>
         </div>
       ) : (
         <div className="filter-sidebar">
           <h2>Filters</h2>
+          <div>
+            <LoadScript
+              googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+              libraries={libraries}
+            >
+              <Autocomplete
+                onLoad={(autocomplete) => {
+                  autocomplete.setFields(["formatted_address"]);
+                  autocomplete.addListener("place_changed", () => {
+                    handlePlaceChanged(autocomplete.getPlace());
+                  });
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Enter Location"
+                  style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                  name="address"
+                  value={location.address}
+                  onChange={handleChangeLocation}
+                  required
+                />
+              </Autocomplete>
+            </LoadScript>
+          </div>
+          <div>
+            <label htmlFor="distance">Distance from Location:</label>
+            <select id="distance" value={distance} onChange={handleDistanceChange}>
+              <option value="">Any</option>
+              <option value="0-5">0 - 5 miles</option>
+              <option value="0-15">5 - 15 miles</option>
+              <option value="0-30">15 - 30 miles</option>
+              <option value="0-60">30 - 60 miles</option>
+              <option value="60+">60+ miles</option>
+            </select>
+          </div>
           <div>
             <label htmlFor="category">Category:</label>
             <select id="category" value={selectedCategory} onChange={handleCategoryChange}>

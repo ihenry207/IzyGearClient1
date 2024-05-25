@@ -27,7 +27,7 @@ const ListingCard = ({
   const [touchEnd, setTouchEnd] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   // const truncatedTitle = truncateText(title, 30);
-  console.log("Address prop:", address);
+  
   let city, state, country;
   if (address && address !== "N/A") {
     const parsedAddress = parseAddress.parseLocation(address);

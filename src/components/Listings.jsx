@@ -21,6 +21,8 @@ const Listings = ({ pcategory, selectedFilters }) => {
     
         if (selectedFilters) {
           const {
+            location,
+            distance,
             category,
             brand,
             gender,
@@ -32,10 +34,12 @@ const Listings = ({ pcategory, selectedFilters }) => {
             subcategory,
             name,
           } = selectedFilters;
+          console.log("Selected Filters111:", selectedFilters);
     
           const filterParams = new URLSearchParams();
-    
-          if (category) filterParams.append("category", category);
+          
+          //if we have category given and not all or empty
+          if (category && category !== "all" && category !== "") filterParams.append("category", category);
           if (brand) filterParams.append("brand", brand);
           if (gender) filterParams.append("gender", gender);
           if (size) filterParams.append("size", size);
@@ -45,14 +49,19 @@ const Listings = ({ pcategory, selectedFilters }) => {
           if (kind) filterParams.append("kind", kind);
           if (subcategory) filterParams.append("subcategory", subcategory);
           if (name) filterParams.append("name", name);
-
-          console.log("Here is the filter params",filterParams)
+          // Add location and distance filters only if both are present
+          if (location && distance) {
+            filterParams.append("location", location);
+            filterParams.append("distance", distance);
+          }
+    
+          console.log("Filter Params:", filterParams.toString());
     
           if (category === "all" || category === "") {
             const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
-              fetch(`${baseUrl}/skisnow`, { method: "GET" }),
-              fetch(`${baseUrl}/biking`, { method: "GET" }),
-              fetch(`${baseUrl}/camping`, { method: "GET" }),
+              fetch(`${baseUrl}/skisnow?${filterParams.toString()}`, { method: "GET" }),
+              fetch(`${baseUrl}/biking?${filterParams.toString()}`, { method: "GET" }),
+              fetch(`${baseUrl}/camping?${filterParams.toString()}`, { method: "GET" }),
             ]);
     
             if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok) {
