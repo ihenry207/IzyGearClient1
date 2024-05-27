@@ -37,11 +37,11 @@ const LoginPage = () => {
         navigate("/"); // navigate to homepage after login
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message);
+        setErrorMessage("Email or Password incorrect!");
       }
     } catch (err) {
       console.log("Login failed", err.message);
-      setErrorMessage("An error occurred. Please try again.");
+      setErrorMessage("Error occurred. Try again later.");
     }
   };
 
@@ -51,7 +51,17 @@ const LoginPage = () => {
       <div className="login">
         <div className="login_content">
           <h1>Log In</h1>
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          {errorMessage && (
+              <div className="error-message">
+                <p>{errorMessage}</p>
+                <button
+                  className="close-button"
+                  onClick={() => setErrorMessage("")}
+                >
+                  ✖
+                </button>
+              </div>
+            )}
           <form className="login_content_form" onSubmit={handleSubmit}>
             <input
               type="email"

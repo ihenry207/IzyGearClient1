@@ -24,6 +24,25 @@
   font-size: 36px;
   color: black;
 }
+.register_content_form .name-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.register_content_form .name-inputs input {
+  flex: 1;
+}
+@media screen and (max-width: 480px) {
+  /* Existing mobile styles */
+
+  .register_content_form .name-inputs {
+    flex-direction: column;
+  }
+
+  .register_content_form .name-inputs .last-name {
+    flex: 1;
+  }
+}
 
 .register_content_form {
   display: flex;

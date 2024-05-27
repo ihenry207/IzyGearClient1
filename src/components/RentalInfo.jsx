@@ -1,8 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/RentalInfo.css';
+import { useSelector, useDispatch } from "react-redux";
 
 const RentalInfo = () => {
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  const handleListGearClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/create-listing");
+    }
+  };
   return (
     <div className="rental-info">
       <div className="rental-info-text">
@@ -14,9 +25,11 @@ const RentalInfo = () => {
       </div>
       <div className="list-gear-section">
         <p>List your current gear on IzyGear and open doors to more income</p>
-        <Link to="/create-listing">
-          <button className="list-gear-button">List My Gear Now!</button>
-        </Link>
+
+        
+          <button className="list-gear-button" onClick={handleListGearClick}>
+            List My Gear Now!</button>
+        
       </div>
     </div>
   );

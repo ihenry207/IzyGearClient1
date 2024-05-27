@@ -25,6 +25,8 @@ const ListingDetails = () => {
   const { city, state } = parsedAddress;
   const country = address ? address.split(", ").pop() : "";
   const truncatedTitlenow = address ? `${city}, ${state}, ${country}` : "N/A";
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const openImageGallery = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -51,6 +53,7 @@ const ListingDetails = () => {
 
       const data = await response.json();
       setListing(data);
+      console.log("data of current listings: ",data)
       setLoading(false);
     } catch (err) {
       console.log("Fetch Listing Details Failed", err.message);
@@ -85,12 +88,18 @@ const ListingDetails = () => {
 
   /* SUBMIT BOOKING */
   const customerId = useSelector((state) => state?.user?._id);
+  //const creatorID = //get it from the database so that I won't allow others to book their own gear
+  //meaning if customerID === creatorID send a message before even booking.
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
       if (!user) {
         navigate("/login");
+        return;
+      }
+      if (customerId === listing.creator._id) {
+        setErrorMessage("You can't book your own gear.");
         return;
       }
       const bookingForm = {
@@ -165,6 +174,17 @@ const ListingDetails = () => {
   ) : (
     <>
       <Navbar />
+      {errorMessage && (
+        <div className="error-message">
+          <p>{errorMessage}</p>
+          <button
+            className="close-button"
+            onClick={() => setErrorMessage("")}
+          >
+            ✖
+          </button>
+        </div>
+      )}
       <div className="listing-details">
         <div className="title-container">
           <h1>{listing.title}</h1>

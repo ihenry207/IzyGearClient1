@@ -453,13 +453,13 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
                 </LoadScript>
               </div>
               <div>
-                <label htmlFor="distance">Distance from Location:</label>
+                <label htmlFor="distance">Radius:</label>
                 <select id="distance" value={distance} onChange={handleDistanceChange}>
                   <option value="">Any</option>
-                  <option value="0-5">0 - 5 miles</option>
-                  <option value="0-15">5 - 15 miles</option>
-                  <option value="0-30">15 - 30 miles</option>
-                  <option value="0-60">30 - 60 miles</option>
+                  <option value="0-5">5 miles</option>
+                  <option value="0-15">15 miles</option>
+                  <option value="0-30">30 miles</option>
+                  <option value="0-60">60 miles</option>
                   <option value="60+">60+ miles</option>
                 </select>
               </div>
@@ -510,13 +510,13 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
             </LoadScript>
           </div>
           <div>
-            <label htmlFor="distance">Distance from Location:</label>
+            <label htmlFor="distance">Radius:</label>
             <select id="distance" value={distance} onChange={handleDistanceChange}>
               <option value="">Any</option>
-              <option value="0-5">0 - 5 miles</option>
-              <option value="0-15">5 - 15 miles</option>
-              <option value="0-30">15 - 30 miles</option>
-              <option value="0-60">30 - 60 miles</option>
+              <option value="0-5">5 miles</option>
+              <option value="0-15">15 miles</option>
+              <option value="0-30">30 miles</option>
+              <option value="0-60">60 miles</option>
               <option value="60+">60+ miles</option>
             </select>
           </div>

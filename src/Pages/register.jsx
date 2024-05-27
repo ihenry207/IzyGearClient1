@@ -74,20 +74,23 @@ const Register = () => {
     <div className="register_content">
       <h1>Create an Account</h1>
       <form className="register_content_form" onSubmit={handleSubmit}>
-        <input
-          placeholder="First Name"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          placeholder="Last Name"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
+      <div className="name-inputs">
+            <input
+              placeholder="First Name"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              
+            />
+            <input
+              placeholder="Last Name"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
         <input
           placeholder="Email"
           name="email"

@@ -1,3 +1,4 @@
+//this will show gears that are waiting for approval from the host
 import { useEffect, useState } from "react";
 import "../styles/List.css";
 import Loader from "../components/loader";
