@@ -422,7 +422,7 @@ const Filter = ({ pcategory, onApplyFilter, onApplyFilterAndClose }) => {
         <div className="mobile-filter-overlay">
           <div className="mobile-filter-container">
             <button className="close-button" onClick={handleMobileFilterClose}>
-              &times;
+            ✖
             </button>
             <h2>Filters</h2>
             <div className="mobile-filter-content">

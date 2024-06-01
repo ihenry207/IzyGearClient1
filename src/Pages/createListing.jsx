@@ -9,7 +9,7 @@ import { BiTrash } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
-import loader from "../components/loader";
+import Loader from "../components/loader";
 
 const libraries = ["places"]; //IoIosImages
 
@@ -172,7 +172,7 @@ const CreateListing = () => {
         </button>
       </div>
     )}
-    {isLoading && <loader />} {/* Show the loader when isLoading is true */}
+    {isLoading && <Loader />} {/* Show the loader when isLoading is true */}
     <div className="create-listing">
       <h1>Publish Your Gear</h1>
       <form onSubmit={handlePost}>

@@ -71,6 +71,7 @@ const Navbar = () => {
             <Link to={`/${user._id}/gears`}>Gear List</Link>
             <Link to={`/${user._id}/wishList`}>Wish List</Link>
             <Link to={`/${user._id}/listings`}>Listed Gears</Link>
+            <Link to={`/${user._id}/chats`}>Chat</Link>
             <Link to="/create-listing">List Your Gears</Link>
             <Link to="/login" onClick={() => {
               dispatch(setLogout());
