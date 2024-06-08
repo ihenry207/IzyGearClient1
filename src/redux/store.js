@@ -29,10 +29,11 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
+    devTools: true, // Enable Redux DevTools
 });
-// store.subscribe(() => {
-//   console.log("Persisted state:", store.getState());
-// });
+store.subscribe(() => {
+  console.log("Persisted state:", store.getState());
+});
 
 export let persistor = persistStore(store);
 

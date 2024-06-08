@@ -8,8 +8,8 @@ import ChatList from './chatList/ChatList';
 const List = () => {
   return (
     <div className='list'> 
-      <Userinfo/>
-      <ChatList />
+        <Userinfo/>
+        <ChatList />  
     </div>
   )
 }

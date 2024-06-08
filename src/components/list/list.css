@@ -1,6 +1,8 @@
 .list {
     flex: 1;
-    display: flex;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 0; /* Ensure no padding for the parent container */
+    margin: 0;
     flex-direction: column;
-    gap: 20px;
+    display: flex;
 }

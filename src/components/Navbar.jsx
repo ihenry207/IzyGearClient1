@@ -6,14 +6,17 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../redux/state";
+//import Login from './login/login';
 
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const user = useSelector((state) => state.user);
+  const profileImage = useSelector((state)=>state.profileImagePath)
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   //console.log("Here is the pf images url: ", user?.profileImagePath);
 
@@ -43,9 +46,9 @@ const Navbar = () => {
         <button className="navbar_right_account" onClick={() => setDropdownMenu(!dropdownMenu)}>
           <Menu sx={{ color: "#969393" }} />
           {user ? (
-            user.profileImagePath ? (
+            profileImage ? (
               <img
-                src={user.profileImagePath}
+                src={profileImage}
                 alt="profile photo"
                 style={{ objectFit: "cover", borderRadius: "50%" }}
                 onClick={(e) => {
@@ -68,10 +71,10 @@ const Navbar = () => {
         )}
         {dropdownMenu && user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
-            <Link to={`/${user._id}/gears`}>Gear List</Link>
-            <Link to={`/${user._id}/wishList`}>Wish List</Link>
-            <Link to={`/${user._id}/listings`}>Listed Gears</Link>
-            <Link to={`/${user._id}/chats`}>Chat</Link>
+            <Link to={`/${user.userId}/gears`}>Gear List</Link> {/*this is the gears you booked */}
+            <Link to={`/${user.userId}/wishList`}>Wish List</Link>
+            <Link to={`/${user.userId}/listings`}>Listed Gears</Link>{/*this is the gears you own and listed for rent */}
+            <Link to={`/${user.userId}/chats`}>Chat</Link>
             <Link to="/create-listing">List Your Gears</Link>
             <Link to="/login" onClick={() => {
               dispatch(setLogout());

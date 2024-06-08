@@ -1,40 +1,13 @@
 import "../styles/List.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import ListingCard from "../components/ListingCard";
-import { useEffect, useState } from "react";
-import { setOwnerGearList } from "../redux/state";
-import Loader from "../components/loader";
 import Footer from "../components/footer";
 
 const Listings = () => {
-  const [loading, setLoading] = useState(true);
-  const user = useSelector((state) => state.user);
-  const ownerGearList = user?.ownerGearList;
-  console.log(user);
-  const dispatch = useDispatch();
+  const ownerGearList = useSelector((state) => state.ownerGearList);
 
-  const getListings = async () => {
-    try {
-      const response = await fetch(`http://10.1.82.57:3001/users/${user._id}/listings`, {
-        method: "GET",
-      });
-      const data = await response.json();
-      console.log(data);
-      dispatch(setOwnerGearList(data));
-      setLoading(false);
-    } catch (err) {
-      console.log("Fetch all properties failed", err.message);
-    }
-  };
-
-  useEffect(() => {
-    getListings();
-  }, []);
-
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <>
       <Navbar />
       <h1 className="title-list">Your Property List</h1>

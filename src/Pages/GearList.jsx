@@ -10,7 +10,7 @@ import Footer from "../components/footer"
 const GearList = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const userId = useSelector((state) => state.user._id);
+  const userId = useSelector((state) => state.user.userId);
   const GearList = useSelector((state) => state.user.GearList);
 
   const dispatch = useDispatch();

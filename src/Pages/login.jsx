@@ -7,12 +7,15 @@ import IconButton from "@mui/material/IconButton";
 import '../styles/login.css';
 import { setLogin } from "../redux/state";
 import Navbar from "../components/Navbar";
-
+import { loginOrRegister } from "../components/login/login.js"; // Import the function
+import Loader from "../components/loader"; // Import the Loader component
+//import { auth, db } from "../components/lib/firebase.js";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -23,6 +26,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading
     try {
       const response = await fetch("http://10.1.82.57:3001/auth/login", {
         method: "POST",
@@ -33,7 +37,26 @@ const LoginPage = () => {
       });
       if (response.ok) {
         const loggedIn = await response.json();
-        dispatch(setLogin({ user: loggedIn.user, token: loggedIn.token }));
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+            firstName: loggedIn.user.firstName,
+            lastName: loggedIn.user.lastName,
+            email: loggedIn.user.email,
+            profileImagePath: loggedIn.user.profileImagePath,
+            gearList: loggedIn.user.gearList,
+            wishList: loggedIn.user.wishList,
+            ownerGearList: loggedIn.user.ownerGearList,
+            reservationList: loggedIn.user.reservationList,
+          })
+        );
+
+        navigate("/"); // navigate to homepage after login
+        console.log("Calling loginOrRegister function");
+        // Automatically login to Firebase
+        await loginOrRegister(loggedIn.user.email, password, loggedIn.user.profileImagePath, loggedIn.user.firstName + " " + loggedIn.user.lastName);
+
         navigate("/"); // navigate to homepage after login
       } else {
         const errorData = await response.json();
@@ -42,6 +65,8 @@ const LoginPage = () => {
     } catch (err) {
       console.log("Login failed", err.message);
       setErrorMessage("Error occurred. Try again later.");
+    } finally {
+      setIsLoading(false); // End loading
     }
   };
 
@@ -49,9 +74,12 @@ const LoginPage = () => {
     <>
       <Navbar />
       <div className="login">
-        <div className="login_content">
-          <h1>Log In</h1>
-          {errorMessage && (
+        {isLoading ? (
+          <Loader /> // Render Loader component when loading
+        ) : (
+          <div className="login_content">
+            <h1>Log In</h1>
+            {errorMessage && (
               <div className="error-message">
                 <p>{errorMessage}</p>
                 <button
@@ -62,35 +90,36 @@ const LoginPage = () => {
                 </button>
               </div>
             )}
-          <form className="login_content_form" onSubmit={handleSubmit}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <div className="password-input">
+            <form className="login_content_form" onSubmit={handleSubmit}>
               <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <IconButton
-                className="password-eye"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </div>
-            <button type="submit">LOG IN</button>
-          </form>
-          <p className="signup-link">
-            Don't have an account? <a href="/register">Sign Up Here</a>
-          </p>
-        </div>
+              <div className="password-input">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <IconButton
+                  className="password-eye"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </div>
+              <button type="submit">LOG IN</button>
+            </form>
+            <p className="signup-link">
+              Don't have an account? <a href="/register">Sign Up Here</a>
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

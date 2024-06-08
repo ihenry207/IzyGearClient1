@@ -135,19 +135,16 @@ const ListingDetails = () => {
   const isLiked = wishList?.find((item) => item?._id === listingId);
   const [isFavorite, setIsFavorite] = useState(false);
 
+
   useEffect(() => {
     setIsFavorite(isLiked !== undefined);
   }, [isLiked]);
 
   const toggleFavorite = async () => {
     try {
-      if (!user) {
-        navigate("/login");
-        return;
-      }
       setIsFavorite(!isFavorite);
       const response = await fetch(
-        `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
+        `http://10.1.82.57:3001/users/${user?.userId}/${category}/${listingId}`,
         {
           method: "PATCH",
           headers: {
@@ -164,6 +161,7 @@ const ListingDetails = () => {
       const data = await response.json();
       console.log("Updated wishList:", data.wishList);
       dispatch(setWishList(data.wishList));
+      setErrorMessage("");
     } catch (error) {
       console.log("Error updating wishlist:", error);
     }

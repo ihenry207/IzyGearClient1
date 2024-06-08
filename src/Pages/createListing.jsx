@@ -4,7 +4,7 @@ import { RemoveCircleOutline, AddCircleOutline } from "@mui/icons-material";
 import { LoadScript, GoogleMap, Autocomplete } from "@react-google-maps/api"; //google api for address
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { IoImageOutline } from 'react-icons/io5';
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BiTrash } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ import Loader from "../components/loader";
 const libraries = ["places"]; //IoIosImages
 
 const CreateListing = () => {
+  
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("");
@@ -161,6 +162,12 @@ const CreateListing = () => {
       setIsLoading(false);
     }
   };
+  const topRef = useRef(null);
+
+  useEffect(() => {
+    topRef.current.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   return(
     <>
     <Navbar />
@@ -174,7 +181,7 @@ const CreateListing = () => {
     )}
     {isLoading && <Loader />} {/* Show the loader when isLoading is true */}
     <div className="create-listing">
-      <h1>Publish Your Gear</h1>
+    <h1 ref={topRef}>Publish Your Gear</h1>
       <form onSubmit={handlePost}>
         <div className="create-listing_step1">
           <h2>Step 1: Tell us about your gear</h2>

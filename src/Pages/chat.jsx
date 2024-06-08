@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Loader from "../components/loader";
 import Footer from "../components/footer";
 import Detail from "../components/detail/Detail"
-import Chat from "../components/chat/Chat";
+import Chat from "../components/chat/Chat.jsx";
 import List from "../components/list/List.jsx";
 import "../styles/chat.css";
 const chat = () => {
@@ -13,15 +13,10 @@ const chat = () => {
     <>
       <Navbar />
       <div className="container">
-        <div className="section">
-          <List />
-        </div>
-        <div className="section">
-          <Chat />
-        </div>
-        <div className="section">
-          <Detail />
-        </div>
+
+        <List />
+        <Chat />
+        <Detail />
       </div>
     </>
   );

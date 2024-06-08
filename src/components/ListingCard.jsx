@@ -91,7 +91,7 @@ const ListingCard = ({
     try {
       setIsFavorite(!isFavorite);
       const response = await fetch(
-        `http://10.1.82.57:3001/users/${user?._id}/${category}/${listingId}`,
+        `http://10.1.82.57:3001/users/${user?.userId}/${category}/${listingId}`,
         {
           method: "PATCH",
           headers: {

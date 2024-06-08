@@ -10,11 +10,12 @@ const Userinfo = () => {
     <div className='userInfo'>
       <div className="user">
         <img src='/avatar.png' alt ="User Avatar"/>
+        <h2>John Doe</h2> 
       </div>
       <div className="icons">
-        <MoreHorizOutlinedIcon className="icon" />
-        <VideocamIcon className="icon" />
-        <BorderColorOutlinedIcon className="icon" />
+        <MoreHorizOutlinedIcon  />
+        <VideocamIcon />
+        <BorderColorOutlinedIcon  />
       </div>
     </div>
   )
