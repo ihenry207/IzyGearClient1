@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../redux/state";
+import { auth, db } from "../lib/firebase";
 //import Login from './login/login';
 
 const Navbar = () => {
@@ -78,6 +79,7 @@ const Navbar = () => {
             <Link to="/create-listing">List Your Gears</Link>
             <Link to="/login" onClick={() => {
               dispatch(setLogout());
+              auth.signOut();//signout out of firebase
             }}>Log Out</Link>
           </div>
         )}

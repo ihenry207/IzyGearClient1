@@ -24,11 +24,15 @@ const loginOrRegister = async (email, password, profileImage, username) => {
 
     if (!querySnapshot.empty) {
       // User exists, log them in
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
       toast.success("Logged in successfully!");
+      return user.uid;
     } else {
       // User doesn't exist, register them
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
       const userRef = doc(usersRef, userCredential.user.uid);
       await setDoc(userRef, {
         username,
@@ -42,6 +46,7 @@ const loginOrRegister = async (email, password, profileImage, username) => {
       await setDoc(doc(db, "userchats", userCredential.user.uid), {
         chats: [],
       });
+      return user.uid; // Return the Firebase UID
     }
   } catch (error) {
     console.error("Error logging in or registering user:", error);

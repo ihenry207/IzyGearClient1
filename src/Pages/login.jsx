@@ -37,6 +37,7 @@ const LoginPage = () => {
       });
       if (response.ok) {
         const loggedIn = await response.json();
+        console.log("Login response:", loggedIn);
         dispatch(
           setLogin({
             user: loggedIn.user,
@@ -55,9 +56,14 @@ const LoginPage = () => {
         navigate("/"); // navigate to homepage after login
         console.log("Calling loginOrRegister function");
         // Automatically login to Firebase
-        await loginOrRegister(loggedIn.user.email, password, loggedIn.user.profileImagePath, loggedIn.user.firstName + " " + loggedIn.user.lastName);
+        const firebaseUid = await loginOrRegister(
+          loggedIn.user.email, 
+          password, 
+          loggedIn.user.profileImagePath, 
+          loggedIn.user.firstName + " " + loggedIn.user.lastName);
 
-        navigate("/"); // navigate to homepage after login
+        dispatch(setLogin({ ...loggedIn, firebaseUid })); // Save the Firebase UID in Redux
+        // navigate("/"); // navigate to homepage after login
       } else {
         const errorData = await response.json();
         setErrorMessage("Email or Password incorrect!");

@@ -715,35 +715,30 @@ const CreateListing = () => {
 
                   {photos.length >= 1 && (
                     <>
-                      {photos.map((photo, index) => {
-                        return (
-                          <Draggable
-                            key={index}
-                            draggableId={index.toString()}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                className="photo"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
+                      {photos.map((photo, index) => (
+                        <Draggable
+                          key={index}
+                          draggableId={index.toString()}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              className="photo"
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <img src={URL.createObjectURL(photo)} alt="gear" />
+                              <button
+                                type="button"
+                                onClick={() => handleRemovePhoto(index)}
                               >
-                                <img
-                                  src={URL.createObjectURL(photo)}
-                                  alt="gear"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemovePhoto(index)}
-                                >
-                                  <BiTrash />
-                                </button>
-                              </div>
-                            )}
-                          </Draggable>
-                        );
-                      })}
+                                <BiTrash />
+                              </button>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
                       <input
                         id="image"
                         type="file"

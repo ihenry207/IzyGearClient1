@@ -5,16 +5,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 //import { getAnalytics } from "firebase/analytics";
-
-const firebaseConfig = { 
-    apiKey: process.env.FIREBASE_API_KEY,
-    authDomain: "chat-585e7.firebaseapp.com",
-    projectId: "chat-585e7",
-    storageBucket: "chat-585e7.appspot.com",
-    messagingSenderId: "105337395972",
-    appId: "1:105337395972:web:07c810c21fc2fcd758ce51",
-    measurementId: "G-8JS4R3CGMB"
-};
+import { firebaseConfig } from "./firebase.config";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

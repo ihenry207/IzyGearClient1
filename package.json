@@ -28,7 +28,8 @@
     "redux-persist": "^6.0.0",
     "sass": "^1.75.0",
     "use-places-autocomplete": "^4.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -59,106 +59,148 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-
+    
         .message {
             max-width: 70%;
             display: flex;
             gap: 20px;
-            
-
+    
+            .texts {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+    
+                img {
+                    width: 100%;
+                    height: 300px;
+                    border-radius: 10px;
+                    object-fit: cover;
+                }
+    
+                p {
+                    padding: 10px 15px;
+                    background-color: #d8d8d8;
+                    border-radius: 10px;
+                    color: black;
+                    display: inline-block;
+                }
+    
+                span {
+                    font-size: 11px;
+                    color: #777;
+                    align-self: flex-end;
+                    margin-top: 5px;
+                }
+            }
+    
             &.own {
                 align-self: flex-end;
                 .texts {
-                    p{
+                    p {
                         background-color: #218aff;
                         color: white;
                     }
                 }
             }
-
+    
             img {
                 width: 30px;
                 height: 30px;
                 border-radius: 50%;
                 object-fit: cover;
             }
-            .texts{
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                
-                
-                img{
-                    width: 100%;
-                    height: 300px;
-                    border-radius: 10px;
-                    object-fit: cover;
-                }
-                p {
-                    padding: 20px;
-                    background-color: #08b725;
-                    border-radius: 10px;
-                    color: white;
-                  }
-          
-                span {
-                    font-size: 13px;
-                }
-            }
         }
-    
     }
     .bottom {
         padding: 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        /* border-top: 1px solid black; */
-        /* border-top-width: 2px; */
         gap: 20px;
         margin-top: auto;
     
         .icons {
-          display: flex;
-          gap: 20px;
-          cursor: pointer;
+            display: flex;
+            gap: 20px;
+            cursor: pointer;
+    
+            label {
+                cursor: pointer;
+    
+                &.disabled {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                    opacity: 0.5;
+                }
+            }
+    
+            .disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+                opacity: 0.5;
+            }
         }
-
-        input {
+    
+        .inputContainer {
             flex: 1;
-            background-color: transparent;
-            border: none;
-            outline: none;
-            color: black;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: large;
-            border-color: black;
-            border-width: 2px;
-            border-style: solid;
-
+            position: relative;
+            display: flex;
+            align-items: center;
+    
+            input {
+                flex: 1;
+                background-color: transparent;
+                border: none;
+                outline: none;
+                color: black;
+                padding: 20px;
+                border-radius: 50px;
+                font-size: large;
+                border-color: black;
+                border-width: 2px;
+                border-style: solid;
+                padding-right: 60px;
+    
+                &:disabled {
+                    cursor: not-allowed;
+                }
+            }
+    
+            .sendButton {
+                background-color: #218aff;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                position: absolute;
+                right: 10px;
+    
+                &.disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+    
+                svg {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
         }
-
+    
         .emoji {
             position: relative;
             cursor: pointer;
-      
+    
             .picker {
-              position: absolute;
-              bottom: 50px;
-              left: 0;
+                position: absolute;
+                bottom: 50px;
+                left: 0;
             }
-          }
-
-        .sendButton {
-            background-color: #218aff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
         }
-      
     }
 }

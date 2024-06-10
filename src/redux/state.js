@@ -11,6 +11,7 @@ const initialState = {
   wishList: [],
   ownerGearList: [],
   reservationList: [],
+  firebaseUid: null,
 };
 
 export const userSlice = createSlice({
@@ -20,14 +21,15 @@ export const userSlice = createSlice({
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
-      state.email = action.payload.email;
-      state.profileImagePath = action.payload.profileImagePath;
-      state.gearList = action.payload.gearList;
-      state.wishList = action.payload.wishList;
-      state.ownerGearList = action.payload.ownerGearList;
-      state.reservationList = action.payload.reservationList;
+      state.firstName = action.payload.user?.firstName || "";
+      state.lastName = action.payload.user?.lastName || "";
+      state.email = action.payload.user?.email || "";
+      state.profileImagePath = action.payload.user?.profileImagePath || "";
+      state.gearList = action.payload.user?.gearList || [];
+      state.wishList = action.payload.user?.wishList || [];
+      state.ownerGearList = action.payload.user?.ownerGearList || [];
+      state.reservationList = action.payload.user?.reservationList || [];
+      state.firebaseUid = action.payload.firebaseUid || null;
     },
     setLogout: (state) => {
       state.user = null;
@@ -40,6 +42,7 @@ export const userSlice = createSlice({
       state.wishList = [];
       state.ownerGearList = [];
       state.reservationList = [];
+      state.firebaseUid = null;
     },
     setListings: (state, action) => {
       state.listings = action.payload.listings;

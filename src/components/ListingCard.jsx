@@ -173,13 +173,14 @@ const ListingCard = ({
             navigate(`/gears/${listingId}`, { state: { category } });
           }}
         >
+          {/* this is the address */}
           <h3 className="listing-card-title">
-            {truncatedTitle}
+            {truncatedTitle} 
           </h3>
           <p className="listing-card-description">{truncateText(title, 30)}</p>
           {!booking ? (
             <>
-              <p className="listing-card-details">Condition: {condition}</p>
+              <p className="listing-card-details">{condition}</p>
               <p className="listing-card-price">
                 <span>${price}</span> per day
               </p>

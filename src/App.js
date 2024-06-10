@@ -18,7 +18,7 @@ import ListingDetails from "./Pages/ListingDetails";
 import Contacts from "./Pages/contact"
 import Privacy from "./Pages/privacy"
 import Terms from "./Pages/Terms"
-import Chat from "./Pages/chat.jsx";
+import ChatPage from "./Pages/chat.jsx";
 //import Footer from "./components/footer"
 function App() { 
   return (
@@ -39,7 +39,7 @@ function App() {
         <Route path ="/contact-us" element={<Contacts />} />
         <Route path ="/privacy" element={<Privacy />} />
         <Route path ="/terms" element={<Terms />} />
-        <Route path ="/:userId/chats" element={<Chat />} />
+        <Route path ="/:userId/chats" element={<ChatPage />} />
         {/* <Route path ="/:userId/chats/:chatId" element={<Terms />} /> */}
       </Routes>
       </BrowserRouter>

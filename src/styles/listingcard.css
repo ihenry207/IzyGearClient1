@@ -68,11 +68,13 @@
 .listing-card-description {
   margin: 0.5rem 0;
   font-size: 16px;
+  font-weight: 600;
 }
 
 .listing-card-details {
   margin: 0.5rem 0;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .listing-card-price {
@@ -82,6 +84,7 @@
 
 .listing-card-price span {
   font-weight: bold;
+  font-size: 20px;
 }
 
 .listing-card-favorite {
