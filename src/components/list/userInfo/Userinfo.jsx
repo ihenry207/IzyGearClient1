@@ -11,16 +11,11 @@ const Userinfo = () => {
   return (
     <div className='userInfo'>
       <div className="user">
-        <img src={currentUser.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
-        {/* <img src='/avatar.png' alt ="User Avatar"/> */}
-        {/* <h2>{currentUser.username}</h2>  */}
+        {/* <img src={currentUser.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
+         */}
         <h2>Messages</h2>
       </div>
-      {/* <div className="icons">
-        <MoreHorizOutlinedIcon  />
-        <VideocamIcon />
-        <BorderColorOutlinedIcon  />
-      </div> */}
+      
     </div>
   )
 }

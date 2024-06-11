@@ -63,12 +63,7 @@ const Chat = () => {
     setShowChat(false);
     setShowDetail(true);
   };
-
-
-  const handleEmoji = (emojiObject) => {
-    setText((prev) => prev + emojiObject.emoji);
-    setOpen(false);
-  };
+  
   //when we get an image we just send it straight up
   const handleImg = async (e) => {
     if (e.target.files[0]) {
@@ -263,6 +258,7 @@ const Chat = () => {
               }
             }}
             disabled={isCurrentUserBlocked || isReceiverBlocked}
+            
           />
           
           <button 

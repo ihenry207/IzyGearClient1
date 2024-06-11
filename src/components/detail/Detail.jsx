@@ -39,10 +39,12 @@ const ChatDetails = () => {
 
   return (
     <div className='detail'>
-      <div className='user'>
-      <ArrowBackIosNewIcon onClick={handleBackClick}/>
-      <img src={user?.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
-        <h2>{user?.username}</h2>
+        <div className='user-header'>
+          <ArrowBackIosNewIcon className='back-button' onClick={handleBackClick} />
+        </div>
+        <div className='user'>
+          <img src={user?.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
+          <h2>{user?.username}</h2>
       </div>
       <div className='info'>
         <div className='option'>

@@ -1,6 +1,16 @@
 .detail{
     flex:1;
-
+    .user-header {
+        position: relative;
+        padding: 20px;
+    
+        .back-button {
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          cursor: pointer;
+        }
+    }
     .user {
         padding: 30px 20px;
         display: flex;
