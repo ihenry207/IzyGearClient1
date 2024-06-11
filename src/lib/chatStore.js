@@ -3,9 +3,12 @@ import { useUserStore } from "./userStore";
 
 export const useChatStore = create((set) => ({
   chatId: null,
-  user: null,//reciever
+  user: null, // receiver
   isCurrentUserBlocked: false,
   isReceiverBlocked: false,
+  showList: true,
+  showChat: false,
+  showDetail: false,
   changeChat: (chatId, user) => {
     const currentUser = useUserStore.getState().currentUser;
 
@@ -16,6 +19,9 @@ export const useChatStore = create((set) => ({
         user: null,
         isCurrentUserBlocked: true,
         isReceiverBlocked: false,
+        showList: false,
+        showChat: false,
+        showDetail: false,
       });
     }
 
@@ -26,6 +32,9 @@ export const useChatStore = create((set) => ({
         user: user,
         isCurrentUserBlocked: false,
         isReceiverBlocked: true,
+        showList: false,
+        showChat: true,
+        showDetail: false,
       });
     } else {
       return set({
@@ -33,10 +42,12 @@ export const useChatStore = create((set) => ({
         user,
         isCurrentUserBlocked: false,
         isReceiverBlocked: false,
+        showList: false,
+        showChat: true,
+        showDetail: false,
       });
     }
   },
-
   changeBlock: () => {
     set((state) => ({ ...state, isReceiverBlocked: !state.isReceiverBlocked }));
   },
@@ -46,6 +57,12 @@ export const useChatStore = create((set) => ({
       user: null,
       isCurrentUserBlocked: false,
       isReceiverBlocked: false,
+      showList: true,
+      showChat: false,
+      showDetail: false,
     });
   },
+  setShowList: (show) => set({ showList: show }),
+  setShowChat: (show) => set({ showChat: show }),
+  setShowDetail: (show) => set({ showDetail: show }),
 }));

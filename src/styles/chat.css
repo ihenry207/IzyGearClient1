@@ -13,5 +13,18 @@ body, html {
     position: relative;
     font-family: 'Nunito Sans', sans-serif;
     height: calc(100vh - 100px);
-    
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    /* .list, .chat, .detail {
+        display: none;
+    } */
+
+    .show {
+        display: flex;
+    }
 }

@@ -21,6 +21,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { format } from 'date-fns';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';//to go back to chatList
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
@@ -31,14 +32,16 @@ const Chat = () => {
     url: "",
   });
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, setShowList, setShowDetail, setShowChat } =
     useChatStore();
-
-  const endRef = useRef(null)
+  const endRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(()=>{
     endRef.current?.scrollIntoView({behavior: "smooth"})
   })
 
+  //get data from chats database
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
       setChat(res.data());
@@ -48,6 +51,18 @@ const Chat = () => {
       unSub();
     };
   }, [chatId]);
+
+  const handleListClick = () => {
+    setShowList(true);
+    setShowChat(false);
+    setShowDetail(false);
+  };
+
+  const handleInfoClick = () => {
+    setShowList(false);
+    setShowChat(false);
+    setShowDetail(true);
+  };
 
 
   const handleEmoji = (emojiObject) => {
@@ -63,7 +78,12 @@ const Chat = () => {
       });
   
       try {
-        const imgUrl = await upload(e.target.files[0]);
+        // Show the progress bar and disable the UI
+        setIsUploading(true);
+
+        const imgUrl = await upload(e.target.files[0], (progress) => {
+          setUploadProgress(progress);
+        });
   
         await updateDoc(doc(db, "chats", chatId), {
           messages: arrayUnion({
@@ -100,6 +120,8 @@ const Chat = () => {
       } catch (err) {
         console.log(err);
       } finally {
+        // Hide the progress bar and enable the UI
+        setIsUploading(false);
         setImg({
           file: null,
           url: "",
@@ -163,15 +185,19 @@ const Chat = () => {
   return (
     <div className='chat'>
       <div className='top'>
-        <div className='user'>
-          <img src={user?.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
-          <div className='texts'>
+        {/* this div also when clicked on gives out the <Details/> */}
+        <div className='user' >
+          {/* this back icon helps you go back to chaList page. */}
+          <ArrowBackIosNewIcon onClick={handleListClick}/>
+          <img onClick={handleInfoClick}
+           src={user?.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
+          <div className='texts' onClick={handleInfoClick}>
             <span>{user?.username}</span>
-            {/* <p>Lorem ipsum dolor sit amet.</p> */}
           </div>
         </div>
         <div className='icons'>
-          <InfoIcon />
+          {/* this infoIcon helps you bring up <Details/> */}
+          <InfoIcon onClick={handleInfoClick}/>
         </div>
       </div>
 
@@ -208,45 +234,53 @@ const Chat = () => {
       </div>
 
       <div className='bottom'>
-      <div className='icons'>
-        <label htmlFor="file" className={`${isCurrentUserBlocked || isReceiverBlocked ? 'disabled' : ''}`}>
-          <ImageIcon />
-        </label>
-        <input
-          type="file"
-          id="file"
-          style={{ display: "none" }}
-          onChange={handleImg}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
-        />
-        {/* <CameraAltIcon className={`${isCurrentUserBlocked || isReceiverBlocked ? 'disabled' : ''}`} />
-         */}
-      </div>
-      <div className="inputContainer">
-        <input 
-          type='text' 
-          placeholder={
-            isCurrentUserBlocked || isReceiverBlocked
-              ? "You cannot send a message"
-              : "Type a message..."
-          }
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSend();
+        <div className='icons'>
+          <label htmlFor="file" className={`${isCurrentUserBlocked || isReceiverBlocked ? 'disabled' : ''}`}>
+            <ImageIcon />
+          </label>
+          <input
+            type="file"
+            id="file"
+            style={{ display: "none" }}
+            onChange={handleImg}
+            disabled={isCurrentUserBlocked || isReceiverBlocked}
+            accept="image/*"
+          />
+        </div>
+        <div className="inputContainer">
+          <input 
+            type='text' 
+            placeholder={
+              isCurrentUserBlocked || isReceiverBlocked
+                ? "You cannot send a message"
+                : "Write a message..."
             }
-          }}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
-        />
-        
-        <button 
-        className={`sendButton ${text.length < 1 ? 'disabled' : ''}`} 
-        onClick={handleSend} 
-        disabled={text.length < 1 || isCurrentUserBlocked || isReceiverBlocked}>
-          <ArrowUpwardIcon/>
-        </button>
-      </div>
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSend();
+              }
+            }}
+            disabled={isCurrentUserBlocked || isReceiverBlocked}
+          />
+          
+          <button 
+            className={`sendButton ${text.length < 1 ? 'disabled' : ''}`} 
+            onClick={handleSend} 
+            disabled={text.length < 1 || isCurrentUserBlocked || isReceiverBlocked}>
+            <ArrowUpwardIcon/>
+          </button>
+        </div>
+
+        {isUploading && (
+          <div className="overlay">
+            <div className="progress-container">
+              <div className="progress-bar" style={{ width: `${uploadProgress}%` }}></div>
+            </div>
+            <div className="uploading-text">Sending Image...</div>
+          </div>
+        )}
       </div>
     </div>
   );

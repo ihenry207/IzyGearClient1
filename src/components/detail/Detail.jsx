@@ -9,12 +9,14 @@ import { useUserStore } from "../../lib/userStore";
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { useChatStore } from "../../lib/chatStore";
 import { auth, db } from "../../lib/firebase";
-
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 const ChatDetails = () => {
   const { currentUser} = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat } =
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat, setShowChat, setShowDetail } =
     useChatStore();
+
+
   const handleBlock = async () => {
     if (!user) return;
 
@@ -29,12 +31,18 @@ const ChatDetails = () => {
       console.log(err);
     }
   };
+
+  const handleBackClick = () => {
+    setShowChat(true);
+    setShowDetail(false);
+  };
+
   return (
     <div className='detail'>
       <div className='user'>
+      <ArrowBackIosNewIcon onClick={handleBackClick}/>
       <img src={user?.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
         <h2>{user?.username}</h2>
-        {/* <p>Lorem ipsum dolor sit amet.</p> */}
       </div>
       <div className='info'>
         <div className='option'>

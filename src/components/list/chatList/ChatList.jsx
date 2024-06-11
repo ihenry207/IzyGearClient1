@@ -10,7 +10,7 @@ import { db } from "../../../lib/firebase";
 import { useUserStore } from "../../../lib/userStore";
 import { useChatStore } from "../../../lib/chatStore";
 
-const ChatList = () => {
+const ChatList = ({ onChatClick }) => {
   const [addMode, setAddMode] = useState(false);
   const { currentUser} = useUserStore();
   const [chats, setChats] = useState([]);
@@ -60,10 +60,12 @@ const ChatList = () => {
         chats: userChats,
       });
       changeChat(chat.chatId, chat.user);
+      onChatClick(); // Call the onChatClick function passed via props
     } catch (err) {
       console.log(err);
     }
   };
+
   const filteredChats = chats.filter((c) =>
     c.user.username.toLowerCase().includes(input.toLowerCase())
   );
@@ -90,18 +92,29 @@ const ChatList = () => {
         ) }
       </div>
       {filteredChats.map((chat) => (
-        <div className='item' key={chat.chatId} onClick={()=>handleSelect(chat)}
-        style={{
-          backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
-        }}>
-          <img src={
-            chat.user.blocked.includes(currentUser.id)
-            ?'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png': chat.user.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'} alt="" />
+        <div
+          className='item'
+          key={chat.chatId}
+          onClick={() => handleSelect(chat)}
+          // style={{
+          //   backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
+          // }}
+        >
+          <img
+            src={
+              chat.user.blocked.includes(currentUser.id)
+                ? 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
+                : chat.user.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
+            }
+            alt=""
+          />
           <div className='texts'>
-            <span>{chat.user.blocked.includes(currentUser.id)
+            <span className={chat?.isSeen ? '' : 'unread-name'}>
+              {chat.user.blocked.includes(currentUser.id)
                 ? "User"
-                : chat.user.username}</span>
-            <p>{chat.lastMessage}</p>
+                : chat.user.username}
+            </span>
+            <p className={chat?.isSeen ? '' : 'unread-message'}>{chat.lastMessage}</p>
           </div>
         </div>
       ))}
