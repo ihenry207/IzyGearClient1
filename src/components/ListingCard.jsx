@@ -97,6 +97,7 @@ const ListingCard = ({
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ listing: null }) // When listing is null, the backend will handle it
         }
       );
 

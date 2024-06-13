@@ -4,17 +4,16 @@ import { RemoveCircleOutline, AddCircleOutline } from "@mui/icons-material";
 import { LoadScript, GoogleMap, Autocomplete } from "@react-google-maps/api"; //google api for address
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { IoImageOutline } from 'react-icons/io5';
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BiTrash } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
 import Loader from "../components/loader";
-
+import { setOwnerGearList } from "../redux/state";
 const libraries = ["places"]; //IoIosImages
 
 const CreateListing = () => {
-  
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("");
@@ -30,12 +29,16 @@ const CreateListing = () => {
   const [name, setName] = useState("");
   const [customBrand, setCustomBrand] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const creatorId = useSelector((state) => state.user.userId);
+  const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
+  const navigate = useNavigate();
 
-  /* LOCATION */
   const [formLocation, setFormLocation] = useState({
-    address: "", //this is supposed to be the only address
+    address: "",
   });
+
   const handleChangeLocation = (e) => {
     const { name, value } = e.target;
     setFormLocation({
@@ -75,12 +78,12 @@ const CreateListing = () => {
 
   /* DESCRIPTION */
   const [description, setDescription] = useState("");
+  //const creatorId = useSelector((state) => state.user.userId);//hopefully this won't break
+  
 
-  const creatorId = useSelector((state) => state.user._id);
+  // const navigate = useNavigate();
 
-  const navigate = useNavigate();
-
-  const handlePost = async (e) => {
+  const HandlePost = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
     // Check if all required fields are filled
@@ -147,13 +150,17 @@ const CreateListing = () => {
         }
       );
 
-      console.log("Response:", response);
+      console.log("Response: ", response);
+      
       if (response.ok) {
+        const newListing = await response.json();
+        dispatch(setOwnerGearList([...ownerGearList, newListing]));
         setIsLoading(false);
         navigate("/");
+
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message);
+        setErrorMessage("Error. Try again later");
         setIsLoading(false);
       }
     } catch (err) {
@@ -182,7 +189,7 @@ const CreateListing = () => {
     {isLoading && <Loader />} {/* Show the loader when isLoading is true */}
     <div className="create-listing">
     <h1 ref={topRef}>Publish Your Gear</h1>
-      <form onSubmit={handlePost}>
+      <form onSubmit={HandlePost}>
         <div className="create-listing_step1">
           <h2>Step 1: Tell us about your gear</h2>
           <hr />

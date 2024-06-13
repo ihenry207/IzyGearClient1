@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/ImageGallery.css';
-import { Close } from '@mui/icons-material';
-
+import {  Close } from '@mui/icons-material';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 const ImageGallery = ({ images, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -22,10 +23,10 @@ const ImageGallery = ({ images, onClose }) => {
           <Close />
         </button>
         <button className="image-gallery-prev" onClick={goToPreviousImage}>
-          &lt;
+        <ArrowCircleLeftIcon />
         </button>
         <button className="image-gallery-next" onClick={goToNextImage}>
-          &gt;
+        <ArrowCircleRightIcon  />
         </button>
       </div>
     </div>

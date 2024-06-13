@@ -7,7 +7,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../redux/state";
 import { auth, db } from "../lib/firebase";
-//import Login from './login/login';
+import PersonIcon from '@mui/icons-material/Person';//for profile
+import LogoutIcon from '@mui/icons-material/Logout';//for logout
+import QuestionAnswerRoundedIcon from '@mui/icons-material/QuestionAnswerRounded';//for Messages
+import FavoriteIcon from '@mui/icons-material/Favorite';//for wishList
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';//Bookings
+import QueueIcon from '@mui/icons-material/Queue';//for List Your Gear
+import InfoIcon from '@mui/icons-material/Info';//for About IzyGear
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';//contact support
+import ListAltIcon from '@mui/icons-material/ListAlt';//for How-it-works
+import {  Close } from '@mui/icons-material';
 
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
@@ -72,11 +81,15 @@ const Navbar = () => {
         )}
         {dropdownMenu && user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
-            <Link to={`/${user.userId}/gears`}>Gear List</Link> {/*this is the gears you booked */}
-            <Link to={`/${user.userId}/wishList`}>Wish List</Link>
-            <Link to={`/${user.userId}/listings`}>Listed Gears</Link>{/*this is the gears you own and listed for rent */}
-            <Link to={`/${user.userId}/chats`}>Chat</Link>
-            <Link to="/create-listing">List Your Gears</Link>
+            <Link to={`/${user.userId}/gears`}>Bookings</Link> {/*this is the gears you booked */}
+            <Link to={`/${user.userId}/wishList`}>WishLists</Link>
+            <Link to={`/${user.userId}/chats`}>Inbox</Link>
+            <Link to={`/${user.userId}/profile`}>Profile</Link>
+            <Link to={`/${user.userId}/listings`}>Your Gears</Link>{/*this is the gears you own and listed for rent */}
+            <Link to="/create-listing">List Your Gear</Link>
+            <Link to="/how-it-works">How IzyGear Works</Link>
+            <Link to="/contact-us">Contact Support</Link>
+            <Link to="/about-us">About IzyGear</Link>
             <Link to="/login" onClick={() => {
               dispatch(setLogout());
               auth.signOut();//signout out of firebase

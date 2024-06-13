@@ -5,12 +5,14 @@ import ListingCard from "../components/ListingCard";
 import Footer from "../components/footer";
 
 const Listings = () => {
-  const ownerGearList = useSelector((state) => state.ownerGearList);
+  //we use redux and get all the information needed in a fast way
+  const ownerGearList = useSelector((state) => state?.ownerGearList);
+
 
   return (
     <>
       <Navbar />
-      <h1 className="title-list">Your Property List</h1>
+      <h1 className="title-list">Your Listed Gears</h1>
       <div className="list">
         {ownerGearList?.map(
           ({

@@ -7,10 +7,10 @@ const initialState = {
   lastName: null,
   email: null,
   profileImagePath: null,
-  gearList: [],
-  wishList: [],
-  ownerGearList: [],
-  reservationList: [],
+  // gearList: [],
+  // wishList: [],
+  // ownerGearList: [],
+  // reservationList: [],
   firebaseUid: null,
 };
 
@@ -42,6 +42,7 @@ export const userSlice = createSlice({
       state.wishList = [];
       state.ownerGearList = [];
       state.reservationList = [];
+      state.listings = [];
       state.firebaseUid = null;
     },
     setListings: (state, action) => {

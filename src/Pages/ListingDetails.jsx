@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/ListingDetails.css";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "react-date-range/dist/styles.css";
@@ -102,6 +102,8 @@ const ListingDetails = () => {
         setErrorMessage("You can't book your own gear.");
         return;
       }
+      //here we also need to get their firebaseID for both customer 
+      //and host so we can link them over chat
       const bookingForm = {
         customerId,
         listingId,
@@ -150,6 +152,7 @@ const ListingDetails = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ listing })
         }
       );
 
@@ -161,9 +164,9 @@ const ListingDetails = () => {
       const data = await response.json();
       console.log("Updated wishList:", data.wishList);
       dispatch(setWishList(data.wishList));
-      setErrorMessage("");
     } catch (error) {
       console.log("Error updating wishlist:", error);
+      setErrorMessage("Error updating wishlist");
     }
   };
 
