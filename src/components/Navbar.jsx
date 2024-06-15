@@ -17,18 +17,19 @@ import InfoIcon from '@mui/icons-material/Info';//for About IzyGear
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';//contact support
 import ListAltIcon from '@mui/icons-material/ListAlt';//for How-it-works
 import {  Close } from '@mui/icons-material';
-
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import LoginIcon from '@mui/icons-material/Login';
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const user = useSelector((state) => state.user);
-  const profileImage = useSelector((state)=>state.profileImagePath)
+  const profileImage = useSelector((state) => state.profileImagePath);
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  //console.log("Here is the pf images url: ", user?.profileImagePath);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,7 +42,7 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dropdownRef]);
-
+  
   return (
     <div className="navbar">
       <a href="/">
@@ -49,12 +50,16 @@ const Navbar = () => {
       </a>
       <div className="navbar_right">
         {user ? (
-          <Link to="/create-listing" className="host">List your Gear</Link>
-        ) : (
-          <Link to="/login" className="host">List your Gear</Link>
-        )}
-        <button className="navbar_right_account" onClick={() => setDropdownMenu(!dropdownMenu)}>
-          <Menu sx={{ color: "#969393" }} />
+            <Link to="/create-listing" className="host-button">List your Gear</Link>
+          ) : (
+            <Link to="/login" className="host-button">List your Gear</Link>
+          )}
+        <button className="navbar_right_account" onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownMenu(!dropdownMenu);
+                }}
+        >
+          <Menu sx={{ color: "#969393" }}  />
           {user ? (
             profileImage ? (
               <img
@@ -67,33 +72,86 @@ const Navbar = () => {
                 }}
               />
             ) : (
-              <Person sx={{ color: "#969393" }} />
+              <Person sx={{ color: "#969393" }}  />
             )
           ) : (
-            <Person sx={{ color: "#969393" }} />
+            <Person sx={{ color: "#969393" }}/>
           )}
         </button>
         {dropdownMenu && !user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
-            <Link to="/login">Log In</Link>
-            <Link to="/register">Sign Up</Link>
+            <Link to="/login"><LoginIcon sx={{ marginRight: '5px' }} />Log In</Link>
+            <Link to="/register"><LogoutIcon sx={{ marginRight: '5px' }} />Sign Up</Link>
           </div>
         )}
         {dropdownMenu && user && (
-          <div ref={dropdownRef} className="navbar_right_accountmenu">
-            <Link to={`/${user.userId}/gears`}>Bookings</Link> {/*this is the gears you booked */}
-            <Link to={`/${user.userId}/wishList`}>WishLists</Link>
-            <Link to={`/${user.userId}/chats`}>Inbox</Link>
-            <Link to={`/${user.userId}/profile`}>Profile</Link>
-            <Link to={`/${user.userId}/listings`}>Your Gears</Link>{/*this is the gears you own and listed for rent */}
-            <Link to="/create-listing">List Your Gear</Link>
-            <Link to="/how-it-works">How IzyGear Works</Link>
-            <Link to="/contact-us">Contact Support</Link>
-            <Link to="/about-us">About IzyGear</Link>
+          <div ref={dropdownRef} className="navbar_right_accountmenu" >
+            <Link to={`/${user.userId}/gears`}>
+              <div className="menu-item">
+                <AssignmentTurnedInIcon sx={{ marginRight: '5px' }} />
+                <span>Bookings</span>
+              </div>
+            </Link>
+            <Link to={`/${user.userId}/wishList`}>
+              <div className="menu-item">
+                <FavoriteIcon sx={{ marginRight: '5px' }} />
+                <span>WishLists</span>
+              </div>
+            </Link>
+            <Link to={`/${user.userId}/chats`}>
+              <div className="menu-item">
+                <QuestionAnswerRoundedIcon sx={{ marginRight: '5px' }} />
+                <span>Inbox</span>
+              </div>
+            </Link>
+            <div className="dropdown-divider"></div> {/* Line between Inbox and Profile */}
+            <Link to={`/${user.userId}/profile`}>
+              <div className="menu-item">
+                <PersonIcon sx={{ marginRight: '5px' }} />
+                <span>Profile</span>
+              </div>
+            </Link>
+            <Link to={`/${user.userId}/listings`}>
+              <div className="menu-item">
+                <TipsAndUpdatesIcon sx={{ marginRight: '5px' }} />
+                <span>Your Gears</span>
+              </div>
+            </Link>
+            <Link to="/create-listing">
+              <div className="menu-item">
+                <AddBoxIcon sx={{ marginRight: '5px' }} />
+                <span>List Your Gear</span>
+              </div>
+            </Link>
+            <div className="dropdown-divider"></div> {/* Line between List Your Gear and How IzyGear Works */}
+            <Link to="/how-it-works">
+              <div className="menu-item">
+                <ListAltIcon sx={{ marginRight: '5px' }} />
+                <span>How IzyGear Works</span>
+              </div>
+            </Link>
+            <Link to="/contact-us">
+              <div className="menu-item">
+                <HeadsetMicIcon sx={{ marginRight: '5px' }} />
+                <span>Contact Support</span>
+              </div>
+            </Link>
+            <Link to="/about-us">
+              <div className="menu-item">
+                <InfoIcon sx={{ marginRight: '5px' }} />
+                <span>About IzyGear</span>
+              </div>
+            </Link>
+            <div className="dropdown-divider"></div> {/* Line between About IzyGear and Log Out */}
             <Link to="/login" onClick={() => {
               dispatch(setLogout());
-              auth.signOut();//signout out of firebase
-            }}>Log Out</Link>
+              auth.signOut();
+            }}>
+              <div className="menu-item">
+                <LogoutIcon sx={{ marginRight: '5px' }} />
+                <span>Log Out</span>
+              </div>
+            </Link>
           </div>
         )}
       </div>

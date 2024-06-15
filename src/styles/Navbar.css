@@ -1,127 +1,170 @@
 .navbar {
-    padding: 10px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    background-color: #F5F5F5;
-    font-family: 'Nunito Sans', sans-serif;
+  padding: 10px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  background-color: #F5F5F5;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    padding: 10px 20px;
   }
-  
-  @media (max-width: 576px) {
-    .navbar {
-      padding: 10px 20px;
-    }
-  }
-  
-  .navbar img {
-    width: 120px;
-    cursor: pointer;
-  }
-  
+}
+
+.navbar img {
+  width: 120px;
+  cursor: pointer;
+}
+
+.navbar_search {
+  border: 1px solid #bdb9b9;
+  border-radius: 30px;
+  height: 50px;
+  width: 400px;
+  padding: 0px 20px;
+  display: flex;
+  gap: 10px; /* Updated gap to 20px */
+  align-items: center;
+}
+
+.navbar_search input {
+  border: none;
+  outline: none;
+  background-color: transparent; 
+  flex: 1; 
+}
+
+.navbar_search:hover {
+  box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 992px) {
   .navbar_search {
-    border: 1px solid #bdb9b9;
-    border-radius: 30px;
-    height: 50px;
-    width: 400px;
-    padding: 0px 20px;
-    display: flex;
-    gap: 10px; /* Updated gap to 20px */
-    align-items: center;
+    display: none;
   }
-  
-  .navbar_search input {
-    border: none;
-    outline: none;
-    background-color: transparent; 
-    flex: 1; 
-  }
-  
-  .navbar_search:hover {
-    box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
-  }
-  
-  @media (max-width: 992px) {
-    .navbar_search {
-      display: none;
-    }
-  }
-  
-  .navbar_right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
+}
+
+.navbar_right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar_right .host {
+  text-decoration: none;
+  color: #24355A;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.navbar_right .host:hover {
+  color: #1E88E5;
+}
+
+@media (max-width: 576px) {
   .navbar_right .host {
-    text-decoration: none;
-    color: #24355A;
-    font-weight: 700;
-    cursor: pointer;
+    display: none;
   }
-  
-  .navbar_right .host:hover {
-    color: #1E88E5;
-  }
-  
-  @media (max-width: 576px) {
-    .navbar_right .host {
-      display: none;
-    }
-  }
-  
-  .navbar_right_account {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border: 1px solid #bdb9b9;
-    border-radius: 30px;
-    display: flex;
-    gap: 10px;
-    background-color: white;
-    cursor: pointer;
-  }
-  
-  .navbar_right_account:hover {
-    box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
-  }
-  
-  .navbar_right_account img {
-    width: 40px;
-    height: 40px;
-  }
-  
+}
+
+.navbar_right_account {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid #bdb9b9;
+  border-radius: 30px;
+  display: flex;
+  gap: 10px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.navbar_right_account:hover {
+  box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
+}
+
+.navbar_right_account img {
+  width: 40px;
+  height: 40px;
+}
+
+.navbar_right_accountmenu {
+  position: absolute;
+  background-color: white;
+  right: 60px;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  padding: 10px 0;
+  border: 1px solid #F7F8F8;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
+@media (max-width: 576px) {
   .navbar_right_accountmenu {
-    position: absolute;
-    background-color: white;
-    right: 60px;
-    top: 80px;
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    padding: 10px 0;
-    border: 1px solid #F7F8F8;
-    border-radius: 20px;
-    box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
+    right: 20px;
+    width: 80%;
+    border-radius: 10px;
   }
-  
-  @media (max-width: 576px) {
-    .navbar_right_accountmenu {
-      right: 20px;
-    }
+  .navbar_right .host-button {
+    display: none;
   }
-  
-  .navbar_right_accountmenu a {
-    width: 100%;
-    padding: 8px 15px;
-    text-decoration: none;
-    color: #24355A;
-    font-weight: 700;
-  }
-  
-  .navbar_right_accountmenu a:hover {
-    color: #1E88E5;
-    background-color: rgba(217, 213, 213, 0.2);
-  }
+}
+
+.navbar_right_accountmenu a {
+  width: 100%;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #24355A;
+  font-weight: 700;
+}
+
+.navbar_right_accountmenu .menu-item {
+  display: flex;
+  align-items: center;
+}
+
+.navbar_right_accountmenu .menu-item span {
+  margin-left: 5px;
+}
+
+.navbar_right_accountmenu a:hover {
+  color: #1E88E5;
+  background-color: rgba(217, 213, 213, 0.2);
+}
+.navbar_right .host-button {
+  text-decoration: none;
+  color: #24355A;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 10px 20px;
+  border: 2px solid #24355A;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar_right .host-button:hover {
+  background-color: #24355A;
+  color: white;
+}
+
+.navbar_right_accountmenu .dropdown-divider {
+  margin: 10px auto;
+  width: 85%;
+  height: 0.3px;
+  background-color: #24355A;
+  margin: 10px 0; /* Adjust the margin as needed */
+  align-items: center;
+  justify-content: center;
+}

@@ -1,10 +1,25 @@
-import React from 'react'
-
+import React, { useState } from 'react';
+import FilterOverlay from '../components/FilterOverlay'
+import Navbar from "../components/Navbar";
 const About = () => {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    const handleOpenFilter = () => {
+        setIsFilterOpen(true);
+    };
+
+    const handleCloseFilter = () => {
+        setIsFilterOpen(false);
+    };
   return (
+  
+    
     <div>
-      this is about us
+      <button onClick={handleOpenFilter}>Open Filters</button>
+      <FilterOverlay isOpen={isFilterOpen} onClose={handleCloseFilter} />
     </div>
+
+    
   )
 }
 

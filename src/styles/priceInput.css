@@ -1,0 +1,18 @@
+.sidebar-label-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.sidebar-label-container input {
+    margin-right: 10px;
+}
+
+.sidebar-label-container .checkmark {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+
