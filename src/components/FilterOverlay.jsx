@@ -3,7 +3,7 @@ import '../styles/FilterOverlay.css';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TuneIcon from '@mui/icons-material/Tune';
-import PriceInput from './PriceInput'; 
+import { RadioGroup, FormControlLabel, Radio } from '@mui/material';
 const FilterOverlay = ({ onClose }) => {
     const [showFilter, setShowFilter] = useState(false);
     const [expanded, setExpanded] = useState(null);
@@ -13,7 +13,8 @@ const FilterOverlay = ({ onClose }) => {
     const [selectedBrand, setSelectedBrand] = useState('');
     const [selectedGender, setSelectedGender] = useState('');
     const [selectedCondition, setSelectedCondition] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState([10, 500]);
+    const [selectedPrice, setSelectedPrice] = useState('');
+    const [selectedSize, setSelectedSize] = useState('');
 
     const handleScroll = () => {
         if (window.scrollY > 50) {
@@ -46,13 +47,20 @@ const FilterOverlay = ({ onClose }) => {
         } else if (filter === 'Condition') {
             setSelectedCondition(value);
         }
+       
     };
 
     const handlePriceChange = (event, newValue) => {
         setSelectedPrice(newValue);
     };
+    const handleSizeChange = (event) => {
+        setSelectedSize(event.target.value);
+    };
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.target.value);
+    };
 
-    const filters = ['Radius', 'Category', 'Brand', 'Gender', 'Condition', 'Price'];
+    const filters = ['Radius', 'Category', 'Brand', 'Gender', , 'Size', 'Condition', 'Price'];
 
     const radiusOptions = [
         { value: '', label: 'Any' },
@@ -79,6 +87,16 @@ const FilterOverlay = ({ onClose }) => {
         { value: '60-80', label: '$60 - $80' },
         { value: '80-100', label: '$80 - $100' },
         { value: '100+', label: '$100+' },
+    ];
+
+    const sizeOptions = [
+        { value: '', label: 'Any' },
+        { value: '50-100', label: '50cm - 100cm' },
+        { value: '100-120', label: '100cm - 120cm' },
+        { value: '120-140', label: '120cm - 140cm' },
+        { value: '140-160', label: '140cm - 160cm' },
+        { value: '160-180', label: '160cm - 180cm' },
+        { value: '180+', label: '180cm +' },
     ];
 
     const skiBrandOptions = [
@@ -176,7 +194,9 @@ const FilterOverlay = ({ onClose }) => {
     ];
 
     const getBrandOptions = () => {
-        if (selectedCategory === 'Ski') {
+        if (!selectedCategory) {
+            return [];
+        } else if (selectedCategory === 'Ski') {
             return skiBrandOptions;
         } else if (selectedCategory === 'Snowboard') {
             return snowboardBrandOptions;
@@ -250,6 +270,18 @@ const FilterOverlay = ({ onClose }) => {
                                                 {option.label}
                                             </div>
                                         ))}
+                                    {filter === 'Size' && (selectedCategory === 'Ski' || selectedCategory === 'Snowboard') && (
+                                        <RadioGroup value={selectedSize} onChange={handleSizeChange}>
+                                            {sizeOptions.map((option) => (
+                                                <FormControlLabel
+                                                    key={option.value}
+                                                    value={option.value}
+                                                    control={<Radio />}
+                                                    label={option.label}
+                                                />
+                                            ))}
+                                        </RadioGroup>
+                                    )}
                                     {filter === 'Condition' && (selectedCategory === 'Ski' || selectedCategory === 'Snowboard') &&
                                         conditionOptions.map((option) => (
                                             <div
@@ -259,7 +291,19 @@ const FilterOverlay = ({ onClose }) => {
                                             >
                                                 {option.label}
                                             </div>
-                                        ))}
+                                    ))}
+                                    {filter === 'Price' && (
+                                        <RadioGroup value={selectedPrice} onChange={handlePriceChange}>
+                                            {priceOptions.map((option) => (
+                                                <FormControlLabel
+                                                    key={option.value}
+                                                    value={option.value}
+                                                    control={<Radio />}
+                                                    label={option.label}
+                                                />
+                                            ))}
+                                        </RadioGroup>
+                                    )}
                                 </div>
                             )}
                         </div>
