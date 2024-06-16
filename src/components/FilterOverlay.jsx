@@ -194,9 +194,8 @@ const FilterOverlay = ({ onClose }) => {
     ];
 
     const getBrandOptions = () => {
-        if (!selectedCategory) {
-            return [];
-        } else if (selectedCategory === 'Ski') {
+        
+        if (selectedCategory === 'Ski') {
             return skiBrandOptions;
         } else if (selectedCategory === 'Snowboard') {
             return snowboardBrandOptions;
@@ -204,6 +203,33 @@ const FilterOverlay = ({ onClose }) => {
         return [];
     };
 
+    const getSelectedLabel = (filter) => {
+        switch (filter) {
+            case 'Radius':
+                const radiusLabel = radiusOptions.find(option => option.value === selectedRadius)?.label;
+                return radiusLabel === 'All' || radiusLabel === 'Any' ? '' : radiusLabel || '';
+            case 'Category':
+                const categoryLabel = categoryOptions.find(option => option.value === selectedCategory)?.label;
+                return categoryLabel === 'All' || categoryLabel === 'Any' ? '' : categoryLabel || '';
+            case 'Brand':
+                const brandLabel = getBrandOptions().find(option => option.value === selectedBrand)?.label;
+                return brandLabel === 'All' || brandLabel === 'Any' ? '' : brandLabel || '';
+            case 'Gender':
+                const genderLabel = genderOptions.find(option => option.value === selectedGender)?.label;
+                return genderLabel === 'All' || genderLabel === 'Any' ? '' : genderLabel || '';
+            case 'Condition':
+                const conditionLabel = conditionOptions.find(option => option.value === selectedCondition)?.label;
+                return conditionLabel === 'All' || conditionLabel === 'Any' ? '' : conditionLabel || '';
+            case 'Price':
+                const priceLabel = priceOptions.find(option => option.value === selectedPrice)?.label;
+                return priceLabel === 'All' || priceLabel === 'Any' ? '' : priceLabel || '';
+            case 'Size':
+                const sizeLabel = sizeOptions.find(option => option.value === selectedSize)?.label;
+                return sizeLabel === 'All' || sizeLabel === 'Any' ? '' : sizeLabel || '';
+            default:
+                return '';
+        }
+    };
     return (
         <div className={`filter-overlay ${isSticky ? 'sticky' : ''}`}>
             <div className="filter-header">
@@ -224,6 +250,11 @@ const FilterOverlay = ({ onClose }) => {
                         <div key={index} className="filter-section">
                             <div className="filter-title" onClick={() => toggleExpand(index)}>
                                 {filter}
+                                {getSelectedLabel(filter) && (
+                                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                                        {getSelectedLabel(filter)}
+                                    </span>
+                                )}
                                 {expanded === index ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                             </div>
                             {expanded === index && (
@@ -248,15 +279,13 @@ const FilterOverlay = ({ onClose }) => {
                                                 {option.label}
                                             </div>
                                         ))}
-                                  
-                                  
                                     {filter === 'Brand' &&
                                         getBrandOptions().map((option) => (
                                             <div
                                                 key={option.value}
                                                 className={`filter-box ${selectedBrand === option.value ? 'selected' : ''}`}
                                                 onClick={() => handleOptionClick('Brand', option.value)}
-                                            > 
+                                            >
                                                 {option.label}
                                             </div>
                                         ))}
@@ -291,7 +320,7 @@ const FilterOverlay = ({ onClose }) => {
                                             >
                                                 {option.label}
                                             </div>
-                                    ))}
+                                        ))}
                                     {filter === 'Price' && (
                                         <RadioGroup value={selectedPrice} onChange={handlePriceChange}>
                                             {priceOptions.map((option) => (
