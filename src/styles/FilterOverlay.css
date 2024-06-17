@@ -4,13 +4,17 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(164, 163, 163, 0.8);  /* Semi-transparent white background */
+    background-color: rgba(228, 225, 225, 0.8);  /* Semi-transparent white background */
     backdrop-filter: blur(10px);  /* Applies a blur effect to the background */
     -webkit-backdrop-filter: blur(10px);  /* Vendor prefix for Safari */
     z-index: 1000;
     padding: 20px;
     overflow-y: auto;
     font-family: 'Nunito Sans', sans-serif;
+    display: none;
+}
+.filter-overlay.show {
+    display: block; /* Show the FilterOverlay when the 'show' class is added */
 }
 
 .sticky .filter-button {

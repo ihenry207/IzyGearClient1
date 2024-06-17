@@ -7,8 +7,8 @@ import { RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 
 const libraries = ["places"];
-const FilterOverlay = ({ pcategory, onApplyFilter }) => {
-    const [showFilter, setShowFilter] = useState(false);
+const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  }) => {
+    //const [showFilter, setShowFilter] = useState(showFilter );
     const [expanded, setExpanded] = useState(null);
     const [isSticky, setIsSticky] = useState(false);
     const [selectedRadius, setSelectedRadius] = useState('');
@@ -98,9 +98,6 @@ const FilterOverlay = ({ pcategory, onApplyFilter }) => {
     };
 
     const handleApplyFilter = () => {
-        // const subcategoryToApply = selectedSubcategory !== '' ? selectedSubcategory : null;
-        // const brandToApply = selectedBrand !== '' ? selectedBrand : null;
-      
         const filters = {
           category: selectedCategory,
           brand: selectedBrand,
@@ -117,6 +114,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter }) => {
       
         console.log(filters);
         setShowFilter(false);
+    
         onApplyFilter(filters);
     };
     
@@ -740,7 +738,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter }) => {
     
     
     return (
-        <div className={`filter-overlay ${isSticky ? 'sticky' : ''}`}>
+        <div className={`filter-overlay ${showFilter ? 'show' : ''}`}>
             <div className="filter-header">
                 <button className="filter-button" onClick={() => setShowFilter(!showFilter)}>
                     <TuneIcon />

@@ -6,11 +6,10 @@ import Footer from "../components/footer";
 import Filter from '../components/filter';
 import '../styles/categoryPage.css';
 import FilterOverlay from '../components/FilterOverlay'
+import TuneIcon from '@mui/icons-material/Tune';
 const libraries = ["places"];
 const CategoryPage = () => {
   const { category } = useParams();
-  
-  
   const getInitialFilters = () => {
     if (category === 'Biking') {
       return {
@@ -63,6 +62,12 @@ const CategoryPage = () => {
     document.querySelector('.mobile-filter-overlay').style.display = 'none';
   };
 
+  const [showFilter, setShowFilter] = useState(false);
+
+  const handleFilterClick = () => {
+    setShowFilter(!showFilter);
+  };
+
   const memoizedSelectedFilters = useMemo(() => selectedFilters, [selectedFilters]);
 
   return (
@@ -70,8 +75,22 @@ const CategoryPage = () => {
       
       <Navbar />
       <div className="category-content">
-        <FilterOverlay pcategory={category} onApplyFilter={handleApplyFilter} />
-        <Filter pcategory={category} onApplyFilter={handleApplyFilter} onApplyFilterAndClose={handleApplyFilterAndClose} />
+      <div className="filter-button-container">
+          <button className="filter-button" onClick={handleFilterClick}>
+            <TuneIcon />
+            {showFilter ? 'Hide Filters' : 'Filters'}
+          </button>
+        </div>
+        <FilterOverlay
+          pcategory={category}
+          onApplyFilter={handleApplyFilter}
+          showFilter={showFilter}
+          setShowFilter={setShowFilter}
+        />
+
+        {/* <Filter pcategory={category} onApplyFilter={handleApplyFilter} 
+        onApplyFilterAndClose={handleApplyFilterAndClose} /> */}
+        
         <div className="listings-container">
           <Listings pcategory={category} selectedFilters={memoizedSelectedFilters} />
         </div>
