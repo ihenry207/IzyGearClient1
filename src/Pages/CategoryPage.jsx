@@ -5,10 +5,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/footer";
 import Filter from '../components/filter';
 import '../styles/categoryPage.css';
-import { LoadScript } from "@react-google-maps/api";
+import FilterOverlay from '../components/FilterOverlay'
 const libraries = ["places"];
 const CategoryPage = () => {
   const { category } = useParams();
+  
   
   const getInitialFilters = () => {
     if (category === 'Biking') {
@@ -69,6 +70,7 @@ const CategoryPage = () => {
       
       <Navbar />
       <div className="category-content">
+        <FilterOverlay pcategory={category} onApplyFilter={handleApplyFilter} />
         <Filter pcategory={category} onApplyFilter={handleApplyFilter} onApplyFilterAndClose={handleApplyFilterAndClose} />
         <div className="listings-container">
           <Listings pcategory={category} selectedFilters={memoizedSelectedFilters} />

@@ -15,8 +15,8 @@ const About = () => {
   return (
     
     <div>
-      <button onClick={handleOpenFilter}>Open Filters</button>
-      <FilterOverlay isOpen={isFilterOpen} onClose={handleCloseFilter} />
+      {/* <button onClick={handleOpenFilter}>Open Filters</button> */}
+      <FilterOverlay  />
     </div>
   
     
