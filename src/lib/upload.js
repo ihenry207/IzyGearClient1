@@ -1,9 +1,17 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
+import { useUserStore } from "./userStore"; // Import useUserStore hook
 
 const upload = async (file, onProgress) => {
   const date = new Date();
-  const storageRef = ref(storage, `images/${date + file.name}`);
+  const currentUser = useUserStore.getState().currentUser;
+  const firebaseUid = currentUser?.id;
+  
+  if (!firebaseUid) {
+    throw new Error("User not authenticated");
+  }
+
+  const storageRef = ref(storage, `${firebaseUid}/${date +"_"+ file.name}`);
 
   const uploadTask = uploadBytesResumable(storageRef, file);
 

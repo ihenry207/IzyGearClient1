@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles/FilterOverlay.css';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TuneIcon from '@mui/icons-material/Tune';
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
+import { Loader } from '@googlemaps/js-api-loader';
 
 const libraries = ["places"];
 const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  }) => {
@@ -21,12 +22,31 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     const [selectedType, setSelectedType] = useState('');
     const [selectedKind, setSelectedKind] = useState('');
     const [selectedSubcategory, setSelectedSubcategory] = useState('');
+    const autocompleteRef = useRef(null);
+    const [inputElement, setInputElement] = useState(null);
     const [location, setLocation] = useState({ address: "" });
-
     useEffect(() => {
-        setSelectedCategory(pcategory);
-      }, [pcategory]);
-      
+        const loader = new Loader({
+          apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+          version: "weekly",
+          libraries,
+        });
+    
+        loader.load().then(() => {
+          if (inputElement) {
+            const autocomplete = new window.google.maps.places.Autocomplete(inputElement, {
+              fields: ["formatted_address", "geometry"],
+            });
+    
+            autocomplete.addListener("place_changed", () => {
+              handlePlaceChanged(autocomplete.getPlace());
+            });
+    
+            autocompleteRef.current = autocomplete;
+          }
+        });
+      }, [inputElement]);
+    
     const handleChangeLocation = (e) => {
         const { name, value } = e.target;
         setLocation({ ...location, [name]: value });
@@ -36,6 +56,10 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         setLocation({ address: place.formatted_address });
     };
 
+    useEffect(() => {
+        setSelectedCategory(pcategory);
+    }, [pcategory]);
+      
     const handleScroll = () => {
         if (window.scrollY > 50) {
             setIsSticky(true);
@@ -750,28 +774,15 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                 <div className="filter-section">
                     <div className="location-filter">
                         <span className="location-label">Where:</span>
-                        <LoadScript
-                            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                            libraries={libraries}
-                        >
-                            <Autocomplete
-                                onLoad={(autocomplete) => {
-                                    autocomplete.setFields(["formatted_address", "geometry"]);
-                                    autocomplete.addListener("place_changed", () => {
-                                        handlePlaceChanged(autocomplete.getPlace());
-                                    });
-                                }}
-                            >
-                                <input
-                                    type="text"
-                                    placeholder="Enter Location"
-                                    className="location-input"
-                                    name="address"
-                                    value={location.address} 
-                                    onChange={handleChangeLocation}
-                                />
-                            </Autocomplete>
-                        </LoadScript>
+                        <input
+                            type="text"
+                            placeholder="Enter Location"
+                            className="location-input"
+                            name="address"
+                            value={location.address}
+                            onChange={handleChangeLocation}
+                            ref={setInputElement}
+                        />
                     </div>
 
                 </div>

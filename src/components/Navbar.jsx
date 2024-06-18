@@ -20,6 +20,7 @@ import {  Close } from '@mui/icons-material';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const user = useSelector((state) => state.user);
@@ -80,8 +81,21 @@ const Navbar = () => {
         </button>
         {dropdownMenu && !user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu">
-            <Link to="/login"><LoginIcon sx={{ marginRight: '5px' }} />Log In</Link>
-            <Link to="/register"><LogoutIcon sx={{ marginRight: '5px' }} />Sign Up</Link>
+            <Link to="/login">
+              <div className="menu-item">
+                <LoginIcon sx={{ marginRight: '5px' }} />
+                <span>Log In</span>
+              </div>
+            </Link>
+
+            <Link to="/register">
+              <div className="menu-item">
+                <PersonAddIcon sx={{ marginRight: '5px' }} />
+                <span>Sign Up</span>
+              </div>
+            </Link>
+
+            
           </div>
         )}
         {dropdownMenu && user && (

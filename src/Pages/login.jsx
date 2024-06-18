@@ -8,7 +8,7 @@ import '../styles/login.css';
 import { setLogin } from "../redux/state";
 import Navbar from "../components/Navbar";
 import { loginOrRegister } from "../components/login/login.js"; // Import the function
-import Loader from "../components/loader"; // Import the Loader component
+import Loading from "../components/loader"; // Import the Loader component
 //import { auth, db } from "../components/lib/firebase.js";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -58,7 +58,7 @@ const LoginPage = () => {
         // Automatically login to Firebase
         const firebaseUid = await loginOrRegister(
           loggedIn.user.email, 
-          password, 
+          "izygear",//password, //have userId be the password
           loggedIn.user.profileImagePath, 
           loggedIn.user.firstName + " " + loggedIn.user.lastName);
 
@@ -81,7 +81,7 @@ const LoginPage = () => {
       <Navbar />
       <div className="login">
         {isLoading ? (
-          <Loader /> // Render Loader component when loading
+          <Loading /> // Render Loader component when loading
         ) : (
           <div className="login_content">
             <h1>Log In</h1>

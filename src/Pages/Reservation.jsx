@@ -1,7 +1,7 @@
 //this will show gears that are waiting for approval from the host
 import { useEffect, useState } from "react";
 import "../styles/List.css";
-import Loader from "../components/loader";
+import Loading from "../components/loader";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { setReservationList } from "../redux/state";
@@ -44,7 +44,7 @@ const ReservationList = () => {
   }, []);
 
   return loading ? (
-    <Loader />
+    <Loading />
   ) : (
     <>
       <Navbar />

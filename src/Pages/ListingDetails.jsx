@@ -4,7 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
-import Loader from "../components/loader";
+import Loading from "../components/loader";
 import Navbar from "../components/Navbar";
 import { useSelector, useDispatch } from "react-redux";
 import Footer from "../components/footer";
@@ -171,7 +171,7 @@ const ListingDetails = () => {
   };
 
   return loading ? (
-    <Loader />
+    <Loading />
   ) : (
     <>
       <Navbar />

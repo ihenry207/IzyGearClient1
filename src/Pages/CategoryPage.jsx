@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect  } from 'react';
 import { useParams } from 'react-router-dom';
 import Listings from '../components/Listings';
 import Navbar from "../components/Navbar";
@@ -63,10 +63,30 @@ const CategoryPage = () => {
   };
 
   const [showFilter, setShowFilter] = useState(false);
+  const [hideButton, setHideButton] = useState(false);
 
   const handleFilterClick = () => {
     setShowFilter(!showFilter);
   };
+
+  useEffect(() => {
+    let lastScrollTop = 0;
+
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop && scrollTop > 0) {
+        setHideButton(true);
+      } else {
+        setHideButton(false);
+      }
+      lastScrollTop = scrollTop;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const memoizedSelectedFilters = useMemo(() => selectedFilters, [selectedFilters]);
 
@@ -75,7 +95,7 @@ const CategoryPage = () => {
       
       <Navbar />
       <div className="category-content">
-      <div className="filter-button-container">
+        <div className={`filter-button-container ${hideButton ? 'hide' : ''}`}>
           <button className="filter-button" onClick={handleFilterClick}>
             <TuneIcon />
             {showFilter ? 'Hide Filters' : 'Filters'}

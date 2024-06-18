@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/List.css";
-import Loader from "../components/loader";
+import Loading from "../components/loader";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { setGearList } from "../redux/state";
@@ -46,7 +46,7 @@ const GearList = () => {
   }, []);
 
   return loading ? (
-    <Loader />
+    <Loading />
   ) : (
     <>
       <Navbar />

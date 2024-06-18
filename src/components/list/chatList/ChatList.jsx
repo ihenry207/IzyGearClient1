@@ -79,7 +79,7 @@ const ChatList = ({ onChatClick }) => {
           <input type='text' placeholder='Search'
           onChange={(e) => setInput(e.target.value)}/>
         </div>
-          {/* {addMode ? (
+          {addMode ? (
           <RemoveOutlinedIcon 
             className='add' 
             onClick={() => setAddMode((prev) => !prev)} 
@@ -89,7 +89,7 @@ const ChatList = ({ onChatClick }) => {
             className='add' 
             onClick={() => setAddMode((prev) => !prev)} 
           />
-        ) } */}
+        ) }
       </div>
       {filteredChats.map((chat) => (
         <div

@@ -15,9 +15,21 @@
 /* Rest of the CSS code remains the same */
 
 .filter-button-container {
+  position: fixed;
+  top: 120px; /* Adjust this value based on the height of your Navbar */
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  padding: 0px;
+  background-color:transparent;
+  z-index: 999;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.filter-button-container.hide {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .filter-button {
@@ -40,7 +52,7 @@
 /* Rest of the CSS code remains the same */
 .listings-container {
     flex-grow: 1;
-    padding: 0px;
+    padding: 60px;
     align-items: center;
 }
 .listings-container h1 {
@@ -60,7 +72,7 @@
         
     }
     .listings-container {
-        padding: 0 200px 120px;
+        padding: 0 200px 130px;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;

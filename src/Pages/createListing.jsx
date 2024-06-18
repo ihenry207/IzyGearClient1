@@ -9,8 +9,10 @@ import { BiTrash } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
-import Loader from "../components/loader";
+import Loading from "../components/loader";
 import { setOwnerGearList } from "../redux/state";
+import { Loader } from '@googlemaps/js-api-loader';
+
 const libraries = ["places"]; //IoIosImages
 
 const CreateListing = () => {
@@ -34,10 +36,36 @@ const CreateListing = () => {
   const creatorId = useSelector((state) => state.user.userId);
   const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
   const navigate = useNavigate();
+  
+  const autocompleteRef = useRef(null);
 
   const [formLocation, setFormLocation] = useState({
     address: "",
   });
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+      version: "weekly",
+      libraries,
+    });
+
+    loader.load().then(() => {
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        document.getElementById("autocomplete"),
+        {
+          fields: ["formatted_address"],
+        }
+      );
+
+      autocomplete.addListener("place_changed", () => {
+        handlePlaceChanged(autocomplete.getPlace());
+      });
+
+      autocompleteRef.current = autocomplete;
+    });
+  }, []);
+
 
   const handleChangeLocation = (e) => {
     const { name, value } = e.target;
@@ -186,7 +214,7 @@ const CreateListing = () => {
         </button>
       </div>
     )}
-    {isLoading && <Loader />} {/* Show the loader when isLoading is true */}
+    {isLoading && <Loading />} {/* Show the loader when isLoading is true */}
     <div className="create-listing">
     <h1 ref={topRef}>Publish Your Gear</h1>
       <form onSubmit={HandlePost}>
@@ -632,24 +660,13 @@ const CreateListing = () => {
             </>
           )}
 
-      <div className="create-listing">
-        <h3>Where's your gear located?</h3>
-        <p style={{ fontSize: "18px", fontWeight: "normal" }}>
-          Your address is only shared with renters after they've made a reservation.
-        </p>
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-          libraries={libraries}
-        >
-          <Autocomplete
-            onLoad={(autocomplete) => {
-              autocomplete.setFields(["formatted_address"]);
-              autocomplete.addListener("place_changed", () => {
-                handlePlaceChanged(autocomplete.getPlace());
-              });
-            }}
-          >
+          <div className="create-listing">
+            <h3>Where's your gear located?</h3>
+            <p style={{ fontSize: "18px", fontWeight: "normal" }}>
+              Your address is only shared with renters after they've made a reservation.
+            </p>
             <input
+              id="autocomplete"
               type="text"
               placeholder="Enter your address"
               style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
@@ -658,9 +675,7 @@ const CreateListing = () => {
               onChange={handleChangeLocation}
               required
             />
-          </Autocomplete>
-        </LoadScript>
-      </div>
+          </div>
 
          
 

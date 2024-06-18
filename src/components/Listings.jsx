@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import "../styles/listing.css";
 import ListingCard from "./ListingCard";
-import Loader from "./loader";
+import Loading from "./loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setListings } from "../redux/state";
 //import { useParams } from "react-router-dom";
@@ -131,7 +131,7 @@ const Listings = ({ pcategory, selectedFilters }) => {
     return (
       <>
         {loading ? (
-          <Loader />
+          <Loading />
         ) : (
           <div className="listings">
             {listings

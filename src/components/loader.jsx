@@ -1,6 +1,6 @@
 import "../styles/loader.css"
 
-const Loader = () => {
+const Loading = () => {
   return (
     <div className='loader'>
       <div className='loader-inner'></div>
@@ -8,4 +8,4 @@ const Loader = () => {
   )
 }
 
-export default Loader
+export default Loading
