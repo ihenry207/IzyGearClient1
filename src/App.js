@@ -34,7 +34,7 @@ function App() {
         <Route path="/:userId/wishList" element={<WishList />} />
         <Route path="/:userId/listings" element={<Listings />} />
         <Route path="/:userId/reservations" element={<ReservationList />} />
-        <Route path="/gears/:listingId" element={<ListingDetails />} />
+        <Route path="/gears/listingdetail" element={<ListingDetails />} />
         <Route path="/gears/category/:category" element={<CategoryPage />} />
         <Route path="/gears/search/:search" element={<SearchPage />} />
         <Route path ="/contact-us" element={<Contacts />} />

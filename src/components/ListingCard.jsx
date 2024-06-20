@@ -171,7 +171,7 @@ const ListingCard = ({
         <div
           className="listing-card-content"
           onClick={() => {
-            navigate(`/gears/${listingId}`, { state: { category } });
+            navigate(`/gears/listingdetail`, { state: { category, listingId } });
           }}
         >
           {/* this is the address */}

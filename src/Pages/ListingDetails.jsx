@@ -15,20 +15,53 @@ import parseAddress from "parse-address";
 
 //since there is no userId we need to transfer the category from listingcard 
 //to listingdetails directly no through useparams
+const parseCustomAddress = (address) => {
+  const parts = address.split(', ');
+  return {
+    city: parts.length > 2 ? parts[parts.length - 3] : 'N/A',
+    state: parts.length > 1 ? parts[parts.length - 2].split(' ')[0] : 'N/A',
+    country: parts[parts.length - 1] || 'N/A'
+  };
+};
 
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
-  const { listingId } = useParams();
+  //const { listingId } = useParams();
   const [listing, setListing] = useState(null);
   const location = useLocation();
-  const category = location.state?.category;
   const [selectedImage, setSelectedImage] = useState(null);
+  const { category, listingId } = location.state;
+  // const firebaseUid = useSelector(state => state.firebaseUid || '');
+  const [errorMessage, setErrorMessage] = useState("");
   let address = listing?.address;
   const parsedAddress = address ? parseAddress.parseLocation(address) : {};
-  const { city, state } = parsedAddress;
+  let { city, state } = parsedAddress;
   const country = address ? address.split(", ").pop() : "";
-  const truncatedTitlenow = address ? `${city}, ${state}, ${country}` : "N/A";
-  const [errorMessage, setErrorMessage] = useState("");
+
+  let truncatedTitlenow;
+
+  if (!city || !state) {
+    // If city or state is undefined, use custom parsing
+    const customParsed = parseCustomAddress(address);
+    city = customParsed.city;
+    state = customParsed.state;
+  }
+
+  if (address) {
+    if (city === 'N/A' && state === 'N/A') {
+      truncatedTitlenow = country;
+    } else if (city === 'N/A') {
+      truncatedTitlenow = `${state}, ${country}`;
+    } else if (state === 'N/A') {
+      truncatedTitlenow = `${city}, ${country}`;
+    } else {
+      truncatedTitlenow = `${city}, ${state}, ${country}`;
+    }
+  } else {
+    truncatedTitlenow = "N/A";
+  }
+  
+ 
 
 
   const openImageGallery = (imageUrl) => {
@@ -90,7 +123,9 @@ const ListingDetails = () => {
   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
 
   /* SUBMIT BOOKING */
-  const customerId = useSelector((state) => state.user.userId);
+  const User = useSelector((state) => state.user);
+  const customerId = User?.userId;
+  // const customerId = useSelector((state) => state.user.userId);
   //const creatorID = //get it from the database so that I won't allow others to book their own gear
   //meaning if customerID === creatorID send a message before even booking.
   const navigate = useNavigate();
@@ -247,7 +282,8 @@ const ListingDetails = () => {
           />
         )}
         <h2>
-          {truncatedTitlenow}
+          {/* this is for the address where I put city and state and country */}
+          {truncatedTitlenow} 
         </h2>
         <p>Category: {category}</p>
         <div className="profile">

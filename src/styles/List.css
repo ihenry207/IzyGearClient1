@@ -1,29 +1,29 @@
+:root {
+  --pinkred: #F8395A;
+  --blue: #24355A;
+  --lightgrey: #F7F8F8;
+  --grey: #bdb9b9;
+  --darkgrey: #969393;
+}
+
 .title-list {
-    margin: 20px 40px;
-    color: #0000ff; /* Assuming $blue is #0000ff */
-    font-family: 'Nunito Sans', sans-serif;
+  margin: 40px 100px;
+  color: var(--blue);
+}
+
+@media (max-width: 480px) {
+  .title-list {
+    margin: 40px 50px;
   }
-  
-  @media (max-width: 576px) {
-    .title-list {
-      margin: 40px 50px;
-    }
-  }
-  
-  .list {
-    padding: 0 100px 120px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  @media (max-width: 1200px) {
-    .list {
-      padding: 0 20px 120px;
-      
-    }
-  }
+}
+
+.list {
+  padding: 0 100px 120px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
   .reservation-message {
     font-size: medium;
     margin: 20px 40px;

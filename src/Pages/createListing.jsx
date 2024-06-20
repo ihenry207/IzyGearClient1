@@ -35,8 +35,8 @@ const CreateListing = () => {
   const dispatch = useDispatch();
   const creatorId = useSelector((state) => state.user.userId);
   const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
+  const firebaseUid = useSelector(state => state.firebaseUid || '');
   const navigate = useNavigate();
-  
   const autocompleteRef = useRef(null);
 
   const [formLocation, setFormLocation] = useState({
@@ -145,6 +145,7 @@ const CreateListing = () => {
       listingForm.append("address", formLocation.address);
       listingForm.append("condition", condition);
       listingForm.append("description", description);
+      listingForm.append("creatorFirebaseUid", firebaseUid);
 
       if (category === "Snowboard" || category === "Ski") {
         listingForm.append("boots", withBoots);

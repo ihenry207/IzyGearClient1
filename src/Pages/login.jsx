@@ -63,7 +63,22 @@ const LoginPage = () => {
           loggedIn.user.firstName + " " + loggedIn.user.lastName);
 
         dispatch(setLogin({ ...loggedIn, firebaseUid })); // Save the Firebase UID in Redux
-        // navigate("/"); // navigate to homepage after login
+        
+        // Call the API to store the firebaseUid inside of the database
+        const response2 = await fetch("http://10.1.82.57:3001/auth/firebase", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ firebaseUid, userId: loggedIn.user.userId }),
+        });
+
+        if (response2.ok) {
+          console.log("Firebase UID stored successfully");
+        } else {
+          console.log("Failed to store Firebase UID");
+        }
+       
       } else {
         const errorData = await response.json();
         setErrorMessage("Email or Password incorrect!");

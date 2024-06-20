@@ -1,82 +1,81 @@
 /* categoryPage.css */
 .category-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.category-content {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
   
-  .category-content {
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    
 }
 
 /* Rest of the CSS code remains the same */
 
 .filter-button-container {
-  position: fixed;
-  top: 120px; /* Adjust this value based on the height of your Navbar */
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  padding: 0px;
-  background-color:transparent;
-  z-index: 999;
-  transition: opacity 0.3s ease-in-out;
+position: fixed;
+top: 120px; /* Adjust this value based on the height of your Navbar */
+left: 0;
+right: 0;
+display: flex;
+justify-content: center;
+padding: 0px;
+background-color:transparent;
+z-index: 999;
+transition: opacity 0.3s ease-in-out;
 }
 
 .filter-button-container.hide {
-  opacity: 0;
-  pointer-events: none;
+opacity: 0;
+pointer-events: none;
 }
 
 .filter-button {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  border: 2px solid black;
-  border-radius: 10px;
-  background-color: transparent;
-  cursor: pointer;
-  color: black;
-  font-size: 16px;
+display: flex;
+align-items: center;
+padding: 10px 20px;
+border: 2px solid black;
+border-radius: 10px;
+background-color: transparent;
+cursor: pointer;
+color: black;
+font-size: 16px;
 }
 
 .filter-button:hover {
-  background-color: #24355A;
-  color: white;
+background-color: #24355A;
+color: white;
 }
 
 /* Rest of the CSS code remains the same */
 .listings-container {
-    flex-grow: 1;
-    padding: 60px;
-    align-items: center;
+  flex-grow: 1;
+  padding: 60px;
+  align-items: center;
 }
 .listings-container h1 {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .listings-container.blurred {
-  filter: blur(5px);
-  pointer-events: none;
+filter: blur(5px);
+pointer-events: none;
 }
-  @media (max-width: 768px){
-    .category-content {
-        display: flex;
-        flex-grow: 1;
-        flex-direction: column;
-        justify-content: flex-start;
-        
-    }
-    .listings-container {
-        padding: 40px 200px 130px;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
+@media (max-width: 768px){
+  .category-content {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      justify-content: flex-start;
+      
   }
-  
+  .listings-container {
+      padding: 40px 200px 130px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+  }
+}

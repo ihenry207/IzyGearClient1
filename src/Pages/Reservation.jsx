@@ -13,6 +13,7 @@ const ReservationList = () => {
   const [message, setMessage] = useState("");
   const [reservationList, setReservationList] = useState([]);
   const userId = useSelector((state) => state.user.userId);
+  const firebaseUid = useSelector(state => state.firebaseUid || '');
   //const reservationList = useSelector((state) => state.user.reservationList);
 
   const dispatch = useDispatch();
