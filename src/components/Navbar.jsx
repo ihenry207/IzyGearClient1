@@ -21,6 +21,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AlarmIcon from '@mui/icons-material/Alarm';
 const Navbar = () => {
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const user = useSelector((state) => state.user);
@@ -76,7 +77,10 @@ const Navbar = () => {
               <Person sx={{ color: "#969393" }}  />
             )
           ) : (
-            <Person sx={{ color: "#969393" }}/>
+            <Person sx={{ color: "#969393" }} onClick={(e) => {
+              e.stopPropagation();
+              setDropdownMenu(false);
+            }}/>
           )}
         </button>
         {dropdownMenu && !user && (
@@ -100,10 +104,11 @@ const Navbar = () => {
         )}
         {dropdownMenu && user && (
           <div ref={dropdownRef} className="navbar_right_accountmenu" >
-            <Link to={`/${user.userId}/gears`}>
+            {/*I will add Booking just on top of this */}
+            <Link to={`/${user.userId}/reservations`}>
               <div className="menu-item">
-                <AssignmentTurnedInIcon sx={{ marginRight: '5px' }} />
-                <span>Bookings</span>
+                <AlarmIcon sx={{ marginRight: '5px' }} />
+                <span>Reservations</span>
               </div>
             </Link>
             <Link to={`/${user.userId}/wishList`}>

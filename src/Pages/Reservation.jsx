@@ -11,25 +11,27 @@ import Footer from "../components/footer";
 const ReservationList = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
-  const userId = useSelector((state) => state.user._id);
-  const reservationList = useSelector((state) => state.user.reservationList);
+  const [reservationList, setReservationList] = useState([]);
+  const userId = useSelector((state) => state.user.userId);
+  //const reservationList = useSelector((state) => state.user.reservationList);
 
   const dispatch = useDispatch();
 
   const getReservationList = async () => {
     try {
       const response = await fetch(
-        `http://10.1.82.57:3001/users/${userId}/reservations`,
+        `http://10.1.82.57:3001/reservations/${userId}/reservations`,
         {
           method: "GET",
         }
       );
-
+  
       if (response.status === 404) {
         setMessage("No current Reservation found at this time");
       } else {
         const data = await response.json();
-        dispatch(setReservationList(data));
+        setReservationList(data); // Update the reservationList state with the received data
+        console.log("reservation Info: ", data);
       }
     } catch (err) {
       console.log("Fetch Reservation List failed!", err.message);
@@ -53,21 +55,21 @@ const ReservationList = () => {
         <p className="reservation-message">{message}</p>
       ) : (
         <div className="list">
-          {reservationList?.map(({ listingId, hostId, startDate, endDate, totalPrice, booking = true }) => (
+          {reservationList?.map(({ listing, startDate, endDate, totalPrice }) => (
             <ListingCard
-              key={listingId._id}
-              listingId={listingId._id}
-              creator={hostId._id}
-              listingPhotoPaths={listingId.listingPhotoPaths}
-              city={listingId.city}
-              state={listingId.state}
-              title ={listingId.title}
-              country={listingId.country}
-              category={listingId.category}
+              key={listing._id}
+              listingId={listing._id}
+              creator={listing.creator}
+              listingPhotoPaths={listing.listingPhotoPaths}
+              address={listing.address}
+              category={listing.category}
+              condition={listing.condition}
+              title={listing.title}
+              price={listing.price}
               startDate={startDate}
               endDate={endDate}
               totalPrice={totalPrice}
-              booking={booking}
+              booking={true}
             />
           ))}
         </div>

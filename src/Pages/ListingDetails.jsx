@@ -13,6 +13,9 @@ import { Favorite, FavoriteBorder  } from "@mui/icons-material";
 import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
 
+//since there is no userId we need to transfer the category from listingcard 
+//to listingdetails directly no through useparams
+
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
   const { listingId } = useParams();
@@ -87,7 +90,7 @@ const ListingDetails = () => {
   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
 
   /* SUBMIT BOOKING */
-  const customerId = useSelector((state) => state?.user?._id);
+  const customerId = useSelector((state) => state.user.userId);
   //const creatorID = //get it from the database so that I won't allow others to book their own gear
   //meaning if customerID === creatorID send a message before even booking.
   const navigate = useNavigate();
@@ -98,31 +101,49 @@ const ListingDetails = () => {
         navigate("/login");
         return;
       }
+      console.log("Here is Listing details", listing)
+      console.log("Here is creator's Id: ",listing.creator._id, )
+      console.log("Here is the customerId: ", customerId)
       if (customerId === listing.creator._id) {
         setErrorMessage("You can't book your own gear.");
         return;
       }
+
+      let totalPrice;
+      if (dateRange[0].startDate.toDateString() === dateRange[0].endDate.toDateString()) {
+        totalPrice = listing.price;
+      } else {
+        totalPrice = listing.price * dayCount;
+      }
+
       //here we also need to get their firebaseID for both customer 
       //and host so we can link them over chat
-      const bookingForm = {
+      //get customer FirebaseUid, and get creator firebaseUid to connect them through chat
+      //which means that when we create a listing we need to transfer the firebaseUid to the listing
+      const reservationForm = {
         customerId,
         listingId,
         hostId: listing.creator._id,
         startDate: dateRange[0].startDate.toDateString(),
         endDate: dateRange[0].endDate.toDateString(),
-        totalPrice: listing.price * dayCount,
+        totalPrice: totalPrice,
+        category,
       };
 
-      const response = await fetch("http://10.1.82.57:3001/bookings/create", {
+      
+
+      console.log("Here is the Reservation form: ", reservationForm)
+
+      const response = await fetch("http://10.1.82.57:3001/reservations/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(bookingForm),
+        body: JSON.stringify(reservationForm),
       });
 
       if (response.ok) {
-        navigate(`/${customerId}/gears`);
+        navigate(`/${customerId}/reservations`);
         
       }
     } catch (err) {
@@ -257,7 +278,7 @@ const ListingDetails = () => {
             <p>Start Date: {dateRange[0].startDate.toDateString()}</p>
             <p>End Date: {dateRange[0].endDate.toDateString()}</p>
             <button className="button" type="submit" onClick={handleSubmit}>
-              BOOK
+              Reserve
             </button>
           </div>
         </div>

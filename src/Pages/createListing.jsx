@@ -109,7 +109,6 @@ const CreateListing = () => {
   //const creatorId = useSelector((state) => state.user.userId);//hopefully this won't break
   
 
-  // const navigate = useNavigate();
 
   const HandlePost = async (e) => {
     e.preventDefault();

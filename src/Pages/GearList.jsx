@@ -1,3 +1,5 @@
+/*This is where the Booked items are fetched */
+
 import { useEffect, useState } from "react";
 import "../styles/List.css";
 import Loading from "../components/loader";
@@ -28,7 +30,8 @@ const GearList = () => {
         setMessage("No current Gears found at this time");
       } else {
         const data = await response.json();
-        dispatch(setGearList(data));
+        console.log("Booking infos: ",data)
+        //dispatch(setGearList(data));
         
       }
       
