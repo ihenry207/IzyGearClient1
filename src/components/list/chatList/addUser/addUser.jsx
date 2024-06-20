@@ -38,6 +38,29 @@ const AddUser = () => {
     }
   }
 
+  const handleSearch2 = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userId = formData.get("userId"); // Changed from "username" to "userId"
+  
+    try {
+      const userRef = doc(db, "users", userId); // Changed to use doc() instead of collection()
+  
+      const userDoc = await getDoc(userRef); // Changed to use getDoc() instead of getDocs()
+  
+      if (userDoc.exists()) {
+        setUser(userDoc.data());
+      } else {
+        console.log("No user found with this ID");
+        setUser(null);
+      }
+    } catch (err) {
+      console.log(err);
+      setUser(null);
+    }
+  }
+  
+
 
   //this will later be changed and add users after Booking was successful
   const handleAdd = async () =>{
@@ -73,8 +96,9 @@ const AddUser = () => {
   }
   return (
     <div className='addUser'>
-      <form onSubmit={handleSearch}>
-        <input type='text' placeholder='username' name='username' />
+      <form onSubmit={handleSearch2}>
+      <input type='text' placeholder='User ID' name='userId' />
+        {/* <input type='text' placeholder='username' name='username' /> */}
         <button>Search</button>
       </form>
       {

@@ -16,6 +16,8 @@ import parseAddress from "parse-address";
 //since there is no userId we need to transfer the category from listingcard 
 //to listingdetails directly no through useparams
 const parseCustomAddress = (address) => {
+  if (!address) return { city: 'N/A', state: 'N/A', country: 'N/A' };
+  
   const parts = address.split(', ');
   return {
     city: parts.length > 2 ? parts[parts.length - 3] : 'N/A',
@@ -31,22 +33,31 @@ const ListingDetails = () => {
   const location = useLocation();
   const [selectedImage, setSelectedImage] = useState(null);
   const { category, listingId } = location.state;
-  // const firebaseUid = useSelector(state => state.firebaseUid || '');
+  const customerFirebaseUid = useSelector(state => state.firebaseUid || '');
   const [errorMessage, setErrorMessage] = useState("");
   let address = listing?.address;
-  const parsedAddress = address ? parseAddress.parseLocation(address) : {};
-  let { city, state } = parsedAddress;
-  const country = address ? address.split(", ").pop() : "";
+  let city, state, country;
 
-  let truncatedTitlenow;
+  if (address) {
+    const parsedAddress = parseAddress.parseLocation(address);
+    city = parsedAddress.city;
+    state = parsedAddress.state;
+    country = address.split(", ").pop() || "";
 
-  if (!city || !state) {
-    // If city or state is undefined, use custom parsing
+    if (!city || !state) {
+      // If city or state is undefined, use custom parsing
+      const customParsed = parseCustomAddress(address);
+      city = customParsed.city;
+      state = customParsed.state;
+    }
+  } else {
     const customParsed = parseCustomAddress(address);
     city = customParsed.city;
     state = customParsed.state;
+    country = customParsed.country;
   }
 
+  let truncatedTitlenow;
   if (address) {
     if (city === 'N/A' && state === 'N/A') {
       truncatedTitlenow = country;
@@ -75,6 +86,7 @@ const ListingDetails = () => {
   const getListingDetails = async () => {
     try {
       let apiUrl = "";
+      //I could also fetch booked dates to blur out those days, if in past don't blur
       if (category === "Ski" || category === "Snowboard") {
         apiUrl = `http://10.1.82.57:3001/gears/skisnow/${listingId}`;
       } else if (category === "Biking") {
@@ -122,7 +134,7 @@ const ListingDetails = () => {
   const end = new Date(dateRange[0].endDate);
   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
 
-  /* SUBMIT BOOKING */
+  /* SUBMIT Reservation */
   const User = useSelector((state) => state.user);
   const customerId = User?.userId;
   // const customerId = useSelector((state) => state.user.userId);
@@ -139,6 +151,7 @@ const ListingDetails = () => {
       console.log("Here is Listing details", listing)
       console.log("Here is creator's Id: ",listing.creator._id, )
       console.log("Here is the customerId: ", customerId)
+      const creatorFirebaseUid = listing.creatorFirebaseUid;
       if (customerId === listing.creator._id) {
         setErrorMessage("You can't book your own gear.");
         return;
@@ -163,6 +176,8 @@ const ListingDetails = () => {
         endDate: dateRange[0].endDate.toDateString(),
         totalPrice: totalPrice,
         category,
+        creatorFirebaseUid,
+        customerFirebaseUid,
       };
 
       

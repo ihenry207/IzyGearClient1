@@ -7,6 +7,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
 
+const parseCustomAddress = (address) => {
+  const parts = address.split(', ');
+  return {
+    city: parts.length > 2 ? parts[parts.length - 3] : 'N/A',
+    state: parts.length > 1 ? parts[parts.length - 2].split(' ')[0] : 'N/A',
+    country: parts[parts.length - 1] || 'N/A'
+  };
+};
+
 const ListingCard = ({
   listingId,
   creator,
@@ -31,20 +40,37 @@ const ListingCard = ({
   let city, state, country;
   if (address && address !== "N/A") {
     const parsedAddress = parseAddress.parseLocation(address);
-    city = parsedAddress.city || "";
-    state = parsedAddress.state || "";
+    city = parsedAddress.city;
+    state = parsedAddress.state;
     country = address.split(", ").pop() || "";
+
+    if (!city || !state) {
+      // If city or state is undefined, use custom parsing
+      const customParsed = parseCustomAddress(address);
+      city = customParsed.city;
+      state = customParsed.state;
+    }
   } else {
     city = "";
     state = "";
     country = "";
   }
 
-  const truncatedTitle = city && state && country
-    ? truncateText(`${city}, ${state}, ${country}`, 30)
-    : truncateText(title, 30);
-
-
+  let truncatedTitle;
+  if (address && address !== "N/A") {
+    if (city === 'N/A' && state === 'N/A') {
+      truncatedTitle = truncateText(country, 30);
+    } else if (city === 'N/A') {
+      truncatedTitle = truncateText(`${state}, ${country}`, 30);
+    } else if (state === 'N/A') {
+      truncatedTitle = truncateText(`${city}, ${country}`, 30);
+    } else {
+      truncatedTitle = truncateText(`${city}, ${state}, ${country}`, 30);
+    }
+  } else {
+    truncatedTitle = truncateText(title, 30);
+  }
+  
   const goToPrevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
