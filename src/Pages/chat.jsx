@@ -30,6 +30,7 @@ const ChatPage = () => {
         // User is logged in, fetch user info
         fetchUserInfo(user.uid);
       } else {
+        console.log("trying to login in again")
         // User is not logged in, try to log in using Redux data
         const { email, firstName, lastName, profileImagePath } = userData;
         if (email) {

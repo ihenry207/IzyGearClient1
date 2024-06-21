@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react';
 import './addUser.css'
 import { db } from "../../../../lib/firebase";
 import {
@@ -15,9 +15,12 @@ import {
 } from "firebase/firestore";
 import { useState } from "react";
 import { useUserStore } from "../../../../lib/userStore";
+import UserContext from '../../../../UserContext';
+
 const AddUser = () => {
   const [user, setUser] = useState(null);
   const { currentUser } = useUserStore();
+  //const { creatorFirebaseUid, setCreatorFirebaseUid } = useContext(UserContext);
 
   const handleSearch = async (e) =>{
     e.preventDefault();
@@ -38,10 +41,18 @@ const AddUser = () => {
     }
   }
 
+  // useEffect(() => {
+  //   if (creatorFirebaseUid) {
+  //     handleSearch2({ preventDefault: () => {}, target: { userId: { value: creatorFirebaseUid } } });
+  //   }
+  // }, [creatorFirebaseUid]);
+
+
   const handleSearch2 = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const userId = formData.get("userId"); // Changed from "username" to "userId"
+    //const userId = e.target.userId.value || creatorFirebaseUid;
   
     try {
       const userRef = doc(db, "users", userId); // Changed to use doc() instead of collection()
@@ -50,6 +61,8 @@ const AddUser = () => {
   
       if (userDoc.exists()) {
         setUser(userDoc.data());
+        console.log("User found: ", userDoc.data());
+        // Reset creatorFirebaseUid to its default value (null in this case)
       } else {
         console.log("No user found with this ID");
         setUser(null);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "../styles/ListingDetails.css";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "react-date-range/dist/styles.css";
@@ -12,6 +12,21 @@ import ImageGallery from "../components/ImageGallery";
 import { Favorite, FavoriteBorder  } from "@mui/icons-material";
 import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
+import { db } from "../lib/firebase";
+//import { doc, getDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+//import UserContext from '../UserContext';
 
 //since there is no userId we need to transfer the category from listingcard 
 //to listingdetails directly no through useparams
@@ -28,8 +43,9 @@ const parseCustomAddress = (address) => {
 
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
-  //const { listingId } = useParams();
+  //const { setCreatorFirebaseUid } = useContext(UserContext);
   const [listing, setListing] = useState(null);
+  const [userFirebase, setUserFirebase] = useState(null);
   const location = useLocation();
   const [selectedImage, setSelectedImage] = useState(null);
   const { category, listingId } = location.state;
@@ -73,7 +89,92 @@ const ListingDetails = () => {
   }
   
  
+  const handleSearch2 = async (hostUid) => {
+    try {
+      const userRef = doc(db, "users", hostUid);
+      const userDoc = await getDoc(userRef);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUserFirebase(userData);
+        console.log("User found:", userData);
 
+        // Call handleAdd here
+        const chatId = await handleAdd(customerFirebaseUid, hostUid);
+        if (chatId) {
+          console.log("Chat created or found. ChatId:", chatId);
+          // You can use this chatId to navigate to the chat or update UI
+        }
+      } else {
+        console.log("No user found with this ID");
+        setUserFirebase(null);
+      }
+    } catch (err) {
+      console.log(err);
+      setUserFirebase(null);
+    }
+  };
+
+  const handleAdd = async (customerUid, hostUid) => {
+    const chatRef = collection(db, "chats");
+    const userChatsRef = collection(db, "userchats");
+  
+    try {
+      // Check if a chat already exists between these two users
+      const q = query(
+        chatRef,
+        where('participants', 'array-contains', customerUid)
+      );
+      const querySnapshot = await getDocs(q);
+      
+      let existingChatId = null;
+      querySnapshot.forEach((doc) => {
+        const chatData = doc.data();
+        if (chatData.participants.includes(hostUid)) {
+          existingChatId = doc.id;
+        }
+      });
+  
+      if (existingChatId) {
+        console.log("Chat already exists. ChatId:", existingChatId);
+        return existingChatId; // Return existing chat id
+      }
+  
+      // If no existing chat, create a new one
+      const newChatRef = doc(chatRef);
+      await setDoc(newChatRef, {
+        createdAt: serverTimestamp(),
+        messages: [],
+        participants: [customerUid, hostUid]
+      });
+  
+      const chatData = {
+        chatId: newChatRef.id,
+        lastMessage: "",
+        updatedAt: Date.now(),
+      };
+  
+      await updateDoc(doc(userChatsRef, hostUid), {
+        chats: arrayUnion({
+          ...chatData,
+          receiverId: customerUid,
+        }),
+      });
+  
+      await updateDoc(doc(userChatsRef, customerUid), {
+        chats: arrayUnion({
+          ...chatData,
+          receiverId: hostUid,
+        }),
+      });
+  
+      console.log("New chat created. ChatId:", newChatRef.id);
+      return newChatRef.id; // Return new chat id
+    } catch (err) {
+      console.log("Error in handleAdd:", err);
+      return null;
+    }
+  };
 
   const openImageGallery = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -193,6 +294,9 @@ const ListingDetails = () => {
       });
 
       if (response.ok) {
+        // setCreatorFirebaseUid(creatorFirebaseUid);
+        // Call handleSearch2 with the creator's Firebase UID
+        await handleSearch2(listing.creatorFirebaseUid);
         navigate(`/${customerId}/reservations`);
         
       }
