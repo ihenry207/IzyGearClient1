@@ -1,3 +1,160 @@
-.About{
-    background-color: pink;
-}
+.container {
+    display: flex;
+    justify-content: center;
+    height: 50vh;
+    background-color: #f2f2f2;
+    font-family: 'Nunito Sans', sans-serif;
+    padding-top: 80px; /* Adjust this to match your Navbar height */
+  }
+  
+  .card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%; /* Ensure it doesn't overflow on smaller screens */
+    margin: auto;
+  }
+
+  @media (max-width: 576px) {
+    .container {
+        display: flex;
+        justify-content: center;
+        background-color: #f2f2f2;
+        height: auto;
+        min-height: 100vh;
+        padding-top: 10px; /* Reduced padding to move it closer to the navbar */
+        align-items: flex-start; /* Align items to the top */
+      }
+    
+      .card {
+        width: 90%;
+        margin-top: 10px; /* Add some space between navbar and card */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+      }
+  }
+  
+  .location label,
+  .datetime label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .input-with-icon {
+    position: relative;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 32%;
+    transform: translateY(-50%);
+    color: black;
+  }
+  
+  .location input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .datetime {
+    margin-bottom: 20px;
+  }
+  
+  .pickup,
+  .return {
+    margin-bottom: 10px;
+  }
+  
+  .date-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1px; /* Reduced gap between date and time */
+  }
+  
+  .date-picker-container,
+  .time-select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px; /* Increased padding for more space */
+  }
+  
+  .calendar-icon,
+  .clock-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: black;
+    pointer-events: none;
+  }
+  
+  .arrow-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: black;
+    pointer-events: none;
+  }
+  
+  .react-datepicker-wrapper {
+    width: calc(100% - 60px); /* Adjust width to accommodate icons */
+    margin-left: 30px; /* Move input to the right of the calendar icon */
+  }
+  
+  .react-datepicker__input-container input,
+  .time-select-container select {
+    width: 100%;
+    padding: 11px 10px 10px 5px; /* Adjust padding */
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    background: transparent;
+  }
+  
+  .time-select-container select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    padding: 11px 10px 10px 30px; /* Adjust padding */
+  }
+  
+  /* Center the text in the input */
+  .react-datepicker__input-container input {
+    text-align: center;
+  }
+  
+  .search-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #212F3D;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .search-btn:hover {
+    background-color: #314457;
+  }
+
+ 
+  
