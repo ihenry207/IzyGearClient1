@@ -78,6 +78,8 @@ const About = () => {
   const [isReturnOpen, setIsReturnOpen] = useState(false);
   const [isPickupTimeOpen, setIsPickupTimeOpen] = useState(false);
   const [isReturnTimeOpen, setIsReturnTimeOpen] = useState(false);
+  const [category, setCategory] = useState('');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   const timeOptions = Array.from({ length: 48 }, (_, i) => {
     const hour = Math.floor(i / 2);
@@ -131,13 +133,46 @@ const About = () => {
     return date < today;
   };
 
+  useEffect(() => {
+    // Set return date to the day after pickup date
+    const newReturnDate = new Date(pickupDate);
+    newReturnDate.setDate(newReturnDate.getDate() + 1);
+    setReturnDate(newReturnDate);
+    
+    // Set return time to 10:00 AM
+    setReturnTime('10:00 AM');
+  }, [pickupDate]);
+
+  const handlePickupDateChange = (date) => {
+    setPickupDate(date);
+    // The useEffect hook will handle updating the return date and time
+  };
+
+  const categoryOptions = [
+    { value: '', label: 'All' },
+    { value: 'Ski', label: 'Ski' },
+    { value: 'Snowboard', label: 'Snowboarding' },
+    { value: 'Biking', label: 'Bike/eScooter' },
+    { value: 'Camping', label: 'Camping' },
+  ];
+
+  const toggleCategory = () => {
+    setIsCategoryOpen(!isCategoryOpen);
+    //setIsCategoryOpen(true);
+  };
+
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value);
+    setIsCategoryOpen(false);
+  };
+
   return (
     <div>
       <Navbar />
       <div className="container">
         <div className="card">
           <div className="location">
-            <label>Street name and city</label>
+            <label>Where</label>
             <div className="input-with-icon">
               <SearchIcon className="search-icon" />
               <input type="text" placeholder="1 Main St, Boston MA" />
@@ -156,7 +191,7 @@ const About = () => {
                   <CalendarTodayIcon className="calendar-icon" />
                   <DatePicker
                     selected={pickupDate}
-                    onChange={(date) => setPickupDate(date)}
+                    onChange={handlePickupDateChange}
                     dateFormat="EEE MM/dd"
                     customInput={<CustomInput />}
                     open={isPickupOpen}
@@ -237,6 +272,29 @@ const About = () => {
                   }
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="category-container">
+            {/* <span className="category-label">Category</span> */}
+            <div className="category-select-container">
+              <span className="category-icon">Category:</span>
+              <select 
+                value={category}
+                onChange={handleCategoryChange}
+                onFocus={toggleCategory}
+                onBlur={toggleCategory}
+              >
+                <option value="" disabled>{category ? categoryOptions.find(opt => opt.value === category).label : 'Select Category'}</option>
+                {categoryOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              {isCategoryOpen ? (
+                <KeyboardArrowDownIcon className="arrow-icon" />
+              ) : (
+                
+                <KeyboardArrowUpIcon className="arrow-icon" />
+              )}
             </div>
           </div>
           <button className="search-btn">Search</button>

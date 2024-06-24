@@ -15,14 +15,10 @@ body, html {
     height: calc(100vh - 100px);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
     .container {
         flex-direction: column;
     }
-
-    /* .list, .chat, .detail {
-        display: none;
-    } */
 
     .show {
         display: flex;
