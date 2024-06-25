@@ -1,34 +1,334 @@
-.slide {
-    background-color: #212F3D;
-    padding: 60px;
-    text-align: center;
-    color: #ffffff;
-    font-family: 'Nunito Sans', sans-serif;
-  }
+.slide-wrapper {
+  background-color: #212F3D;
+  min-height: 37vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.card-container {
+  max-width: 90%;
+  width: 500px;
+  margin-bottom: 10px; /* Adjust this value to control space between card and slide */
   
+}
+
+
+.slide-container {
+  width: 100%;
+  max-width: 800px; /* Adjust this value as needed */
+}
+
+.slide {
+  text-align: center;
+  color: #ffffff;
+}
+
+.slide h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+
+@media (max-width: 768px) {
+  .card-container {
+    max-width: 90%;
+  }
+
+  .slide-container {
+    max-width: 90%;
+  }
+
   .slide h1 {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card {
+    padding: 15px;
+  }
+
+  .card-container {
+    margin-bottom: 30px;
+  }
+}
+/* .card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+} */
+
+/* Include all the necessary styles from About.css here for the card content */
+/* ... */
+
+.card {
+  background-color: #ffffff;
+  /* margin-top: 0px; */
+  margin: 0px 10px 10px 20px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  max-width: 90%; /* Ensure it doesn't overflow on smaller screens */
+  /* margin: auto; */
+  height: 300px;
+}
+
+@media (max-width: 576px) {
+  
+  
+  .card {
+      width: 90%;
+      /* margin-top: 10px;  */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      width:460px;
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 0px 0px 10px 0px;
+      height: auto;
+  }
+}
+
+.location label,
+.datetime label {
+  display: block;
+  margin-bottom: 0px;
+  font-weight: bold;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 48%;
+  transform: translateY(-50%);
+  color: black;
+}
+
+.location input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  margin-bottom: 0px;
+  /* border: 1px solid #ccc; */
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+.datetime {
+  margin-bottom: 2px;
+}
+
+.pickup,
+.return {
+  border-top: 1px solid black; /* Adjust thickness and color here */
+  margin-bottom: 2px;
+}
+/* Adjust left and right margins for the lines */
+  .pickup,
+  .return,
+  .category-container {
+  margin-left: 5px; /* Adjust left margin */
+  margin-right: 5px; /* Adjust right margin */
+  }
+
+.date-time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1px; /* Reduced gap between date and time */
+}
+
+.date-picker-container,
+.time-select-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+  /* border: 1px solid #ccc; */
+  border: none;
+  border-radius: 5px;
+  padding: 0px 10px; /* Increased padding for more space */
+}
+
+.calendar-icon,
+.clock-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
+}
+
+.arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
+}
+
+.react-datepicker-wrapper {
+  width: calc(100% - 30px); /* Adjust width to accommodate icons */
+  margin-left: 20px; /* Move input to the right of the calendar icon */
+}
+
+.react-datepicker__input-container input,
+.time-select-container select {
+  width: 100%;
+  padding: 11px 10px 10px 5px; /* Adjust padding */
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.time-select-container select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  padding: 11px 10px 10px 30px; /* Adjust padding */
+}
+
+/* Center the text in the input */
+.react-datepicker__input-container input {
+  text-align: center;
+}
+
+
+
+
+
+.category-container {
+  margin-bottom: 10px;
+  border-top: 1px solid black; 
+}
+
+.category-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.category-select-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+  /* border: 1px solid #ccc; */
+  border: none;
+  border-radius: 5px;
+  padding: 0px 10px;
+}
+
+.category-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
+  font-weight: bold;
+}
+
+.category-select-container select {
+  width: 100%;
+  padding: 11px 10px 10px 70px; /* Adjusted padding */
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  text-align: center;
+  font-weight: bold;
+}
+
+.category-select-container select option {
+  text-align: center;
+  padding: 0px 0px 0px 1px;
+  padding: 5px 0;
+}
+
+.category-select-container .arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
+}
+
+/* Mobile styles */
+@media (max-width: 576px) {
+  .category-select-container {
+    justify-content: center;
+    align-items: stretch;
+    padding: 5px;
+  }
+
+  .category-icon {
+    position: static;
+    transform: none;
+    margin-bottom: 5px;
+    text-align: left;
+    font-size: 17px;
+    margin-top: 7px;
     
   }
-  
-  @media (max-width: 768px) {
-    .slide {
-      padding: 40px;
-    }
-  
-    .slide h1 {
-      font-size: 28px;
-    }
+
+  .category-select-container select {
+    padding: 0px 15px 0px 40px;
+    text-align: left;
+    color: black;
+    font-size: 17px;
   }
-  
-  @media (max-width: 480px) {
-    .slide {
-      padding: 30px;
-    }
-  
-    .slide h1 {
-      font-size: 24px;
-    }
+
+  .category-select-container .arrow-icon {
+      top: 50%;
   }
+
+  .category-select-container select option {
+    text-align: left;
+  }
+}
+
+.search-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #212F3D;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-btn:hover {
+  background-color: #314457;
+}
+
+

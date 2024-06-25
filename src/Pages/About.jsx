@@ -166,6 +166,29 @@ const About = () => {
     setIsCategoryOpen(false);
   };
 
+  const getCategoryArrowIcon = () => {
+    const isMobile = window.innerWidth <= 576; // Adjust this breakpoint if needed
+    if (isMobile) {
+      return isCategoryOpen ? <KeyboardArrowUpIcon className="arrow-icon" /> : <KeyboardArrowDownIcon className="arrow-icon" />;
+    } else {
+      return isCategoryOpen ? <KeyboardArrowUpIcon  className="arrow-icon" /> : <KeyboardArrowDownIcon className="arrow-icon" />;
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      // This will force a re-render when the window size changes
+      setIsCategoryOpen(isCategoryOpen);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isCategoryOpen]);
+
+
   return (
     <div>
       <Navbar />
@@ -289,15 +312,10 @@ const About = () => {
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
-              {isCategoryOpen ? (
-                <KeyboardArrowDownIcon className="arrow-icon" />
-              ) : (
-                
-                <KeyboardArrowUpIcon className="arrow-icon" />
-              )}
+              {getCategoryArrowIcon()}
             </div>
           </div>
-          <button className="search-btn">Search</button>
+          <button className="search-btn">Search {category}</button>
         </div>
       </div>
     </div>
