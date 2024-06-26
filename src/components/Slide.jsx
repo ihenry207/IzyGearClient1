@@ -71,7 +71,7 @@ const Slide = () => {
   const [pickupDate, setPickupDate] = useState(tomorrow);
   const [returnDate, setReturnDate] = useState(dayAfterTomorrow);
   const [pickupTime, setPickupTime] = useState('10:00 AM');
-  const [returnTime, setReturnTime] = useState('10:00 AM');
+  const [returnTime, setReturnTime] = useState('05:00 PM');
   const [isPickupOpen, setIsPickupOpen] = useState(false);
   const [isReturnOpen, setIsReturnOpen] = useState(false);
   const [isPickupTimeOpen, setIsPickupTimeOpen] = useState(false);
@@ -171,7 +171,7 @@ const Slide = () => {
     setReturnDate(newReturnDate);
     
     // Set return time to 10:00 AM
-    setReturnTime('10:00 AM');
+    setReturnTime('05:00 PM');
   }, [pickupDate]);
 
   const handlePickupDateChange = (date) => {

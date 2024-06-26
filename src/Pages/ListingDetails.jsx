@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/ListingDetails.css";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "react-date-range/dist/styles.css";
@@ -13,6 +13,9 @@ import { Favorite, FavoriteBorder  } from "@mui/icons-material";
 import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
 import { db } from "../lib/firebase";
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 //import { doc, getDoc } from "firebase/firestore";
 import {
   arrayUnion,
@@ -48,6 +51,12 @@ const ListingDetails = () => {
   const [userFirebase, setUserFirebase] = useState(null);
   const location = useLocation();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [pickupTime, setPickupTime] = useState('10:00 AM');
+  const [returnTime, setReturnTime] = useState('05:00 PM');
+  const [isPickupTimeOpen, setIsPickupTimeOpen] = useState(false);
+  const [isReturnTimeOpen, setIsReturnTimeOpen] = useState(false);
+  const [firebaseChatId, setfirebaseChatId] = useState('');
+  const [diffDays, setDiffDays] = useState(0);
   const { category, listingId } = location.state;
   const customerFirebaseUid = useSelector(state => state.firebaseUid || '');
   const [errorMessage, setErrorMessage] = useState("");
@@ -88,7 +97,6 @@ const ListingDetails = () => {
     truncatedTitlenow = "N/A";
   }
   
- 
   const handleSearch2 = async (hostUid) => {
     try {
       const userRef = doc(db, "users", hostUid);
@@ -98,20 +106,26 @@ const ListingDetails = () => {
         const userData = userDoc.data();
         setUserFirebase(userData);
         console.log("User found:", userData);
-
+  
         // Call handleAdd here
         const chatId = await handleAdd(customerFirebaseUid, hostUid);
         if (chatId) {
+          setfirebaseChatId(chatId);
           console.log("Chat created or found. ChatId:", chatId);
-          // You can use this chatId to navigate to the chat or update UI
+          return chatId; // Return the chatId
+        } else {
+          console.log("Failed to create or find chat");
+          return null;
         }
       } else {
         console.log("No user found with this ID");
         setUserFirebase(null);
+        return null;
       }
     } catch (err) {
       console.log(err);
       setUserFirebase(null);
+      return null;
     }
   };
 
@@ -214,26 +228,91 @@ const ListingDetails = () => {
   }, []);
 
   /* BOOKING CALENDAR */
+  //Setting default dates to tomorrow and day after tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dayAfterTomorrow = new Date();
+  dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+
   const [dateRange, setDateRange] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: tomorrow,
+      endDate: dayAfterTomorrow,
       key: "selection",
     },
   ]);
 
+  
+
+  const togglePickupTime = () => {
+    setIsPickupTimeOpen(!isPickupTimeOpen);
+    setIsReturnTimeOpen(false);
+  };
+
+  const toggleReturnTime = () => {
+    setIsReturnTimeOpen(!isReturnTimeOpen);
+    setIsPickupTimeOpen(false);
+  };
+
   const handleSelect = (ranges) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
+  
     if (ranges.selection.startDate >= today) {
       setDateRange([ranges.selection]);
     }
   };
 
-  const start = new Date(dateRange[0].startDate);
-  const end = new Date(dateRange[0].endDate);
-  const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
+  const timeOptions = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2);
+    const minutes = (i % 2) * 30;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  });
+
+  //I need to call updateDiffDays whenever the pickup or return time changes:
+  useEffect(() => {
+    const calculateDiffDays = () => {
+      if (!dateRange[0] || !dateRange[0].startDate || !dateRange[0].endDate) {
+        setDiffDays(0);
+        return;
+      }
+
+      const start = new Date(dateRange[0].startDate);
+      const end = new Date(dateRange[0].endDate);
+      
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        setDiffDays(0);
+        return;
+      }
+
+      // Parse and set the times
+      const [startHour, startMinute, startPeriod] = pickupTime.split(/:| /);
+      const [endHour, endMinute, endPeriod] = returnTime.split(/:| /);
+      
+      start.setHours(
+        startPeriod === 'PM' ? (parseInt(startHour) % 12) + 12 : parseInt(startHour) % 12,
+        parseInt(startMinute)
+      );
+      end.setHours(
+        endPeriod === 'PM' ? (parseInt(endHour) % 12) + 12 : parseInt(endHour) % 12,
+        parseInt(endMinute)
+      );
+  
+      //Changed calculation to always charge for at least one day
+      const diffTime = Math.abs(end - start);
+      const calculatedDiffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      setDiffDays(calculatedDiffDays);
+    };
+  
+    calculateDiffDays();
+  }, [dateRange, pickupTime, returnTime]);
+
+  // const start = new Date(dateRange[0].startDate);
+  // const end = new Date(dateRange[0].endDate);
+  // const diffTime = Math.abs(end - start);
+  // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   /* SUBMIT Reservation */
   const User = useSelector((state) => state.user);
@@ -243,45 +322,44 @@ const ListingDetails = () => {
   //meaning if customerID === creatorID send a message before even booking.
   const navigate = useNavigate();
 
+  
+
   const handleSubmit = async () => {
     try {
       if (!user) {
         navigate("/login");
         return;
       }
-      console.log("Here is Listing details", listing)
-      console.log("Here is creator's Id: ",listing.creator._id, )
-      console.log("Here is the customerId: ", customerId)
       const creatorFirebaseUid = listing.creatorFirebaseUid;
       if (customerId === listing.creator._id) {
         setErrorMessage("You can't book your own gear.");
         return;
       }
 
-      let totalPrice;
-      if (dateRange[0].startDate.toDateString() === dateRange[0].endDate.toDateString()) {
-        totalPrice = listing.price;
-      } else {
-        totalPrice = listing.price * dayCount;
+      if (!dateRange[0] || !dateRange[0].startDate || !dateRange[0].endDate) {
+        setErrorMessage("Please select a valid date range.");
+        console.log("Please select a valid date range.")
+        return;
       }
 
-      //here we also need to get their firebaseID for both customer 
-      //and host so we can link them over chat
-      //get customer FirebaseUid, and get creator firebaseUid to connect them through chat
-      //which means that when we create a listing we need to transfer the firebaseUid to the listing
+      let totalPrice;
+      if (diffDays === 0) {
+        totalPrice = listing.price;
+      } else {
+        totalPrice = listing.price * diffDays;
+      }
+
       const reservationForm = {
         customerId,
         listingId,
         hostId: listing.creator._id,
-        startDate: dateRange[0].startDate.toDateString(),
-        endDate: dateRange[0].endDate.toDateString(),
+        startDate: `${dateRange[0].startDate.toDateString()} ${pickupTime}`,
+        endDate: `${dateRange[0].endDate.toDateString()} ${returnTime}`,
         totalPrice: totalPrice,
         category,
         creatorFirebaseUid,
         customerFirebaseUid,
-      };
-
-      
+      }; 
 
       console.log("Here is the Reservation form: ", reservationForm)
 
@@ -292,13 +370,41 @@ const ListingDetails = () => {
         },
         body: JSON.stringify(reservationForm),
       });
-
+      
       if (response.ok) {
-        // setCreatorFirebaseUid(creatorFirebaseUid);
-        // Call handleSearch2 with the creator's Firebase UID
-        await handleSearch2(listing.creatorFirebaseUid);
-        navigate(`/${customerId}/reservations`);
+        const reservationInfo = await response.json();
         
+        // Call handleSearch2 and await its result
+        const chatId = await handleSearch2(listing.creatorFirebaseUid);
+        
+      
+        if (chatId) {
+          let chatForm = {
+            reservationId: reservationInfo.reservationId,
+            chatId: chatId
+          };
+          console.log("Here is chatForm inside of listingdetails: ",chatForm)
+      
+          // Send the chat info to backend
+          const chatResponse = await fetch("http://10.1.82.57:3001/reservations/chatId", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(chatForm),
+          });
+      
+          if (chatResponse.ok) {
+            console.log("ChatId added successfully");
+          } else {
+            console.error("Failed to add ChatId");
+          }
+        } else {
+          console.error("Failed to obtain chatId");
+          // Handle this error case appropriately
+        }
+      
+        navigate(`/${customerId}/reservations`);
       }
     } catch (err) {
       console.log("Submit Booking Failed.", err.message);
@@ -418,20 +524,75 @@ const ListingDetails = () => {
         <p>{listing.description}</p>
         <div className="booking">
           <h2>How long do you want to book?</h2>
-          <div className="date-range-calendar">
-            <DateRange ranges={dateRange} onChange={handleSelect} minDate={new Date()} />
-            {dayCount > 1 ? (
-              <h2>
-                ${listing.price} x {dayCount} days
-              </h2>
-            ) : (
-              <h2>
-                ${listing.price} x {dayCount} day
-              </h2>
-            )}
-            <h2>Total price: ${listing.price * dayCount}</h2>
-            <p>Start Date: {dateRange[0].startDate.toDateString()}</p>
-            <p>End Date: {dateRange[0].endDate.toDateString()}</p>
+          {/* DateRange container */}
+          <div className="date-range-container">
+            <DateRange
+              ranges={dateRange}
+              onChange={handleSelect}
+              minDate={new Date()}
+            />
+          </div>
+
+          {/* Pickup and Return Time container */}
+          <div className="time-picker-container">
+            <div className="time-picker">
+              <label>Pickup Time:</label>
+              <div className="time-select-container2" onClick={togglePickupTime}>
+                <QueryBuilderIcon className="clock-icon" />
+                <select
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                  onFocus={togglePickupTime}
+                  onBlur={togglePickupTime}
+                >
+                  {timeOptions.map((time, index) => (
+                    <option key={index} value={time}>{time}</option>
+                  ))}
+                </select>
+                {isPickupTimeOpen ? (
+                  <KeyboardArrowUpIcon className="arrow-icon" />
+                ) : (
+                  <KeyboardArrowDownIcon className="arrow-icon" />
+                )}
+              </div>
+            </div>
+            <div className="time-picker">
+              <label>Return Time:</label>
+              <div className="time-select-container2" onClick={toggleReturnTime}>
+                <QueryBuilderIcon className="clock-icon" />
+                <select
+                  value={returnTime}
+                  onChange={(e) => setReturnTime(e.target.value)}
+                  onFocus={toggleReturnTime}
+                  onBlur={toggleReturnTime}
+                >
+                  {timeOptions.map((time, index) => (
+                    <option key={index} value={time}>{time}</option>
+                  ))}
+                </select>
+                {isReturnTimeOpen ? (
+                  <KeyboardArrowUpIcon className="arrow-icon" />
+                ) : (
+                  <KeyboardArrowDownIcon className="arrow-icon" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing information */}
+          <div className="pricing-info">
+            <h2>${listing.price} x {diffDays} day{diffDays > 1 ? 's' : ''}</h2>
+            <h2>Total price: ${listing.price * diffDays}</h2>
+            <p>From: {dateRange[0] && dateRange[0].startDate instanceof Date 
+              ? `${dateRange[0].startDate.toDateString()} ${pickupTime}` 
+              : 'Select a start date'}</p>
+            <p>Until: {dateRange[0] && dateRange[0].endDate instanceof Date 
+              ? `${dateRange[0].endDate.toDateString()} ${returnTime}` 
+              : 'Select an end date'}</p>
+          </div>
+
+          {/* Reserve button container */}
+          <div className="reserve-button-container">
             <button className="button" type="submit" onClick={handleSubmit}>
               Reserve
             </button>

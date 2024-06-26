@@ -1,5 +1,9 @@
 .slide-wrapper {
-  background-color: #212F3D;
+  background-image: url("https://izygear.s3.us-east-2.amazonaws.com/profile-images/backgroundimg.jpg");
+  background-size: cover; /* This will make the image cover the entire element */
+  background-position: center; /* This will center the image */
+  background-repeat: no-repeat; /* This prevents the image from repeating */
+  /* background-color: #212F3D; */
   min-height: 37vh;
   display: flex;
   flex-direction: column;
@@ -10,8 +14,8 @@
 
 .card-container {
   max-width: 90%;
-  width: 500px;
-  margin-bottom: 10px; /* Adjust this value to control space between card and slide */
+  width: 600px;
+  margin-bottom: 20px; /* Adjust this value to control space between card and slide */
   
 }
 
@@ -82,14 +86,12 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 500px;
   max-width: 90%; /* Ensure it doesn't overflow on smaller screens */
-  /* margin: auto; */
   height: 300px;
 }
 
 @media (max-width: 576px) {
   .card {
-      width: 90%;
-      /* margin-top: 10px;  */
+      width: 100%;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       padding: 10px;
       width:460px;
@@ -199,6 +201,7 @@
   font-size: 16px;
   cursor: pointer;
   background: transparent;
+  color: black;
 }
 
 .time-select-container select {

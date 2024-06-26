@@ -200,11 +200,12 @@ const ListingCard = ({
             navigate(`/gears/listingdetail`, { state: { category, listingId } });
           }}
         >
-          {/* this is the address */}
+          {/* this is the tittle/name of gear */}
           <h3 className="listing-card-title">
-            {truncatedTitle} 
+             {truncateText(title, 30)}
           </h3>
-          <p className="listing-card-description">{truncateText(title, 30)}</p>
+          {/* this is the address */}
+          <p className="listing-card-description">{truncatedTitle}</p>
           {!booking ? (
             <>
               <p className="listing-card-details">{condition}</p>

@@ -20,8 +20,9 @@ const Listings = ({ pcategory, selectedFilters }) => {
         let listings = [];
     
         if (selectedFilters) {
-          const {
+          const {//we need to add the dates with times
             location,
+            //datetime,
             distance,
             category,
             brand,

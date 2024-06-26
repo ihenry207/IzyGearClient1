@@ -62,7 +62,11 @@
 
 .listing-card-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 1\8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* Adjust this value as needed */
 }
 
 .listing-card-description {

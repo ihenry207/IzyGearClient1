@@ -1,236 +1,333 @@
+/* Main container for listing details */
 .listing-details {
-    padding: 40px 130px 120px;
-    font-family: 'Nunito Sans', sans-serif;
+  padding: 40px 130px 120px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+/* Media queries for responsive padding */
+@media (max-width: 1200px) {
+  .listing-details {
+    padding: 40px 80px 120px;
   }
-  
-  @media (max-width: 1200px) {
-    .listing-details {
-      padding: 40px 80px 120px;
-    }
+}
+
+@media (max-width: 992px) {
+  .listing-details {
+    padding: 40px 50px 120px;
   }
-  
-  @media (max-width: 992px) {
-    .listing-details {
-      padding: 40px 50px 120px;
-    }
+}
+
+@media (max-width: 576px) {
+  .listing-details {
+    padding: 40px 20px 120px;
   }
-  
-  @media (max-width: 576px) {
-    .listing-details {
-      padding: 40px 20px 120px;
-    }
-  
-    .listing-details .booking {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .listing-details .booking h2 {
-      text-align: center;
-    }
-  
-    .listing-details .booking .date-range-calendar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .listing-details .booking .date-range-calendar .button {
-      max-width: 200px;
-    }
-  }
-  
-  .listing-details .title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  @media (max-width: 576px) {
-    .listing-details .title {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 15px;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .listing-details .title h1 {
-      font-size: 26px;
-    }
-  }
-  
-  .listing-details .photos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 20px 0;
-  }
-  
-  .listing-details .photos img {
-    max-width: 280px;
-  }
-  
-  .listing-details .profile {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-  }
-  
-  .listing-details .profile img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-  }
-  
+}
+
+/* Title container styles */
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title-container h1 {
+  margin: 0;
+}
+
+/* Favorite icon styles */
+.favorite-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+.favorite-icon svg {
+  font-size: 40px;
+}
+
+/* Photo gallery styles */
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.photos img {
+  max-width: 280px;
+}
+
+.photo-item {
+  cursor: pointer;
+}
+
+/* View more overlay styles */
+.view-more {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.view-more-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.view-more-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+/* Profile section styles */
+.profile {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.profile img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+/* Error message styles */
+.error-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 80%;
+  width: auto;
+  min-width: 300px;
+}
+
+.error-message p {
+  margin: 0;
+  padding-right: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0px 10px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Booking section styles */
+.booking {
+  margin-top: 30px;
+}
+
+/* Date range container styles */
+.date-range-container {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Time picker container styles */
+.time-picker-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+/* Individual time picker styles */
+.time-picker {
+  flex: 1;
+  margin: 0 10px;
+}
+.time-picker label{
+  font-weight: bold;
+}
+
+/* Time select container styles */
+.time-select-container2 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px 10px;
+  /* Added to ensure proper spacing */
+  box-sizing: border-box;
+}
+
+/* Time select dropdown styles */
+.time-select-container2 select {
+  width: 100%;
+  /* Adjusted padding to make room for the clock icon */
+  padding: 11px 10px 10px 30px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Ensure the text doesn't overlap with the clock icon */
+  text-indent: 5px;
+  color: black;
+}
+
+/* Clock icon styles */
+.clock-icon {
+  /* Position the clock icon absolutely within the container */
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Ensure the icon doesn't interfere with clicks on the select */
+  pointer-events: none;
+  /* Adjust size if needed */
+  font-size: 18px;
+}
+
+/* Arrow icon styles */
+.arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Pricing info container styles */
+.pricing-info {
+  margin: 20px 0;
+  text-align: center;
+}
+.pricing-info p{
+  padding:5px;
+  text-decoration: underline;
+}
+
+/* Reserve button container styles */
+.reserve-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 90px;
+}
+
+/* Reserve button styles */
+.button {
+  background-color: #ff385c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 35%;
+  margin-top: 30px;
+  font-size: 20px;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 576px) {
   .listing-details .booking {
-    margin-top: 30px;
-  }
-  
-  .listing-details .booking .date-range-calendar {
-    margin: 30px 0;
-  }
-  
-  .listing-details .booking .date-range-calendar h2 {
-    margin-bottom: 10px;
-  }
-  
-  .listing-details .booking .date-range-calendar .button {
-    background-color: #ff385c;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 25%;
-    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .title-container {
+  .listing-details .booking h2 {
+    text-align: center;
+  }
+
+  .title-container h1 {
+    font-size: 24px;
+  }
+
+  .listing-details .booking .date-range-calendar .button {
+    width: 80%;
+  }
+
+  .time-select-container2 {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  }
-  
-  .title-container h1 {
-    margin: 0;
-  }
-  
-  .favorite-icon {
-    background: none;
-    border: none;
     cursor: pointer;
-    margin-left: 20px;
-  }
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 180px;
   
-  .favorite-icon svg {
-    font-size: 40px;
   }
-  .photo-item {
-    cursor: pointer;
+
+  .time-picker {
+    margin: 10px 0;
   }
-  .view-more {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  .view-more-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+
+  .reserve-button-container{
     display: flex;
     justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    pointer-events: none;
+    margin-top: 20px;
+    width: 80%;
+    height: 90px;
   }
-  
-  .view-more-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    pointer-events: none;
+  /* Reserve button styles */
+  .button {
+ 
+    width: 100%;
+    height: 100;
+    font-size: 20px;
   }
-  @media (max-width: 576px){
-    .title-container h1 {
-      margin: 0;
-      font-size: 24px; /* Reduced the font size of the title */
-    }
-    .listing-details .booking .date-range-calendar .button {
-      background-color: #ff385c;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 80%;
-      margin-top: 30px;
-    }
-  }
+}
+
+@media (max-width: 768px) {
   .error-message {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff0000;
-    color: #ffffff;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 80%;
-    width: auto;
-    min-width: 300px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    max-width: calc(100% - 20px);
   }
-  
-  .error-message p {
-    margin: 0;
-    padding-right: 20px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0px 10px;
-    border-radius: 3px;
-    background-color: rgba(255, 255, 255, 0.2);
-    flex-shrink: 0;
-    margin-left: 10px;
-  }
-  
-  .close-button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-  
-  @media (max-width: 768px) {
-    .error-message {
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      transform: none;
-      max-width: calc(100% - 20px);
-    }
-  }
+}

@@ -8,6 +8,19 @@ import { setReservationList } from "../redux/state";
 import ListingCard from "../components/ListingCard";
 import Footer from "../components/footer";
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).replace(',', '').replace(/\s+/g, ' ').replace(/(\d+):(\d+)/, '$1:$2');
+};
+
 const ReservationList = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -31,8 +44,16 @@ const ReservationList = () => {
         setMessage("No current Reservation found at this time");
       } else {
         const data = await response.json();
-        setReservationList(data); // Update the reservationList state with the received data
-        console.log("reservation Info: ", data);
+        
+        // Format the dates in the received data
+        const formattedData = data.map(reservation => ({
+          ...reservation,
+          startDate: formatDate(reservation.startDate),
+          endDate: formatDate(reservation.endDate)
+        }));
+  
+        setReservationList(formattedData); // Update the reservationList state with the formatted data
+        console.log("reservation Info: ", formattedData);
       }
     } catch (err) {
       console.log("Fetch Reservation List failed!", err.message);
