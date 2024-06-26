@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Loader } from '@googlemaps/js-api-loader';
-
+import { useNavigate } from 'react-router-dom';
 const libraries = ["places"];
 const CustomHeader = ({
   date,
@@ -67,7 +67,7 @@ const Slide = () => {
   
   const dayAfterTomorrow = new Date();
   dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
-  
+  const navigate = useNavigate();
   const [pickupDate, setPickupDate] = useState(tomorrow);
   const [returnDate, setReturnDate] = useState(dayAfterTomorrow);
   const [pickupTime, setPickupTime] = useState('10:00 AM');
@@ -219,6 +219,38 @@ const Slide = () => {
     };
   }, [isCategoryOpen]);
 
+  const formatDateTime = (date, time) => {
+    const [hours, minutes] = time.split(':');
+    const [minutesPart, ampm] = minutes.split(' ');
+    let hour = parseInt(hours);
+    
+    if (ampm === 'PM' && hour !== 12) {
+      hour += 12;
+    } else if (ampm === 'AM' && hour === 12) {
+      hour = 0;
+    }
+
+    const newDate = new Date(date);
+    newDate.setHours(hour, parseInt(minutesPart), 0);
+
+    return newDate.toISOString();
+  };
+
+  const handleSearch = () => {
+    const searchData = {
+      location: location.address,
+      radius: '0-20', // preset to 20 miles
+      pickupDateTime: formatDateTime(pickupDate, pickupTime),
+      returnDateTime: formatDateTime(returnDate, returnTime),
+      category: category === '' ? 'all' : category
+    };
+
+    console.log('Search Data:', searchData);
+    // Here you can send this data to your backend or perform any other action
+     // Navigate to the CategoryPage with searchData
+     navigate(`/gears/category/${searchData.category}`, { state: { searchData } });
+  };
+
 
   return (
     <div className="slide-wrapper">
@@ -354,7 +386,8 @@ const Slide = () => {
               {getCategoryArrowIcon()}
             </div>
           </div>
-          <button className="search-btn">Search {category}</button>
+          <button className="search-btn" onClick={handleSearch}>
+            Search {category}</button>
         </div>
       </div>
       <div className="slide-container">

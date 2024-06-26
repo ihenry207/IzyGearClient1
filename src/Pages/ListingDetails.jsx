@@ -57,6 +57,7 @@ const ListingDetails = () => {
   const [isReturnTimeOpen, setIsReturnTimeOpen] = useState(false);
   const [firebaseChatId, setfirebaseChatId] = useState('');
   const [diffDays, setDiffDays] = useState(0);
+  const [disabledDates, setDisabledDates] = useState([]);
   const { category, listingId } = location.state;
   const customerFirebaseUid = useSelector(state => state.firebaseUid || '');
   const [errorMessage, setErrorMessage] = useState("");
@@ -254,12 +255,57 @@ const ListingDetails = () => {
     setIsPickupTimeOpen(false);
   };
 
+  const isDateBooked = (date, bookedDates) => {
+    return bookedDates.some(range => 
+      date >= new Date(range.start) && date <= new Date(range.end)
+    );
+  };
+
+  const findNextAvailableDates = (bookedDates) => {
+    let startDate = new Date();
+    startDate.setDate(startDate.getDate() + 1); // Start from tomorrow
+    
+    while (isDateBooked(startDate, bookedDates)) {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+    
+    let endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 1); // Set end date to the day after start date
+    
+    while (isDateBooked(endDate, bookedDates)) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    
+    return { startDate, endDate };
+  };
+
   const handleSelect = (ranges) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
   
-    if (ranges.selection.startDate >= today) {
-      setDateRange([ranges.selection]);
+    const isStartDateDisabled = disabledDates.some(
+      disabledDate => 
+        disabledDate instanceof Date && 
+        ranges.selection.startDate.toDateString() === disabledDate.toDateString()
+    );
+  
+    let endDate = ranges.selection.endDate;
+    if (!endDate || endDate < ranges.selection.startDate) {
+      endDate = ranges.selection.startDate;
+    }
+  
+    const isEndDateDisabled = disabledDates.some(
+      disabledDate => 
+        disabledDate instanceof Date && 
+        endDate.toDateString() === disabledDate.toDateString()
+    );
+  
+    if (ranges.selection.startDate >= today && !isStartDateDisabled && !isEndDateDisabled) {
+      setDateRange([{
+        startDate: ranges.selection.startDate,
+        endDate: endDate,
+        key: "selection"
+      }]);
     }
   };
 
@@ -271,6 +317,58 @@ const ListingDetails = () => {
     return `${hour12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
   });
 
+  const formatBookedDates = (bookedDates) => {
+    let disabledDatesArray = [];
+    bookedDates.forEach(dateRange => {
+      let currentDate = new Date(dateRange.start);
+      const endDate = new Date(dateRange.end);
+      while (currentDate <= endDate) {
+        disabledDatesArray.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    });
+    return disabledDatesArray;
+  };
+
+  useEffect(() => {
+    if (listing && listing.BookedDates) {
+      const { startDate, endDate } = findNextAvailableDates(listing.BookedDates);
+      setDateRange([
+        {
+          startDate,
+          endDate,
+          key: "selection"
+        }
+      ]);
+      const formattedDates = formatBookedDates(listing.BookedDates);
+      setDisabledDates(formattedDates.filter(date => date instanceof Date && !isNaN(date)));
+    }
+  }, [listing]);
+
+  const dayContentRenderer = (date) => {
+    const isDisabled = disabledDates.some(
+      disabledDate => 
+        disabledDate instanceof Date && 
+        date.toDateString() === disabledDate.toDateString()
+    );
+    return (
+      <div className={isDisabled ? 'disabled-date' : ''}>
+        {date.getDate()}
+      </div>
+    );
+  };
+
+  const formatToISO8601 = (date, time) => {
+    const [hours, minutes, period] = time.split(/:| /);
+    let hour = parseInt(hours);
+    if (period === 'PM' && hour !== 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+    
+    const newDate = new Date(date);
+    newDate.setHours(hour, parseInt(minutes), 0, 0);
+    return newDate.toISOString();
+  };
+
   //I need to call updateDiffDays whenever the pickup or return time changes:
   useEffect(() => {
     const calculateDiffDays = () => {
@@ -278,29 +376,15 @@ const ListingDetails = () => {
         setDiffDays(0);
         return;
       }
-
-      const start = new Date(dateRange[0].startDate);
-      const end = new Date(dateRange[0].endDate);
+  
+      const start = new Date(formatToISO8601(dateRange[0].startDate, pickupTime));
+      const end = new Date(formatToISO8601(dateRange[0].endDate, returnTime));
       
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         setDiffDays(0);
         return;
       }
-
-      // Parse and set the times
-      const [startHour, startMinute, startPeriod] = pickupTime.split(/:| /);
-      const [endHour, endMinute, endPeriod] = returnTime.split(/:| /);
-      
-      start.setHours(
-        startPeriod === 'PM' ? (parseInt(startHour) % 12) + 12 : parseInt(startHour) % 12,
-        parseInt(startMinute)
-      );
-      end.setHours(
-        endPeriod === 'PM' ? (parseInt(endHour) % 12) + 12 : parseInt(endHour) % 12,
-        parseInt(endMinute)
-      );
   
-      //Changed calculation to always charge for at least one day
       const diffTime = Math.abs(end - start);
       const calculatedDiffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
       setDiffDays(calculatedDiffDays);
@@ -321,7 +405,19 @@ const ListingDetails = () => {
   //const creatorID = //get it from the database so that I won't allow others to book their own gear
   //meaning if customerID === creatorID send a message before even booking.
   const navigate = useNavigate();
-
+  const formatDateDisplay = (date, time) => {
+    if (!(date instanceof Date)) return 'Select a date';
+    const isoString = formatToISO8601(date, time);
+    return new Date(isoString).toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+  };
   
 
   const handleSubmit = async () => {
@@ -353,8 +449,8 @@ const ListingDetails = () => {
         customerId,
         listingId,
         hostId: listing.creator._id,
-        startDate: `${dateRange[0].startDate.toDateString()} ${pickupTime}`,
-        endDate: `${dateRange[0].endDate.toDateString()} ${returnTime}`,
+        startDate: formatToISO8601(dateRange[0].startDate, pickupTime),
+        endDate: formatToISO8601(dateRange[0].endDate, returnTime),
         totalPrice: totalPrice,
         category,
         creatorFirebaseUid,
@@ -526,11 +622,20 @@ const ListingDetails = () => {
           <h2>How long do you want to book?</h2>
           {/* DateRange container */}
           <div className="date-range-container">
-            <DateRange
-              ranges={dateRange}
-              onChange={handleSelect}
-              minDate={new Date()}
-            />
+          <DateRange
+            ranges={dateRange}
+            onChange={handleSelect}
+            minDate={new Date()}
+            disabledDates={disabledDates}
+            dayContentRenderer={dayContentRenderer}
+            selectsRange={true}
+            showSelectionPreview={true}
+            months={1}
+            direction="horizontal"
+            moveRangeOnFirstSelection={false}
+            preventSnapRefocus={true}
+            calendarFocus="backwards"
+          />
           </div>
 
           {/* Pickup and Return Time container */}
@@ -581,15 +686,15 @@ const ListingDetails = () => {
 
           {/* Pricing information */}
           <div className="pricing-info">
-            <h2>${listing.price} x {diffDays} day{diffDays > 1 ? 's' : ''}</h2>
-            <h2>Total price: ${listing.price * diffDays}</h2>
-            <p>From: {dateRange[0] && dateRange[0].startDate instanceof Date 
-              ? `${dateRange[0].startDate.toDateString()} ${pickupTime}` 
-              : 'Select a start date'}</p>
-            <p>Until: {dateRange[0] && dateRange[0].endDate instanceof Date 
-              ? `${dateRange[0].endDate.toDateString()} ${returnTime}` 
-              : 'Select an end date'}</p>
-          </div>
+          <h2>${listing.price} x {diffDays} day{diffDays > 1 ? 's' : ''}</h2>
+          <h2>Total price: ${listing.price * (diffDays || 1)}</h2>
+          <p>From: {dateRange[0] && dateRange[0].startDate instanceof Date 
+            ? formatDateDisplay(dateRange[0].startDate, pickupTime)
+            : 'Select a start date'}</p>
+          <p>Until: {dateRange[0] && dateRange[0].endDate instanceof Date 
+            ? formatDateDisplay(dateRange[0].endDate, returnTime)
+            : 'Select an end date'}</p>
+        </div>
 
           {/* Reserve button container */}
           <div className="reserve-button-container">

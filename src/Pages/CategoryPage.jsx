@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect  } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation  } from 'react-router-dom';
 import Listings from '../components/Listings';
 import Navbar from "../components/Navbar";
 import Footer from "../components/footer";
@@ -10,56 +10,49 @@ import TuneIcon from '@mui/icons-material/Tune';
 const libraries = ["places"];
 const CategoryPage = () => {
   const { category } = useParams();
-  const getInitialFilters = () => {
-    if (category === 'Biking') {
+  const location = useLocation();
+  const searchData = location.state?.searchData;
+
+  const getInitialFilters = (categoryName, searchParams) => {
+    const baseFilters = {
+      location: searchParams?.location || '',
+      distance: searchParams?.radius || '',
+      startDate: searchParams?.pickupDateTime || '',
+      endDate: searchParams?.returnDateTime || '',
+      category: categoryName,
+      brand: '',
+      gender: '',
+      size: '',
+      condition: '',
+      price: '',
+    };
+
+    if (categoryName === 'Biking') {
       return {
-        location:'',
-        distance:'',
-        category: category,
+        ...baseFilters,
         type: '',
         kind: '',
-        brand: '',
-        gender: '',
-        size: '',
-        condition: '',
-        price: '',
       };
-    } else if (category === 'Camping') {
+    } else if (categoryName === 'Camping') {
       return {
-        location:'',
-        distance:'',
-        category: category,
+        ...baseFilters,
         subcategory: '',
         name: '',
-        brand: '',
-        gender: '',
-        size: '',
-        condition: '',
-        price: '',
       };
     } else {
-      return {
-        location:'',
-        distance:'',
-        category: category,
-        brand: '',
-        gender: '',
-        size: '',
-        condition: '',
-        price: '',
-      };
+      return baseFilters;
     }
   };
 
-  const [selectedFilters, setSelectedFilters] = useState(getInitialFilters());
+  const [selectedFilters, setSelectedFilters] = useState(getInitialFilters(category, searchData));
+
+  console.log("Here inside cat page search params: ", selectedFilters);
 
   const handleApplyFilter = (filters) => {
-    //console.log(filters);
-    setSelectedFilters(filters);
-  };
-
-  const handleApplyFilterAndClose = () => {
-    document.querySelector('.mobile-filter-overlay').style.display = 'none';
+    setSelectedFilters(prevFilters => ({
+      ...prevFilters,
+      ...filters
+    }));
   };
 
   const [showFilter, setShowFilter] = useState(false);
@@ -89,6 +82,7 @@ const CategoryPage = () => {
   }, []);
 
   const memoizedSelectedFilters = useMemo(() => selectedFilters, [selectedFilters]);
+
 
   return (
     <div className="category-page">

@@ -168,6 +168,52 @@
   display: flex;
   justify-content: center;
 }
+/* Style for the selected day in the calendar */
+.date-range-container .rdrDay.rdrDayActive .rdrDayNumber span {
+  color: white;
+  background-color: #ca071b;
+}
+
+/* Style for the in-range days */
+.date-range-container .rdrDay.rdrDayInRange .rdrDayNumber span {
+  color: white;
+  background-color: #3d91ff80; /* Using alpha for a lighter shade */
+}
+
+/* Style for the start and end date of the range */
+.date-range-container .rdrDay.rdrDayStartOfWeek .rdrDayNumber span,
+.date-range-container .rdrDay.rdrDayEndOfWeek .rdrDayNumber span,
+.date-range-container .rdrDay.rdrDayStartOfMonth .rdrDayNumber span,
+.date-range-container .rdrDay.rdrDayEndOfMonth .rdrDayNumber span {
+  color: white;
+  background-color: #3d91ff;
+}
+
+/* Style for hover effect */
+.date-range-container .rdrDay:not(.rdrDayPassive):hover .rdrDayNumber span {
+  background-color: #3d91ff;
+  color: white;
+}
+
+/* Ensure the hover doesn't affect disabled dates */
+.date-range-container .rdrDay.rdrDayDisabled:hover .rdrDayNumber span {
+  background-color: transparent;
+  color: #999;
+}
+
+/* Additional styles to ensure full coverage of selected days */
+.date-range-container .rdrDay.rdrDayActive .rdrDayNumber span:after,
+.date-range-container .rdrDay.rdrDayInRange .rdrDayNumber span:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: inherit;
+  z-index: -1;
+}
+
 
 /* Time picker container styles */
 .time-picker-container {
@@ -268,6 +314,11 @@
   width: 35%;
   margin-top: 30px;
   font-size: 20px;
+}
+
+.disabled-date {
+  text-decoration: line-through;
+  color: black;
 }
 
 /* Media queries for responsive design */

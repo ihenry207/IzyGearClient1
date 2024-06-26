@@ -1,11 +1,9 @@
-//I would add this component either at the home page or somewhere else
 import { useEffect, useState } from "react";
 import "../styles/listing.css";
 import ListingCard from "./ListingCard";
 import Loading from "./loader";
 import { useDispatch, useSelector } from "react-redux";
 import { setListings } from "../redux/state";
-//import { useParams } from "react-router-dom";
 
 const Listings = ({ pcategory, selectedFilters }) => {
     const dispatch = useDispatch();
@@ -20,9 +18,10 @@ const Listings = ({ pcategory, selectedFilters }) => {
         let listings = [];
     
         if (selectedFilters) {
-          const {//we need to add the dates with times
+          const {
             location,
-            //datetime,
+            startDate, // Added startDate
+            endDate,   // Added endDate
             distance,
             category,
             brand,
@@ -39,6 +38,10 @@ const Listings = ({ pcategory, selectedFilters }) => {
     
           const filterParams = new URLSearchParams();
           
+          // Add date filters if they exist
+          if (startDate) filterParams.append("startDate", startDate);
+          if (endDate) filterParams.append("endDate", endDate);
+
           //if we have category given and not all or empty
           if (category && category !== "all" && category !== "") filterParams.append("category", category);
           if (brand) filterParams.append("brand", brand);
