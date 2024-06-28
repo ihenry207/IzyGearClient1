@@ -12,6 +12,7 @@ import Footer from "../components/footer";
 import Loading from "../components/loader";
 import { setOwnerGearList } from "../redux/state";
 import { Loader } from '@googlemaps/js-api-loader';
+// import ImageUploading from 'react-images-uploading';
 
 const libraries = ["places"]; //IoIosImages
 

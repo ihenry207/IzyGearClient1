@@ -50,7 +50,7 @@ function App() {
             <Route path = "/:userId/profile" element={<Profile />} />
             <Route path = "/about-us" element={<AboutUs />} />
             <Route path = "/how-it-works" element={<HowItWorks />} />
-            <Route path = "/reviews/:reservationid" element={<ReviewPage />} />
+            <Route path = "/reviews/:reservationId" element={<ReviewPage />} />
             {/* <Route path ="/:userId/chats/:chatId" element={<Terms />} /> */}
           </Routes>
         </BrowserRouter>

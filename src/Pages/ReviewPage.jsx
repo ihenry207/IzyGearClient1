@@ -35,29 +35,38 @@ const ReviewPage = () => {
       return;
     }
     if (email && rating) {
-        try {
-          const response = await fetch("http://10.1.82.57:3001/reviews/create", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, rating, comment, reservationId }),
-          });
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          console.log('Review submitted successfully:', data);
-          // Handle successful submission (e.g., show a success message, clear the form)
-        } catch (error) {
-          console.error('Error submitting review:', error);
-          // Handle error (e.g., show an error message to the user)
-        }
-      } else {
-        alert("Please provide both email and rating.");
+      const reviewForm = {
+        email,
+        rating,
+        comment,
+        reservationId
       }
-    };
-
+      try {
+        const response = await fetch("http://10.1.82.57:3001/reviews/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reviewForm),
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Network response was not ok');
+        }
+  
+        console.log('Review submitted successfully:', data);
+        alert('Review submitted successfully!');
+        navigate("/")
+      } catch (error) {
+        console.error('Error submitting review:', error.message);
+        alert(error.message); // Show the error message to the user
+      }
+    } else {
+      alert("Please provide both email and rating.");
+    }
+  };
   const getRatingText = (rating) => {
     switch (rating) {
       case 1: return 'Terrible';
