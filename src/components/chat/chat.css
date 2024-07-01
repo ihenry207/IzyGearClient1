@@ -196,8 +196,8 @@
         position: relative;
         display: flex;
         align-items: center;
-    
-        input {
+      
+        textarea {
           flex: 1;
           background-color: transparent;
           border: none;
@@ -210,16 +210,21 @@
           border-width: 1px;
           border-style: solid;
           padding-right: 60px;
-          
-    
+          resize: none;
+          overflow-y: auto;
+          min-height: 60px;
+          max-height: 120px;
+      
           &:disabled {
             cursor: not-allowed;
           }
-    
+      
           @media screen and (max-width: 600px) {
             padding: 10px;
             font-size: medium;
             padding-right: 50px;
+            min-height: 40px;
+            max-height: 80px;
           }
         }
 

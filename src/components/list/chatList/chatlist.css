@@ -1,100 +1,110 @@
-/* .chatList {
-    flex: 1;
-    overflow: scroll;
-    padding: 20px;
-} */
-
 .chatList {
-   flex: 1;
-   padding: 0; /* Remove padding */
-   margin: 0; /* Remove margin */
-   overflow: scroll;
-   font-family: 'Nunito Sans', sans-serif;
-
-    .search {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 20px;
-
-        .searchBar {
-            flex: 1;
-            background-color: rgba(255, 255, 255, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-radius: 10px;
-            padding: 10px;
-            border-color: black;
-            border-width: 2px;
-            border-style: solid;
-            
-
-            input {
-                background-color: transparent;
-                border: none;
-                outline: none;
-                color: black;
-                flex: 1;
-                font-size: large;
-            }
-        }
-    }
-        .add{
-            width: 36px;
-            height: 36px;
-            background-color: rgba(57, 16, 222, 0.5);
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: larger;
-
-            svg{
-                font-size: 76px;
-            }
-        }
-        .item{
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
-            cursor: pointer;
-            border-bottom: 1px solid #08010135;
-            border-width: 1.8px;
-            
-            
-            img {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                object-fit: cover;
-            }
-            .texts {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-          
-                span {
-                  font-weight: 500;
-                }
-
-                p {
-                    font-weight: 300;
-                }
-                .unread-message {
-                    font-weight: bold;
-                    font-size: 18px;
-                }
-            }
-            
-        }
-        .unread-name {
-            font-weight: bold;
-            font-size: 1.3em;
-          }
-          
-        .unread-message {
-            font-weight: bolder;
-            font-size: 18px;
-        }  
-}
+    flex: 1;
+    padding: 0;
+    margin: 0;  /* Center the chat list */
+    overflow: hidden;
+    font-family: 'Nunito Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 90%;  /* Set maximum width to 90% of the screen */
+    width: 100%;     /* Ensure it takes full width up to the max-width */
+ 
+     .search {
+         display: flex;
+         align-items: center;
+         gap: 20px;
+         padding: 20px;
+ 
+         .searchBar {
+             flex: 1;
+             background-color: rgba(255, 255, 255, 0.5);
+             display: flex;
+             align-items: center;
+             gap: 20px;
+             border-radius: 10px;
+             padding: 10px;
+             border-color: black;
+             border-width: 2px;
+             border-style: solid;
+ 
+             input {
+                 background-color: transparent;
+                 border: none;
+                 outline: none;
+                 color: black;
+                 flex: 1;
+                 font-size: large;
+             }
+         }
+     }
+     .add {
+         width: 36px;
+         height: 36px;
+         background-color: rgba(57, 16, 222, 0.5);
+         padding: 10px;
+         border-radius: 10px;
+         cursor: pointer;
+         font-size: larger;
+ 
+         svg {
+             font-size: 76px;
+         }
+     }
+     .chatItems {
+         overflow-y: auto;
+         flex: 1;
+     }
+     .item {
+         display: flex;
+         align-items: center;
+         gap: 20px;
+         padding: 20px;
+         cursor: pointer;
+         border-bottom: 1.8px solid #08010135;
+         height: 100px;
+         overflow: hidden;
+         
+         img {
+             width: 50px;
+             height: 50px;
+             border-radius: 50%;
+             object-fit: cover;
+             flex-shrink: 0;
+         }
+         .texts {
+             display: flex;
+             flex-direction: column;
+             gap: 10px;
+             overflow: hidden;
+             flex: 1;
+       
+             span {
+               font-weight: 500;
+               white-space: nowrap;
+               overflow: hidden;
+               text-overflow: ellipsis;
+             }
+ 
+             p {
+                 font-weight: 300;
+                 white-space: nowrap;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+             }
+             .unread-message {
+                 font-weight: bold;
+                 font-size: 18px;
+             }
+         }
+     }
+     .unread-name {
+         font-weight: bold;
+         font-size: 1.3em;
+     }
+       
+     .unread-message {
+         font-weight: bolder;
+         font-size: 18px;
+     }  
+ }

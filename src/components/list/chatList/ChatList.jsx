@@ -9,6 +9,8 @@ import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import { useUserStore } from "../../../lib/userStore";
 import { useChatStore } from "../../../lib/chatStore";
+import { setUnreadMessages } from '../../../redux/state';
+import { useDispatch } from 'react-redux';
 
 const ChatList = ({ onChatClick }) => {
   const [addMode, setAddMode] = useState(false);
@@ -16,6 +18,8 @@ const ChatList = ({ onChatClick }) => {
   const [chats, setChats] = useState([]);
   const [input, setInput] = useState("");
   const { chatId, changeChat } = useChatStore();
+  const dispatch = useDispatch(); 
+  
 
   //this is where we fetch the chat list
   useEffect(() => {
@@ -60,11 +64,21 @@ const ChatList = ({ onChatClick }) => {
         chats: userChats,
       });
       changeChat(chat.chatId, chat.user);
-      onChatClick(); // Call the onChatClick function passed via props
+      onChatClick();
+
+      // Check if there are any remaining unread messages
+      const hasUnreadMessages = userChats.some((chat) => !chat.isSeen);
+      dispatch(setUnreadMessages(hasUnreadMessages));
+
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const hasUnread = chats.some(chat => !chat.isSeen);
+    dispatch(setUnreadMessages(hasUnread));
+  }, [chats, dispatch]);
 
   const filteredChats = chats.filter((c) =>
     c.user.username.toLowerCase().includes(input.toLowerCase())
@@ -79,7 +93,7 @@ const ChatList = ({ onChatClick }) => {
           <input type='text' placeholder='Search'
           onChange={(e) => setInput(e.target.value)}/>
         </div>
-          {/* {addMode ? (
+        {/* {addMode ? (
           <RemoveOutlinedIcon 
             className='add' 
             onClick={() => setAddMode((prev) => !prev)} 
@@ -91,33 +105,35 @@ const ChatList = ({ onChatClick }) => {
           />
         ) } */}
       </div>
-      {filteredChats.map((chat) => (
-        <div
-          className='item'
-          key={chat.chatId}
-          onClick={() => handleSelect(chat)}
-          // style={{
-          //   backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
-          // }}
-        >
-          <img
-            src={
-              chat.user.blocked.includes(currentUser.id)
-                ? 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
-                : chat.user.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
-            }
-            alt=""
-          />
-          <div className='texts'>
-            <span className={chat?.isSeen ? '' : 'unread-name'}>
-              {chat.user.blocked.includes(currentUser.id)
-                ? "User"
-                : chat.user.username}
-            </span>
-            <p className={chat?.isSeen ? '' : 'unread-message'}>{chat.lastMessage}</p>
+      <div className="chatItems">
+        {filteredChats.map((chat) => (
+          <div
+            className='item'
+            key={chat.chatId}
+            onClick={() => handleSelect(chat)}
+            // style={{
+            //   backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
+            // }}
+          >
+            <img
+              src={
+                chat.user.blocked.includes(currentUser.id)
+                  ? 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
+                  : chat.user.avatar || 'https://izygear.s3.us-east-2.amazonaws.com/profile-images/avatar.png'
+              }
+              alt=""
+            />
+            <div className='texts'>
+              <span className={chat?.isSeen ? '' : 'unread-name'}>
+                {chat.user.blocked.includes(currentUser.id)
+                  ? "User"
+                  : chat.user.username}
+              </span>
+              <p className={chat?.isSeen ? '' : 'unread-message'}>{chat.lastMessage}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       
       {addMode && <AddUser />}
     </div>

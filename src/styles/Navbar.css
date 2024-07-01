@@ -128,15 +128,32 @@
   text-decoration: none;
   color: #24355A;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This will push the dot to the right */
 }
 
 .navbar_right_accountmenu .menu-item {
+  position: relative;
   display: flex;
   align-items: center;
+  padding-right: 60px; /* Add some padding on the right for the dot */
+}
+
+.unread-dot {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Adjust this value to position the dot horizontally */
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
 }
 
 .navbar_right_accountmenu .menu-item span {
   margin-left: 5px;
+  flex-grow: 1; /* This will allow the text to take up available space */
 }
 
 .navbar_right_accountmenu a:hover {

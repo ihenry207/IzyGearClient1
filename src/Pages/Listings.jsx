@@ -1,47 +1,80 @@
+import { useEffect, useState } from "react";
 import "../styles/List.css";
 import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import ListingCard from "../components/ListingCard";
 import Footer from "../components/footer";
+import Loading from "../components/loader";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
 
 const Listings = () => {
-  //we use redux and get all the information needed in a fast way
-  const ownerGearList = useSelector((state) => state?.ownerGearList);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const [ownerGearList, setOwnerGearList] = useState([]);
+  const userId = useSelector((state) => state.user.userId);
 
+  const getOwnerGearList = async () => {
+    try {
+      const response = await fetch(
+        `http://10.1.82.57:3001/users/${userId}/ownerGear`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Owner Gear list:", data);
+        setOwnerGearList(data);
+      } else if (response.status === 404) {
+        toast.warn("No listed gears found at this time");
+        //setMessage("No listed gears found at this time");
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (err) {
+      console.log("Fetch Owner Gear List failed!", err.message);
+      toast.error("Fetch Owner Gear List failed! Try Later")
+      //setMessage("An error occurred while fetching your listed gears. Try again later");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getOwnerGearList();
+  }, [userId]);
+
+  if (loading) return <Loading />;
 
   return (
     <>
       <Navbar />
-      <h1 className="title-list">Your Listed Gears</h1>
-      <div className="list">
-        {ownerGearList?.map(
-          ({
-            _id,
-            creator,
-            listingPhotoPaths,
-            address,
-            title,
-            category,
-            type,
-            price,
-            condition,
-            booking = false,
-          }) => (
+      <div className="list-container">
+      <h1 className="title-list">Listed Gears</h1>
+      <Notification/>
+      {message ? (
+        <p className="listing-message">{message}</p>
+      ) : (
+        <div className="list">
+          {ownerGearList.map((gear) => (
             <ListingCard
-              key={_id}
-              listingId={_id}
-              creator={creator}
-              listingPhotoPaths={listingPhotoPaths}
-              address={address}
-              condition={condition}
-              category={category}
-              title={title}
-              type={type}
-              price={price}
-              booking={booking}
+              key={gear._id}
+              listingId={gear._id}
+              creator={gear.creator._id}
+              listingPhotoPaths={gear.listingPhotoPaths}
+              address={gear.address}
+              condition={gear.condition}
+              category={gear.category}
+              title={gear.title}
+              type={gear.type}
+              price={gear.price}
+              booking={false}
             />
-          )
-        )}
+          ))}
+        </div>
+      )}
       </div>
       <Footer />
     </>

@@ -6,6 +6,9 @@ import IconButton from "@mui/material/IconButton";
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import '../styles/register.css';
 import Navbar from "../components/Navbar";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
+
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -63,6 +66,7 @@ const Register = () => {
         navigate("/login");
       }
     } catch (err) {
+      toast.error("Registration failed")
       console.log("Registration failed", err.message);
     }
   };
@@ -70,6 +74,7 @@ const Register = () => {
   return (
     <>
     <Navbar />
+    <Notification/>
     <div className="register">
     <div className="register_content">
       <h1>Create an Account</h1>

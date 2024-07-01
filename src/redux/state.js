@@ -12,6 +12,7 @@ const initialState = {
   // ownerGearList: [],
   // reservationList: [],
   firebaseUid: null,
+  hasUnreadMessages: false,
 };
 
 export const userSlice = createSlice({
@@ -44,6 +45,7 @@ export const userSlice = createSlice({
       state.reservationList = [];
       state.listings = [];
       state.firebaseUid = null;
+      state.hasUnreadMessages = false; 
     },
     setListings: (state, action) => {
       state.listings = action.payload.listings;
@@ -60,6 +62,9 @@ export const userSlice = createSlice({
     setReservationList: (state, action) => {
       state.reservationList = action.payload;
     },
+    setUnreadMessages: (state, action) => {
+      state.hasUnreadMessages = action.payload;
+    },
     
   },
 });
@@ -72,6 +77,7 @@ export const {
   setWishList,
   setReservationList,
   setOwnerGearList,
+  setUnreadMessages,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -9,7 +9,9 @@ import { setLogin } from "../redux/state";
 import Navbar from "../components/Navbar";
 import { loginOrRegister } from "../components/login/login.js"; // Import the function
 import Loading from "../components/loader"; // Import the Loader component
-//import { auth, db } from "../components/lib/firebase.js";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,6 +56,7 @@ const LoginPage = () => {
         );
 
         navigate("/"); // navigate to homepage after login
+        toast.success("Login successful!");
         console.log("Calling loginOrRegister function");
         // Automatically login to Firebase
         const firebaseUid = await loginOrRegister(
@@ -81,11 +84,13 @@ const LoginPage = () => {
        
       } else {
         const errorData = await response.json();
-        setErrorMessage("Email or Password incorrect!");
+        toast.error("invalid credentials");
+        // setErrorMessage("Email or Password incorrect!");
       }
     } catch (err) {
+      toast.error("Error occurred. Try again later.");
       console.log("Login failed", err.message);
-      setErrorMessage("Error occurred. Try again later.");
+      // setErrorMessage("Error occurred. Try again later.");
     } finally {
       setIsLoading(false); // End loading
     }
@@ -93,6 +98,7 @@ const LoginPage = () => {
 
   return (
     <>
+      <Notification/>
       <Navbar />
       <div className="login">
         {isLoading ? (

@@ -2,16 +2,16 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
 import { useUserStore } from "./userStore"; // Import useUserStore hook
 
-const upload = async (file, onProgress) => {
+const upload = async (file, chatId, onProgress) => {
   const date = new Date();
   const currentUser = useUserStore.getState().currentUser;
   const firebaseUid = currentUser?.id;
   
-  if (!firebaseUid) {
-    throw new Error("User not authenticated");
+  if (!chatId) {
+    throw new Error("Chat ID is required");
   }
 
-  const storageRef = ref(storage, `${firebaseUid}/${date +"_"+ file.name}`);
+  const storageRef = ref(storage, `${chatId}/${date +"_"+ file.name}`);
 
   const uploadTask = uploadBytesResumable(storageRef, file);
 

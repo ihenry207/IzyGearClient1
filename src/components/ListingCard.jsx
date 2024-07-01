@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback  } from "react";
 import "../styles/listingcard.css";
 import { ArrowForwardIos, ArrowBackIosNew, Favorite } from "@mui/icons-material";
 import { truncateText } from "./utils";
@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
+import debounce from 'lodash/debounce';
 
 const parseCustomAddress = (address) => {
   const parts = address.split(', ');
@@ -114,6 +117,11 @@ const ListingCard = ({
   }, [isLiked]);
 
   const toggleFavorite = async () => {
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist");
+      return;
+    }
+
     try {
       setIsFavorite(!isFavorite);
       const response = await fetch(
@@ -123,26 +131,31 @@ const ListingCard = ({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ listing: null }) // When listing is null, the backend will handle it
+          body: JSON.stringify({ listing: null })
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
         console.log(errorData.message);
+        toast.error("Error Adding to wishList.")
+      }else if(response.ok){
+        const data = await response.json();
+        //console.log("Updated wishList:", data.wishList);
+        toast.success("Updated WishList")
+        dispatch(setWishList(data.wishList));
       }
 
-      const data = await response.json();
-      console.log("Updated wishList:", data.wishList);
-      dispatch(setWishList(data.wishList));
-      setErrorMessage("");
     } catch (error) {
       console.log("Error updating wishlist:", error);
+      toast.error("Error Adding to wishList. Try Later")
+      //setErrorMessage("Error updating wishlist");
     }
   };
 
   return (
     <>
+    <Notification/>
       {errorMessage && (
         <div className="error-message">
           <p>{errorMessage}</p>

@@ -14,6 +14,7 @@ import { useUserStore } from "../lib/userStore";
 import { useChatStore } from "../lib/chatStore";
 import { setLogin } from "../redux/state";
 import { loginOrRegister } from "../components/login/login.js";
+import Notification from '../components/notification/notification.jsx';
 
 const ChatPage = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
@@ -68,6 +69,7 @@ const ChatPage = () => {
         {showList && <List />}
         {showChat && <Chat />}
         {showDetail && <Detail />}
+        <Notification/>
       </div>
     </>
   );

@@ -102,6 +102,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         else if (filter === 'Subcategory'){
             setSelectedSubcategory(value);
         }
+        
     };
     
 
@@ -158,7 +159,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         { value: '', label: 'All' },
         { value: 'Ski', label: 'Ski' },
         { value: 'Snowboard', label: 'Snowboarding' },
-        { value: 'Biking', label: 'Bike/eScooter' },
+        { value: 'Biking', label: 'Bikes' },
         { value: 'Camping', label: 'Camping' },
     ];
 
@@ -280,8 +281,8 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
 
     const TypeOptions = [
     { value: '', label: 'All' },
-    { value: 'Scooter', label: 'Scooter' },
-    { value: 'Biking', label: 'Bike' }
+    { value: 'Road-Bike', label: 'Road Bike' },
+    { value: 'Mountain-Bike', label: 'Mountain Bike' }
     ];
 
     const KindOptions = [
@@ -301,7 +302,8 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
 
     const SubcategoryOptions = [
         {value: '', label: 'All'},
-        {value: 'Sleeping bags and pads', label: 'Sleeping bags and pads'},
+        {value: 'Sleeping bags', label: 'Sleeping bags'},
+        {value: 'Sleeping pads', label: 'Sleeping pads'},
         {value: 'Tents and shelter', label: 'Tents and shelter'},
         {value: 'Kitchen', label: 'Kitchen'},
         {value: 'Lighting', label: 'Lighting'},
@@ -309,6 +311,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         {value: 'Bags and backpacks', label: 'Bags and backpacks'},
         {value: 'Outdoor clothing', label: 'Outdoor clothing'},
         {value: 'Portable power', label: 'Portable power'},
+        {value: 'Coolers', label: 'Coolers'},
     ]
 
     const CampingGenderOptions = [
@@ -320,6 +323,133 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         { value: 'Girls\'', label: 'Girls\'' },
         { value: 'No gender', label: 'No gender' },
     ]
+    
+    const roadBikeSizes = [
+      {value: '', label: 'All'},
+      {value: '47', label: '47'},
+      {value: '50', label: '50'},
+      {value: '52', label: '52'},
+      {value: '54', label: '54'},
+      {value: '56', label: '56'},
+      {value: '58', label: '58'},
+      {value: '60', label: '60'},
+      {value: '62', label: '62'}
+    ];
+    
+    const mountainBikeSizes = [
+      {value: '', label: 'All'},
+      {value: 'XS', label: 'XS /26" or 27.5"'},
+      {value: 'S', label: 'S /27.5" or 29"'},
+      {value: 'M', label: 'M /27.5" or 29"'},
+      {value: 'M/L', label: 'M/L /29" or 27.5"'},
+      {value: 'L', label: 'L /29" or 27.5"'},
+      {value: 'XL', label: 'XL /29" or 27.5"'},
+      {value: 'XXL', label: 'XXL /29" or 27.5"'}
+    ];
+
+    const SleepingBagsSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Regular', label: 'Regular'},
+      {value: 'Long', label: 'Long'},
+      {value: 'Short', label: 'Short'},
+      {value: "Women's Specific", label: "Women's Specific"},
+      {value: 'Kids', label: 'Kids'}
+    ];
+    
+    const SleepingPadsSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Small/Short', label: 'Small/Short'},
+      {value: 'Regular', label: 'Regular'},
+      {value: 'Long', label: 'Long'},
+      {value: 'Wide', label: 'Wide'},
+      {value: 'Double', label: 'Double'}
+    ];
+    
+    const TentsAndShelterSizes = [
+      {value: 'All', label: 'All'},
+      {value: '1-Person', label: '1-Person'},
+      {value: '2-Person', label: '2-Person'},
+      {value: '3-Person', label: '3-Person'},
+      {value: '4-Person', label: '4-Person'},
+      {value: 'Family/Group (5+ person)', label: 'Family/Group (5+ person)'},
+      {value: 'Ultralight', label: 'Ultralight'},
+      {value: 'Basecamp', label: 'Basecamp'},
+      {value: '4-Season', label: '4-Season'}
+    ];
+    
+    const KitchenSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Single-Burner Stoves', label: 'Single-Burner Stoves'},
+      {value: 'Double-Burner Stoves', label: 'Double-Burner Stoves'},
+      {value: 'Compact/Ultralight Cook Sets', label: 'Compact/Ultralight Cook Sets'},
+      {value: 'Family Cook Sets', label: 'Family Cook Sets'},
+      {value: 'Grills and Griddles', label: 'Grills and Griddles'},
+      {value: 'Portable Ovens', label: 'Portable Ovens'},
+      {value: 'Coffee Makers', label: 'Coffee Makers'},
+      {value: 'Dutch Ovens and Cast Iron Cookware', label: 'Dutch Ovens and Cast Iron Cookware'}
+    ];
+    
+    const LightingSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Headlamps', label: 'Headlamps'},
+      {value: 'Lanterns', label: 'Lanterns'},
+      {value: 'String Lights', label: 'String Lights'},
+      {value: 'Flashlights', label: 'Flashlights'},
+      {value: 'Solar-Powered Lights', label: 'Solar-Powered Lights'}
+    ];
+    
+    const FurnitureSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Compact/Ultralight Chairs', label: 'Compact/Ultralight Chairs'},
+      {value: 'Regular Chairs', label: 'Regular Chairs'},
+      {value: 'Loveseat/Double Chairs', label: 'Loveseat/Double Chairs'},
+      {value: 'Tables', label: 'Tables'},
+      {value: 'Cots', label: 'Cots'},
+      {value: 'Hammocks', label: 'Hammocks'}
+    ];
+    
+    const BagsAndBackPacksSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Daypacks', label: 'Daypacks'},
+      {value: 'Overnight Packs', label: 'Overnight Packs'},
+      {value: 'Weekend Packs', label: 'Weekend Packs'},
+      {value: 'Expedition Packs', label: 'Expedition Packs'},
+      {value: 'Hydration Packs', label: 'Hydration Packs'},
+      {value: 'Waist Packs/Fanny Packs', label: 'Waist Packs/Fanny Packs'}
+    ];
+    
+    const OutdoorClothingSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Jackets and Parkas', label: 'Jackets and Parkas'},
+      {value: 'Pants', label: 'Pants'},
+      {value: 'Base Layers', label: 'Base Layers'},
+      {value: 'Insulating Layers', label: 'Insulating Layers'},
+      {value: 'Footwear', label: 'Footwear'},
+      {value: 'Accessories', label: 'Accessories'}
+    ];
+    
+    const PortablePowerSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Power Banks', label: 'Power Banks'},
+      {value: 'Solar Panels', label: 'Solar Panels'},
+      {value: 'Portable Power Stations', label: 'Portable Power Stations'}
+    ];
+    
+    const CoolersSizes = [
+      {value: 'All', label: 'All'},
+      {value: 'Personal/Small Coolers', label: 'Personal/Small Coolers'},
+      {value: 'Medium Coolers', label: 'Medium Coolers'},
+      {value: 'Large Coolers', label: 'Large Coolers'},
+      {value: 'Extra Large Coolers', label: 'Extra Large Coolers'},
+      {value: 'Soft Coolers', label: 'Soft Coolers'}
+    ];
+    const GenderSleepingBagsandOutdoorClothing = [
+      {value: '', label: 'All'},
+      {value: "Men's", label: "Men's"},
+      {value: "Women's", label: "Women's"},
+      {value: 'Unisex', label: 'Unisex'},
+      {value: "Kids'", label: "Kids'"}
+    ];
 
 
     const getBrandOptions = () => {
@@ -529,30 +659,6 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
             <>
               {/* Render filter options/dropdowns for Biking */}
               <div className="filter-section">
-                <div className="filter-title" onClick={() => toggleExpand('Type')}>
-                  Type
-                  {getSelectedLabel('Type') && (
-                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                      {getSelectedLabel('Type')}
-                    </span>
-                  )}
-                  {expanded === 'Type' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </div>
-                {expanded === 'Type' && (
-                  <div className="filter-options">
-                    {TypeOptions.map((option) => (
-                      <div
-                        key={option.value}
-                        className={`filter-box ${selectedType === option.value ? 'selected' : ''}`}
-                        onClick={() => handleOptionClick('Type', option.value)}
-                      >
-                        {option.label}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="filter-section">
                 <div className="filter-title" onClick={() => toggleExpand('Kind')}>
                   Kind
                   {getSelectedLabel('Kind') && (
@@ -576,6 +682,58 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                   </div>
                 )}
               </div>
+              <div className="filter-section">
+                <div className="filter-title" onClick={() => toggleExpand('Type')}>
+                  Type
+                  {getSelectedLabel('Type') && (
+                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                      {getSelectedLabel('Type')}
+                    </span>
+                  )}
+                  {expanded === 'Type' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </div>
+                {expanded === 'Type' && (
+                  <div className="filter-options">
+                    {TypeOptions.map((option) => (
+                      <div
+                        key={option.value}
+                        className={`filter-box ${selectedType === option.value ? 'selected' : ''}`}
+                        onClick={() => handleOptionClick('Type', option.value)}
+                      >
+                        {option.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {(selectedType === 'Road-Bike' || selectedType === 'Mountain-Bike') && (
+                <div className="filter-section">
+                  <div className="filter-title" onClick={() => toggleExpand('Size')}>
+                    Size
+                    {getSelectedLabel('Size') && (
+                      <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                        {getSelectedLabel('Size')}
+                      </span>
+                    )}
+                    {expanded === 'Size' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                  </div>
+                  {expanded === 'Size' && (
+                    <div className="filter-options">
+                      {(selectedType === 'roadBike' ? roadBikeSizes : mountainBikeSizes).map((option) => (
+                        <div
+                          key={option.value}
+                          className={`filter-box ${selectedSize === option.value ? 'selected' : ''}`}
+                          onClick={() => handleOptionClick('Size', option.value)}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              
               <div className="filter-section">
                 <div className="filter-title" onClick={() => toggleExpand('Gender')}>
                   Gender
@@ -656,7 +814,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         else if (selectedCategory === 'Camping') {
             return (
               <>
-                {/* Render filter options/dropdowns for Camping */}
+                {/* Subcategory filter */}
                 <div className="filter-section">
                   <div className="filter-title" onClick={() => toggleExpand('Subcategory')}>
                     Subcategory
@@ -681,30 +839,76 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                     </div>
                   )}
                 </div>
-                <div className="filter-section">
-                  <div className="filter-title" onClick={() => toggleExpand('Gender')}>
-                    Gender
-                    {getSelectedLabel('Gender') && (
-                      <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
-                        {getSelectedLabel('Gender')}
-                      </span>
-                    )}
-                    {expanded === 'Gender' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                  </div>
-                  {expanded === 'Gender' && (
-                    <div className="filter-options">
-                      {CampingGenderOptions.map((option) => (
-                        <div
-                          key={option.value}
-                          className={`filter-box ${selectedGender === option.value ? 'selected' : ''}`}
-                          onClick={() => handleOptionClick('Gender', option.value)}
-                        >
-                          {option.label}
-                        </div>
-                      ))}
+
+                {/* Size filter */}
+                {selectedSubcategory && (
+                  <div className="filter-section">
+                    <div className="filter-title" onClick={() => toggleExpand('Size')}>
+                      Size
+                      {getSelectedLabel('Size') && (
+                        <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                          {getSelectedLabel('Size')}
+                        </span>
+                      )}
+                      {expanded === 'Size' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </div>
-                  )}
-                </div>
+                    {expanded === 'Size' && (
+                      <div className="filter-options">
+                        {(() => {
+                          switch(selectedSubcategory) {
+                            case 'Sleeping bags': return SleepingBagsSizes;
+                            case 'Sleeping pads': return SleepingPadsSizes;
+                            case 'Tents and shelter': return TentsAndShelterSizes;
+                            case 'Kitchen': return KitchenSizes;
+                            case 'Lighting': return LightingSizes;
+                            case 'Furniture': return FurnitureSizes;
+                            case 'Bags and backpacks': return BagsAndBackPacksSizes;
+                            case 'Outdoor clothing': return OutdoorClothingSizes;
+                            case 'Portable power': return PortablePowerSizes;
+                            case 'Coolers': return CoolersSizes;
+                            default: return [];
+                          }
+                        })().map((option) => (
+                          <div
+                            key={option.value}
+                            className={`filter-box ${selectedSize === option.value ? 'selected' : ''}`}
+                            onClick={() => handleOptionClick('Size', option.value)}
+                          >
+                            {option.label}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Gender filter */}
+                {(selectedSubcategory === 'Sleeping bags' || selectedSubcategory === 'Outdoor clothing') && (
+                  <div className="filter-section">
+                    <div className="filter-title" onClick={() => toggleExpand('Gender')}>
+                      Gender
+                      {getSelectedLabel('Gender') && (
+                        <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                          {getSelectedLabel('Gender')}
+                        </span>
+                      )}
+                      {expanded === 'Gender' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </div>
+                    {expanded === 'Gender' && (
+                      <div className="filter-options">
+                        {GenderSleepingBagsandOutdoorClothing.map((option) => (
+                          <div
+                            key={option.value}
+                            className={`filter-box ${selectedGender === option.value ? 'selected' : ''}`}
+                            onClick={() => handleOptionClick('Gender', option.value)}
+                          >
+                            {option.label}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="filter-section">
                   <div className="filter-title" onClick={() => toggleExpand('Condition')}>
                     Condition

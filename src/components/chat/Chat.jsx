@@ -76,7 +76,7 @@ const Chat = () => {
         // Show the progress bar and disable the UI
         setIsUploading(true);
 
-        const imgUrl = await upload(e.target.files[0], (progress) => {
+        const imgUrl = await upload(e.target.files[0], chatId, (progress) => {
           setUploadProgress(progress);
         });
   
@@ -130,7 +130,7 @@ const Chat = () => {
     let imgUrl = null;
     try {
       if (img.file) {
-        imgUrl = await upload(img.file);
+        imgUrl = await upload(img.file, chatId);
       }
   
       await updateDoc(doc(db, "chats", chatId), {
@@ -243,8 +243,7 @@ const Chat = () => {
           />
         </div>
         <div className="inputContainer">
-          <input 
-            type='text' 
+          <textarea 
             placeholder={
               isCurrentUserBlocked || isReceiverBlocked
                 ? "You cannot send a message"
@@ -253,12 +252,12 @@ const Chat = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 handleSend();
               }
             }}
             disabled={isCurrentUserBlocked || isReceiverBlocked}
-            
           />
           
           <button 

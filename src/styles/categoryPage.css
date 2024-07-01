@@ -52,8 +52,11 @@ color: white;
 /* Rest of the CSS code remains the same */
 .listings-container {
   flex-grow: 1;
-  padding: 60px;
+  padding: 0px 160px 0px 0px;
   align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 .listings-container h1 {
   margin-bottom: 20px;

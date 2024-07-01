@@ -31,7 +31,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const hasUnreadMessages = useSelector(state => state.hasUnreadMessages);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -121,6 +121,7 @@ const Navbar = () => {
               <div className="menu-item">
                 <QuestionAnswerRoundedIcon sx={{ marginRight: '5px' }} />
                 <span>Inbox</span>
+                {hasUnreadMessages && <span className="unread-dot"></span>}
               </div>
             </Link>
             <div className="dropdown-divider"></div> {/* Line between Inbox and Profile */}

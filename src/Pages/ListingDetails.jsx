@@ -16,7 +16,8 @@ import { db } from "../lib/firebase";
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-//import { doc, getDoc } from "firebase/firestore";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
 import {
   arrayUnion,
   collection,
@@ -393,17 +394,11 @@ const ListingDetails = () => {
     calculateDiffDays();
   }, [dateRange, pickupTime, returnTime]);
 
-  // const start = new Date(dateRange[0].startDate);
-  // const end = new Date(dateRange[0].endDate);
-  // const diffTime = Math.abs(end - start);
-  // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   /* SUBMIT Reservation */
   const User = useSelector((state) => state.user);
   const customerId = User?.userId;
-  // const customerId = useSelector((state) => state.user.userId);
-  //const creatorID = //get it from the database so that I won't allow others to book their own gear
-  //meaning if customerID === creatorID send a message before even booking.
+  
   const navigate = useNavigate();
   const formatDateDisplay = (date, time) => {
     if (!(date instanceof Date)) return 'Select a date';
@@ -499,10 +494,12 @@ const ListingDetails = () => {
           console.error("Failed to obtain chatId");
           // Handle this error case appropriately
         }
-      
+        
+        toast.success("Reservation Successful!")
         navigate(`/${customerId}/reservations`);
       }
     } catch (err) {
+      toast.error("Reservation failed! Try again later.")
       console.log("Submit Booking Failed.", err.message);
     }
   };
@@ -520,6 +517,11 @@ const ListingDetails = () => {
   }, [isLiked]);
 
   const toggleFavorite = async () => {
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist");
+      return;
+    }
+
     try {
       setIsFavorite(!isFavorite);
       const response = await fetch(
@@ -536,14 +538,18 @@ const ListingDetails = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.log(errorData.message);
+        toast.error("Error Adding to wishList.")
+      }else if(response.ok){
+        const data = await response.json();
+        //console.log("Updated wishList:", data.wishList);
+        toast.success("Updated WishList")
+        dispatch(setWishList(data.wishList));
       }
 
-      const data = await response.json();
-      console.log("Updated wishList:", data.wishList);
-      dispatch(setWishList(data.wishList));
     } catch (error) {
       console.log("Error updating wishlist:", error);
-      setErrorMessage("Error updating wishlist");
+      toast.error("Error Adding to wishList. Try Later")
+      //setErrorMessage("Error updating wishlist");
     }
   };
 
@@ -552,6 +558,7 @@ const ListingDetails = () => {
   ) : (
     <>
       <Navbar />
+      <Notification/>
       {errorMessage && (
         <div className="error-message">
           <p>{errorMessage}</p>

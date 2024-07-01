@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setReservationList } from "../redux/state";
 import ListingCard from "../components/ListingCard";
 import Footer from "../components/footer";
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -41,7 +43,8 @@ const ReservationList = () => {
       );
   
       if (response.status === 404) {
-        setMessage("No current Reservation found at this time");
+        toast.warn("No current Reservation found at this time")
+        //setMessage("No current Reservation found at this time");
       } else {
         const data = await response.json();
         
@@ -57,7 +60,8 @@ const ReservationList = () => {
       }
     } catch (err) {
       console.log("Fetch Reservation List failed!", err.message);
-      setMessage("An error occurred while fetching reservations.");
+      toast.error("An error occurred while fetching reservations. Try again Later!")
+      //setMessage("An error occurred while fetching reservations.");
     } finally {
       setLoading(false);
     }
@@ -72,30 +76,33 @@ const ReservationList = () => {
   ) : (
     <>
       <Navbar />
-      <h1 className="title-list">Your Reservation List</h1>
-      {message ? (
-        <p className="reservation-message">{message}</p>
-      ) : (
-        <div className="list">
-          {reservationList?.map(({ listing, startDate, endDate, totalPrice }) => (
-            <ListingCard
-              key={listing._id}
-              listingId={listing._id}
-              creator={listing.creator}
-              listingPhotoPaths={listing.listingPhotoPaths}
-              address={listing.address}
-              category={listing.category}
-              condition={listing.condition}
-              title={listing.title}
-              price={listing.price}
-              startDate={startDate}
-              endDate={endDate}
-              totalPrice={totalPrice}
-              booking={true}
-            />
-          ))}
-        </div>
-      )}
+      <div className="list-container">
+        <h1 className="title-list">Reservation List</h1>
+        <Notification/>
+        {message ? (
+          <p className="reservation-message">{message}</p>
+        ) : (
+          <div className="list">
+            {reservationList?.map(({ reservationId, listing, startDate, endDate, totalPrice }) => (
+              <ListingCard
+                key={reservationId}
+                listingId={listing._id}
+                creator={listing.creator}
+                listingPhotoPaths={listing.listingPhotoPaths}
+                address={listing.address}
+                category={listing.category}
+                condition={listing.condition}
+                title={listing.title}
+                price={listing.price}
+                startDate={startDate}
+                endDate={endDate}
+                totalPrice={totalPrice}
+                booking={true}
+              />
+            ))}
+          </div>
+        )}
+      </div>
       <Footer />
     </>
   );

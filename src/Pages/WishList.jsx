@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ListingCard from "../components/ListingCard";
 import Navbar from "../components/Navbar";
+import "../styles/List.css";
 
 const WishList = () => {
   const wishListItems = useSelector((state) => state?.wishList);
@@ -13,7 +14,8 @@ const WishList = () => {
   return (
     <>
       <Navbar />
-      <h1 className="title-list">Your Wish List</h1>
+      <div className="list-container">
+      <h1 className="title-list">WishList</h1>
       <div className="list">
         {wishListItems?.filter((item) => item && item._id)
           .map((item) => (
@@ -33,6 +35,7 @@ const WishList = () => {
               booking={item.booking || false}
             />
           ))}
+      </div>
       </div>
     </>
   );
