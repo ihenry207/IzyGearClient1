@@ -157,6 +157,20 @@
     color: white;
 }
 
+.date-range-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;  /* Adjust as needed */
+  }
+  
+  /* Ensure the date range components don't overflow on smaller screens */
+  .date-range-wrapper .rdrDateRangeWrapper,
+  .date-range-wrapper .rdrDateRangePicker {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
 
 
 .results-button {

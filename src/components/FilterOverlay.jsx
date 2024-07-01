@@ -6,8 +6,13 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { Loader } from '@googlemaps/js-api-loader';
-
+import { DateRangePicker, DateRange } from 'react-date-range';
+import { useMediaQuery } from 'react-responsive';
+import { addDays } from 'date-fns';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 const libraries = ["places"];
+
 const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  }) => {
     //const [showFilter, setShowFilter] = useState(showFilter );
     const [expanded, setExpanded] = useState(null);
@@ -25,6 +30,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     const autocompleteRef = useRef(null);
     const [inputElement, setInputElement] = useState(null);
     const [location, setLocation] = useState({ address: "" });
+    const isMobile = useMediaQuery({ maxWidth: 767 });
     useEffect(() => {
         const loader = new Loader({
           apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -78,6 +84,19 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     const toggleExpand = (section) => {
         setExpanded(expanded === section ? null : section);
     };
+
+    const [dateRange, setDateRange] = useState([
+      {
+        startDate: new Date(),
+        endDate: addDays(new Date(), 7),
+        key: 'selection'
+      }
+    ]);
+
+    const handleDateRangeChange = (item) => {
+      setDateRange([item.selection]);
+    };
+
 
     const handleOptionClick = (filter, value) => {
         if (filter === 'Radius') {
@@ -145,7 +164,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     
 
     //const filters = ['Radius', 'Category', 'Brand', 'Gender', , 'Size', 'Condition', 'Price'];
-    const filters = ['Radius', 'Category'];
+    const filters = ['Radius', 'Category'];//we'll add date
     const radiusOptions = [
         { value: '', label: 'Any' },
         { value: '0-5', label: '5 miles' },
@@ -989,6 +1008,36 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                         />
                     </div>
 
+                </div>
+                {/* Add DateRangePicker here */}
+                <div className="filter-section">
+                  <div className="filter-title" onClick={() => toggleExpand('dateRange')}>
+                    Date Range
+                    {expanded === 'dateRange' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                  </div>
+                  {expanded === 'dateRange' && (
+                    <div className="date-range-wrapper">
+                      {isMobile ? (
+                        <DateRange
+                          onChange={handleDateRangeChange}
+                          showSelectionPreview={true}
+                          moveRangeOnFirstSelection={false}
+                          months={1}
+                          ranges={dateRange}
+                          direction="horizontal"
+                        />
+                      ) : (
+                        <DateRangePicker
+                          onChange={handleDateRangeChange}
+                          showSelectionPreview={true}
+                          moveRangeOnFirstSelection={false}
+                          months={2}
+                          ranges={dateRange}
+                          direction="horizontal"
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
                 {filters.map((filter, index) => (
                     <div key={index} className="filter-section">
