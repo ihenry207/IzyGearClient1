@@ -31,6 +31,8 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     const [inputElement, setInputElement] = useState(null);
     const [location, setLocation] = useState({ address: "" });
     const isMobile = useMediaQuery({ maxWidth: 767 });
+    const [pickupDate, setPickupDate] = useState(null);
+    const [returnDate, setReturnDate] = useState(null);
     useEffect(() => {
         const loader = new Loader({
           apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -95,7 +97,12 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
 
     const handleDateRangeChange = (item) => {
       setDateRange([item.selection]);
+      setPickupDate(item.selection.startDate.toISOString());
+      setReturnDate(item.selection.endDate.toISOString());
     };
+
+    // get today's date
+    const today = new Date();
 
 
     const handleOptionClick = (filter, value) => {
@@ -141,25 +148,27 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         setSelectedKind('');
     };
 
-    const handleApplyFilter = () => {
-        const filters = {
-          category: selectedCategory,
-          brand: selectedBrand,
-          gender: selectedGender,
-          size: selectedSize,
-          condition: selectedCondition,
-          price: selectedPrice,
-          type: selectedType,
-          kind: selectedKind,
-          subcategory: selectedSubcategory,
-          location: location.address, // Adjust this based on your location state
-          distance: selectedRadius, // Adjust this based on your distance state
-        };
-      
-        console.log(filters);
-        setShowFilter(false);
+    const handleApplyFilter = () => { 
+      const filters = {
+        category: selectedCategory,
+        brand: selectedBrand,
+        gender: selectedGender,
+        size: selectedSize,
+        condition: selectedCondition,
+        price: selectedPrice,
+        type: selectedType,
+        kind: selectedKind,
+        subcategory: selectedSubcategory,
+        location: location.address,
+        distance: selectedRadius,
+        startDate: pickupDate,
+        endDate: returnDate
+      };
     
-        onApplyFilter(filters);
+      console.log(filters);
+      setShowFilter(false);
+    
+      onApplyFilter(filters);
     };
     
 
@@ -1025,6 +1034,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                           months={1}
                           ranges={dateRange}
                           direction="horizontal"
+                          minDate={today}
                         />
                       ) : (
                         <DateRangePicker
@@ -1034,6 +1044,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                           months={2}
                           ranges={dateRange}
                           direction="horizontal"
+                          minDate={today}
                         />
                       )}
                     </div>
