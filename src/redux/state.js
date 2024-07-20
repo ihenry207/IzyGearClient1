@@ -30,7 +30,7 @@ export const userSlice = createSlice({
       state.wishList = action.payload.user?.wishList || [];
       state.ownerGearList = action.payload.user?.ownerGearList || [];
       state.reservationList = action.payload.user?.reservationList || [];
-      state.firebaseUid = action.payload.firebaseUid || null;
+      state.firebaseUid = action.payload.user?.firebaseUid || action.payload.firebaseUid || null;
     },
     setLogout: (state) => {
       state.user = null;

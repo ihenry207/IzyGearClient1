@@ -42,7 +42,7 @@ const ReviewPage = () => {
         reservationId
       }
       try {
-        const response = await fetch("http://10.1.82.57:3001/reviews/create", {
+        const response = await fetch("http://192.175.1.221:3001/reviews/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -66,7 +66,7 @@ const VerifiedInfo = ({ user }) => (
     <Typography variant="h6" gutterBottom>Verified Info</Typography>
     <List>
       <VerifiedItem 
-        text="Approved to drive" 
+        text="Approved to rent" 
         verified={user.approved} 
       />
       <VerifiedItem 
@@ -79,11 +79,11 @@ const VerifiedInfo = ({ user }) => (
         verified={user.phoneVerified} 
         actionText="Verify phone number"
       />
-      <VerifiedItem 
+      {/* <VerifiedItem 
         text="Facebook" 
         verified={user.facebookConnected} 
         actionText="Connect account"
-      />
+      /> */}
     </List>
   </Box>
 );

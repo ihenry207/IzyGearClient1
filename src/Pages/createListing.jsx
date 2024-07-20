@@ -215,9 +215,9 @@ const CreateListing = () => {
   
       /* Send a POST request to server 10.1.82.57:3001*/
       const response = await fetch(
-        category === "Biking" ? "http://10.1.82.57:3001/gears/biking/create" :
-        category === "Camping" ? "http://10.1.82.57:3001/gears/camping/create" :
-        "http://10.1.82.57:3001/gears/skisnow/create",
+        category === "Biking" ? "http://192.175.1.221:3001/gears/biking/create" :
+        category === "Camping" ? "http://192.175.1.221:3001/gears/camping/create" :
+        "http://192.175.1.221:3001/gears/skisnow/create",
         {
           method: "POST",
           body: listingForm,

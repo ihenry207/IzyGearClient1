@@ -30,7 +30,7 @@ const LoginPage = () => {
     e.preventDefault();
     setIsLoading(true); // Start loading
     try {
-      const response = await fetch("http://10.1.82.57:3001/auth/login", {
+      const response = await fetch("http://192.175.1.221:3001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,23 +65,37 @@ const LoginPage = () => {
           loggedIn.user.profileImagePath, 
           loggedIn.user.firstName + " " + loggedIn.user.lastName);
 
-        dispatch(setLogin({ ...loggedIn, firebaseUid })); // Save the Firebase UID in Redux
-        
-        // Call the API to store the firebaseUid inside of the database
-        const response2 = await fetch("http://10.1.82.57:3001/auth/firebase", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ firebaseUid, userId: loggedIn.user.userId }),
-        });
 
-        if (response2.ok) {
-          console.log("Firebase UID stored successfully");
-        } else {
-          console.log("Failed to store Firebase UID");
-        }
-       
+        // Call the API to store or retrieve the firebaseUid
+      const response2 = await fetch("http://192.175.1.221:3001/auth/firebase", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firebaseUid, userId: loggedIn.user.userId }),
+      });
+
+      if (response2.ok) {
+        const data = await response2.json();
+        console.log("firebase from backend: ",data)
+        console.log("Firebase UID response:", data);
+        
+        // Store the firebaseUid in localStorage
+        localStorage.setItem('firebaseUid', data.firebaseUid || firebaseUid);
+        
+        // Update Redux state with the firebaseUid
+        dispatch(setLogin({ 
+          ...loggedIn, 
+          user: { 
+            ...loggedIn.user, 
+            firebaseUid: data.firebaseUid || firebaseUid 
+          } 
+        }));
+
+        console.log("Firebase UID stored successfully");
+      } else {
+        console.log("Failed to store/retrieve Firebase UID");
+      }
       } else {
         const errorData = await response.json();
         toast.error("invalid credentials");

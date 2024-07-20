@@ -29,7 +29,6 @@ function App() {
   //const [creatorFirebaseUid, setCreatorFirebaseUid] = useState(null);
   return (
     <div>
-      
         <BrowserRouter>
           <Routes>
             <Route path = '/' element = {<Home />} />
@@ -53,9 +52,7 @@ function App() {
             <Route path = "/reviews/:reservationId" element={<ReviewPage />} />
             {/* <Route path ="/:userId/chats/:chatId" element={<Terms />} /> */}
           </Routes>
-        </BrowserRouter>
-
-      
+        </BrowserRouter> 
     </div>
   );
 }

@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
-import { useEffect, useState } from "react";
 import Loading from "../components/loader";
 import Footer from "../components/footer";
 import Detail from "../components/detail/Detail";
@@ -18,49 +17,51 @@ import Notification from '../components/notification/notification.jsx';
 
 const ChatPage = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const firebaseUid = useSelector((state) => state.user.firebaseUid);
   const { chatId, showList, showChat, showDetail } = useChatStore();
   const dispatch = useDispatch();
+  const [authChecked, setAuthChecked] = useState(false);
 
-  // Move the useSelector call outside the useEffect hook
   const userData = useSelector((state) => state.user);
+  const firebaseUid = useSelector((state) => state.user?.firebaseUid);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is logged in, fetch user info
-        fetchUserInfo(user.uid);
+        await fetchUserInfo(user.uid);
+        setAuthChecked(true);
       } else {
         console.log("trying to login in again")
-        // User is not logged in, try to log in using Redux data
         const { email, firstName, lastName, profileImagePath } = userData;
         if (email) {
           try {
-            const firebaseUid = await loginOrRegister(
+            const newFirebaseUid = await loginOrRegister(
               email,
               "izygear", // password
               profileImagePath,
               `${firstName} ${lastName}`
             );
-            dispatch(setLogin({ ...userData, firebaseUid })); // Merge existing user data with firebaseUid
-            fetchUserInfo(firebaseUid);
+            if (newFirebaseUid) {
+              dispatch(setLogin({ ...userData, firebaseUid: newFirebaseUid }));
+              await fetchUserInfo(newFirebaseUid);
+            }
           } catch (error) {
             console.error("Error logging in:", error);
           }
         }
+        setAuthChecked(true);
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, [fetchUserInfo, dispatch, userData]);
-
-  //we need to check if the firebaseuid is null we login automatically
 
   console.log("Firebase user: ", currentUser);
 
-  if (isLoading) return <Loading />;
+  if (isLoading || !authChecked) return <Loading />;
+
+  if (!firebaseUid) {
+    return <div>Please log in to access chats.</div>;
+  }
 
   return (
     <>

@@ -57,7 +57,7 @@ const Register = () => {
         register_form.append(key, formData[key]);
       }
   
-      const response = await fetch("http://10.1.82.57:3001/auth/register", {
+      const response = await fetch("http://192.175.1.221:3001/auth/register", {
         method: "POST",
         body: register_form,
       });

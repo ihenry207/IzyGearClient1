@@ -1,23 +1,38 @@
-
-.loader {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-}
-.loader-inner {
-border: 6px solid #f3f3f3;
-border-top: 6px solid #3498db;
-border-radius: 50%;
-width: 40px;
-height: 40px;
-animation: spin 2s linear infinite;
-}
-@keyframes spin {
-0% {
-transform: rotate(0deg);
-}
-100% {
-transform: rotate(360deg);
-}
-}
+.loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5); /* Translucent white background */
+    backdrop-filter: blur(5px); /* Creates a glass-like effect */
+    z-index: 9999; /* Ensures the loader is on top of other elements */
+  }
+  
+  .loader {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    border-radius: 50%;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .loader-inner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }

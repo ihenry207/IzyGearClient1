@@ -17,7 +17,7 @@ const Listings = () => {
   const getOwnerGearList = async () => {
     try {
       const response = await fetch(
-        `http://10.1.82.57:3001/users/${userId}/ownerGear`,
+        `http://192.175.1.221:3001/users/${userId}/ownerGear`,
         {
           method: "GET",
         }

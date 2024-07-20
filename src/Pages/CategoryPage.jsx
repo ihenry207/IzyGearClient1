@@ -86,7 +86,6 @@ const CategoryPage = () => {
 
   return (
     <div className="category-page">
-      
       <Navbar />
       <div className="category-content">
         <div className={`filter-button-container ${hideButton ? 'hide' : ''}`}>
@@ -101,11 +100,7 @@ const CategoryPage = () => {
           showFilter={showFilter}
           setShowFilter={setShowFilter}
         />
-
-        {/* <Filter pcategory={category} onApplyFilter={handleApplyFilter} 
-        onApplyFilterAndClose={handleApplyFilterAndClose} /> */}
-        
-        <div className="listings-container">
+        <div className={`listings-container ${showFilter ? 'blurred' : ''}`}>
           <Listings pcategory={category} selectedFilters={memoizedSelectedFilters} />
         </div>
       </div>

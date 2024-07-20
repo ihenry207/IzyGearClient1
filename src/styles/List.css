@@ -1,4 +1,5 @@
-/* Define color variables for consistent use throughout the stylesheet */
+/* List.css */
+
 :root {
   --pinkred: #F8395A;
   --blue: #24355A;
@@ -7,57 +8,77 @@
   --darkgrey: #969393;
 }
 
-/* Styles for the main container of the list */
 .list-container {
-  padding: 10px 20px;
+  padding: 60px 20px;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  align-items: center; /* Center children horizontally */
+  flex-direction: column;
+  align-items: center;
   background-color: #f5f5f5;
   font-family: 'Nunito Sans', sans-serif;
-  /* border: 5px solid red; */
+  min-height: calc(100vh - 60px); /* Adjust based on your navbar height */
 }
 
-/* Styles for the main title of the list */
 .title-list {
   color: var(--blue);
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 800;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
-/* Styles for the container of the listing cards */
-.list {
-  display: flex;
-  flex-wrap: wrap; /* Allow items to wrap to next line */
-  justify-content: center; /* Center items horizontally */
-  align-items: center;
-  gap: 15px; /* Space between items */
-  padding: 50px 0;
-  width:100%; 
-  margin: 0 auto; /* Center the list container */
-  /* border: 5px solid blue; */
+.reservation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
+.reservation-item {
+  display: flex;
+  justify-content: center;
+}
 
-/* Styles for the message when no reservations are found */
 .reservation-message {
-  font-size: 20px;
+  font-size: 18px;
   margin: 20px 0;
   text-align: center;
+  color: var(--darkgrey);
 }
 
-/* Responsive design for medium-sized screens */
 @media (max-width: 992px) {
-  
+  .reservation-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
 }
 
-/* Responsive design for small screens */
 @media (max-width: 768px) {
   .list-container {
-    padding: 50px 20px; /* Reduce padding on small screens */
+    padding: 40px 15px;
   }
-  
-  
+
+  .title-list {
+    font-size: 28px;
+  }
+
+  .reservation-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .list-container {
+    padding: 30px 10px;
+  }
+
+  .title-list {
+    font-size: 24px;
+  }
+
+  .reservation-grid {
+    grid-template-columns: 1fr;
+  }
 }

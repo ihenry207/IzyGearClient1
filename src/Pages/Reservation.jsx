@@ -36,7 +36,7 @@ const ReservationList = () => {
   const getReservationList = async () => {
     try {
       const response = await fetch(
-        `http://10.1.82.57:3001/reservations/${userId}/reservations`,
+        `http://192.175.1.221:3001/reservations/${userId}/reservations`,
         {
           method: "GET",
         }
@@ -79,26 +79,27 @@ const ReservationList = () => {
       <div className="list-container">
         <h1 className="title-list">Reservation List</h1>
         <Notification/>
-        {message ? (
-          <p className="reservation-message">{message}</p>
+        {reservationList.length === 0 ? (
+          <p className="reservation-message">No current Reservation found at this time</p>
         ) : (
-          <div className="list">
-            {reservationList?.map(({ reservationId, listing, startDate, endDate, totalPrice }) => (
-              <ListingCard
-                key={reservationId}
-                listingId={listing._id}
-                creator={listing.creator}
-                listingPhotoPaths={listing.listingPhotoPaths}
-                address={listing.address}
-                category={listing.category}
-                condition={listing.condition}
-                title={listing.title}
-                price={listing.price}
-                startDate={startDate}
-                endDate={endDate}
-                totalPrice={totalPrice}
-                booking={true}
-              />
+          <div className="reservation-grid">
+            {reservationList.map(({ reservationId, listing, startDate, endDate, totalPrice }) => (
+              <div className="reservation-item" key={reservationId}>
+                <ListingCard
+                  listingId={listing._id}
+                  creator={listing.creator}
+                  listingPhotoPaths={listing.listingPhotoPaths}
+                  address={listing.address}
+                  category={listing.category}
+                  condition={listing.condition}
+                  title={listing.title}
+                  price={listing.price}
+                  startDate={startDate}
+                  endDate={endDate}
+                  totalPrice={totalPrice}
+                  booking={true}
+                />
+              </div>
             ))}
           </div>
         )}

@@ -97,7 +97,7 @@ const ChatDetails = () => {
   const getReservedGears = async () => {
     try {
       const response = await fetch(
-        `http://10.1.82.57:3001/reservations/${chatId}/gears`,
+        `http://192.175.1.221:3001/reservations/${chatId}/gears`,
         {
           method: "GET",
         }

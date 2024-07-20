@@ -13,7 +13,7 @@ const Listings = ({ pcategory, selectedFilters }) => {
     
     const getFeedListings = async () => {
       try {
-        const baseUrl = "http://10.1.82.57:3001/gears";
+        const baseUrl = "http://192.175.1.221:3001/gears";
         let response;
         let listings = [];
     
@@ -137,41 +137,40 @@ const Listings = ({ pcategory, selectedFilters }) => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="listings">
-            {listings
-              .filter((listing) => listing && listing._id)
-              .map(
-                ({
-                  _id,
-                  creator,
-                  listingPhotoPaths,
-                  address,
-                  title,
-                  category,
-                  type,
-                  price,
-                  condition,
-                  booking = false,
-                }) => (
-                  <ListingCard
-                    key={_id}
-                    listingId={_id}
-                    creator={creator}
-                    listingPhotoPaths={listingPhotoPaths || []}
-                    address={address}
-                    condition={condition}
-                    category={category}
-                    title={title}
-                    type={type}
-                    price={price}
-                    booking={booking}
-                  />
-                )
-              )}
-          </div>
-        )}
-      </>
-    );
+          <div className="listings-grid">
+          {listings
+            .filter((listing) => listing && listing._id)
+            .map(({
+              _id,
+              creator,
+              listingPhotoPaths,
+              address,
+              title,
+              category,
+              type,
+              price,
+              condition,
+              booking = false,
+            }) => (
+              <div className="listing-item" key={_id}>
+                <ListingCard
+                  listingId={_id}
+                  creator={creator}
+                  listingPhotoPaths={listingPhotoPaths || []}
+                  address={address}
+                  condition={condition}
+                  category={category}
+                  title={title}
+                  type={type}
+                  price={price}
+                  booking={booking}
+                />
+              </div>
+            ))}
+        </div>
+      )}
+    </>
+  );
   };
   
   export default Listings;
