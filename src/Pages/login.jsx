@@ -28,9 +28,9 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     try {
-      const response = await fetch("http://192.175.1.221:3001/auth/login", {
+      const response = await fetch("http://192.168.1.66:3001/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,69 +44,58 @@ const LoginPage = () => {
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
-            firstName: loggedIn.user.firstName,
-            lastName: loggedIn.user.lastName,
-            email: loggedIn.user.email,
-            profileImagePath: loggedIn.user.profileImagePath,
-            gearList: loggedIn.user.gearList,
-            wishList: loggedIn.user.wishList,
-            ownerGearList: loggedIn.user.ownerGearList,
-            reservationList: loggedIn.user.reservationList,
           })
         );
-
-        navigate("/"); // navigate to homepage after login
+  
+        navigate("/");
         toast.success("Login successful!");
         console.log("Calling loginOrRegister function");
+        
         // Automatically login to Firebase
         const firebaseUid = await loginOrRegister(
           loggedIn.user.email, 
-          "izygear",//password, //have userId be the password
+          "izygear",
           loggedIn.user.profileImagePath, 
-          loggedIn.user.firstName + " " + loggedIn.user.lastName);
-
-
+          loggedIn.user.firstName + " " + loggedIn.user.lastName
+        );
+  
         // Call the API to store or retrieve the firebaseUid
-      const response2 = await fetch("http://192.175.1.221:3001/auth/firebase", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ firebaseUid, userId: loggedIn.user.userId }),
-      });
-
-      if (response2.ok) {
-        const data = await response2.json();
-        console.log("firebase from backend: ",data)
-        console.log("Firebase UID response:", data);
-        
-        // Store the firebaseUid in localStorage
-        localStorage.setItem('firebaseUid', data.firebaseUid || firebaseUid);
-        
-        // Update Redux state with the firebaseUid
-        dispatch(setLogin({ 
-          ...loggedIn, 
-          user: { 
-            ...loggedIn.user, 
-            firebaseUid: data.firebaseUid || firebaseUid 
-          } 
-        }));
-
-        console.log("Firebase UID stored successfully");
+        const response2 = await fetch("http://192.168.1.66:3001/auth/firebase", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ firebaseUid, userId: loggedIn.user.userId }),
+        });
+  
+        if (response2.ok) {
+          const data = await response2.json();
+          console.log("firebase from backend: ", data);
+          
+          // Store the firebaseUid in localStorage
+          localStorage.setItem('firebaseUid', data.firebaseUid || firebaseUid);
+          
+          // Update Redux state with the firebaseUid
+          dispatch(setLogin({ 
+            ...loggedIn, 
+            user: { 
+              ...loggedIn.user, 
+              firebaseUid: data.firebaseUid || firebaseUid 
+            } 
+          }));
+  
+          console.log("Firebase UID stored successfully");
+        } else {
+          console.log("Failed to store/retrieve Firebase UID");
+        }
       } else {
-        console.log("Failed to store/retrieve Firebase UID");
-      }
-      } else {
-        const errorData = await response.json();
-        toast.error("invalid credentials");
-        // setErrorMessage("Email or Password incorrect!");
+        toast.error("Invalid credentials");
       }
     } catch (err) {
       toast.error("Error occurred. Try again later.");
       console.log("Login failed", err.message);
-      // setErrorMessage("Error occurred. Try again later.");
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
 

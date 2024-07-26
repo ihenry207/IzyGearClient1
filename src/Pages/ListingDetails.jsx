@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Footer from "../components/footer";
 import ImageGallery from "../components/ImageGallery";
 import { Favorite, FavoriteBorder  } from "@mui/icons-material";
-import { setWishList } from "../redux/state";
+//import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
 import { db } from "../lib/firebase";
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
@@ -205,11 +205,11 @@ const ListingDetails = () => {
       let apiUrl = "";
       //I could also fetch booked dates to blur out those days, if in past don't blur
       if (category === "Ski" || category === "Snowboard") {
-        apiUrl = `http://192.175.1.221:3001/gears/skisnow/${listingId}`;
+        apiUrl = `http://192.168.1.66:3001/gears/skisnow/${listingId}`;
       } else if (category === "Biking") {
-        apiUrl = `http://192.175.1.221:3001/gears/biking/${listingId}`;
+        apiUrl = `http://192.168.1.66:3001/gears/biking/${listingId}`;
       } else if (category === "Camping") {
-        apiUrl = `http://192.175.1.221:3001/gears/camping/${listingId}`;
+        apiUrl = `http://192.168.1.66:3001/gears/camping/${listingId}`;
       }
 
       const response = await fetch(apiUrl, {
@@ -454,7 +454,7 @@ const ListingDetails = () => {
 
       console.log("Here is the Reservation form: ", reservationForm)
 
-      const response = await fetch("http://192.175.1.221:3001/reservations/create", {
+      const response = await fetch("http://192.168.1.66:3001/reservations/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -477,7 +477,7 @@ const ListingDetails = () => {
           console.log("Here is chatForm inside of listingdetails: ",chatForm)
       
           // Send the chat info to backend
-          const chatResponse = await fetch("http://192.175.1.221:3001/reservations/chatId", {
+          const chatResponse = await fetch("http://192.168.1.66:3001/reservations/chatId", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -525,7 +525,7 @@ const ListingDetails = () => {
     try {
       setIsFavorite(!isFavorite);
       const response = await fetch(
-        `http://192.175.1.221:3001/users/${user?.userId}/${category}/${listingId}`,
+        `http://192.168.1.66:3001/users/${user?.userId}/${category}/${listingId}`,
         {
           method: "PATCH",
           headers: {
@@ -543,7 +543,7 @@ const ListingDetails = () => {
         const data = await response.json();
         //console.log("Updated wishList:", data.wishList);
         toast.success("Updated WishList")
-        dispatch(setWishList(data.wishList));
+        //dispatch(setWishList(data.wishList));
       }
 
     } catch (error) {

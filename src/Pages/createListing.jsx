@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/footer";
 import Loading from "../components/loader";
-import { setOwnerGearList } from "../redux/state";
+//import { setOwnerGearList } from "../redux/state";
 import { Loader } from '@googlemaps/js-api-loader';
 import ImageUploading from 'react-images-uploading';
 
@@ -32,7 +32,7 @@ const CreateListing = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const creatorId = useSelector((state) => state.user.userId);
-  const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
+  //const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
   const firebaseUid = useSelector(state => state.firebaseUid || '');
   const navigate = useNavigate();
   const autocompleteRef = useRef(null);
@@ -98,25 +98,7 @@ const CreateListing = () => {
     }
   };
 
-  const handleUploadPhotos = (e) => {
-    const newPhotos = e.target.files;
-    setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-  };
 
-  const handleDragPhoto = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(photos);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setPhotos(items);
-  };
-  const handleRemovePhoto = (indexToRemove) => {
-    setPhotos((prevPhotos) =>
-      prevPhotos.filter((_, index) => index !== indexToRemove)
-    );
-  };
 
   /* DESCRIPTION */
   const [description, setDescription] = useState("");
@@ -215,9 +197,9 @@ const CreateListing = () => {
   
       /* Send a POST request to server 10.1.82.57:3001*/
       const response = await fetch(
-        category === "Biking" ? "http://192.175.1.221:3001/gears/biking/create" :
-        category === "Camping" ? "http://192.175.1.221:3001/gears/camping/create" :
-        "http://192.175.1.221:3001/gears/skisnow/create",
+        category === "Biking" ? "http://192.168.1.66:3001/gears/biking/create" :
+        category === "Camping" ? "http://192.168.1.66:3001/gears/camping/create" :
+        "http://192.168.1.66:3001/gears/skisnow/create",
         {
           method: "POST",
           body: listingForm,
@@ -228,7 +210,7 @@ const CreateListing = () => {
       
       if (response.ok) {
         const newListing = await response.json();
-        dispatch(setOwnerGearList([...ownerGearList, newListing]));
+        //dispatch(setOwnerGearList([...ownerGearList, newListing]));
         setIsLoading(false);
         navigate("/");
       } else {

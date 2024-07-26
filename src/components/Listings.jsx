@@ -2,26 +2,25 @@ import { useEffect, useState } from "react";
 import "../styles/listing.css";
 import ListingCard from "./ListingCard";
 import Loading from "./loader";
-import { useDispatch, useSelector } from "react-redux";
-import { setListings } from "../redux/state";
 
-const Listings = ({ pcategory, selectedFilters }) => {
-    const dispatch = useDispatch();
+const Listings = ({ selectedFilters }) => {
     const [loading, setLoading] = useState(true);
-    const listings = useSelector((state) => state.listings);
-    console.log("Here is pcat: ", selectedFilters)
+    const [error, setError] = useState(null);
+    const [listings, setListings] = useState([]);
     
     const getFeedListings = async () => {
       try {
-        const baseUrl = "http://192.175.1.221:3001/gears";
+        setError(null);
+        setLoading(true);
+        const baseUrl = "http://192.168.1.66:3001/gears";
         let response;
-        let listings = [];
+        let fetchedListings = [];
     
         if (selectedFilters) {
           const {
             location,
-            startDate, // Added startDate
-            endDate,   // Added endDate
+            startDate,
+            endDate,
             distance,
             category,
             brand,
@@ -34,15 +33,11 @@ const Listings = ({ pcategory, selectedFilters }) => {
             subcategory,
             name,
           } = selectedFilters;
-          console.log("Selected Filters111:", selectedFilters);
     
           const filterParams = new URLSearchParams();
           
-          // Add date filters if they exist
           if (startDate) filterParams.append("startDate", startDate);
           if (endDate) filterParams.append("endDate", endDate);
-
-          //if we have category given and not all or empty
           if (category && category !== "all" && category !== "") filterParams.append("category", category);
           if (brand) filterParams.append("brand", brand);
           if (gender) filterParams.append("gender", gender);
@@ -53,13 +48,10 @@ const Listings = ({ pcategory, selectedFilters }) => {
           if (kind) filterParams.append("kind", kind);
           if (subcategory) filterParams.append("subcategory", subcategory);
           if (name) filterParams.append("name", name);
-          // Add location and distance filters only if both are present
           if (location && distance) {
             filterParams.append("location", location);
             filterParams.append("distance", distance);
           }
-    
-          console.log("Filter Params:", filterParams.toString());
     
           if (category === "all" || category === "") {
             const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
@@ -76,30 +68,16 @@ const Listings = ({ pcategory, selectedFilters }) => {
             const bikingListings = await bikingResponse.json();
             const campingListings = await campingResponse.json();
     
-            listings = [...skiSnowListings, ...bikingListings, ...campingListings];
-          }
-    
-          if (category === "Camping") {
-            
-            const url = `${baseUrl}/camping?${filterParams.toString()}`;
-            console.log("we are in camping url", url)
-            response = await fetch(url, { method: "GET" });
-            listings = await response.json();
-          }
-    
-          if (category === "Biking") {
-            
-            const url = `${baseUrl}/biking?${filterParams.toString()}`;
-            console.log("we are in biking url: ", url)
-            response = await fetch(url, { method: "GET" });
-            listings = await response.json();
-          }
-    
-          if (category === "Ski" || category === "Snowboard") {
-            const url = `${baseUrl}/skisnow?${filterParams.toString()}`;
-            console.log("we are in ski or snowboard url: ", url)
-            response = await fetch(url, { method: "GET" });
-            listings = await response.json();
+            fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings];
+          } else if (category === "Camping") {
+            response = await fetch(`${baseUrl}/camping?${filterParams.toString()}`, { method: "GET" });
+            fetchedListings = await response.json();
+          } else if (category === "Biking") {
+            response = await fetch(`${baseUrl}/biking?${filterParams.toString()}`, { method: "GET" });
+            fetchedListings = await response.json();
+          } else if (category === "Ski" || category === "Snowboard") {
+            response = await fetch(`${baseUrl}/skisnow?${filterParams.toString()}`, { method: "GET" });
+            fetchedListings = await response.json();
           }
         } else {
           const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
@@ -116,61 +94,59 @@ const Listings = ({ pcategory, selectedFilters }) => {
           const bikingListings = await bikingResponse.json();
           const campingListings = await campingResponse.json();
     
-          listings = [...skiSnowListings, ...bikingListings, ...campingListings];
+          fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings];
         }
     
-        dispatch(setListings({ listings }));
-        console.log("Here are some listings: ",listings);
-        setLoading(false);
+        setListings(fetchedListings);
+        console.log("Fetched listings:", fetchedListings);
       } catch (err) {
         console.log("Fetch Listings Failed:", err.message);
+        setError("Failed to fetch listings. Please try again later.");
+      } finally {
         setLoading(false);
       }
     };
   
     useEffect(() => {
       getFeedListings();
-    }, [pcategory, selectedFilters]);
+    }, [selectedFilters]);
   
+    if (loading) return <Loading />;
+    if (error) return <div className="error-message">{error}</div>;
+
     return (
-      <>
-        {loading ? (
-          <Loading />
-        ) : (
-          <div className="listings-grid">
-          {listings
-            .filter((listing) => listing && listing._id)
-            .map(({
-              _id,
-              creator,
-              listingPhotoPaths,
-              address,
-              title,
-              category,
-              type,
-              price,
-              condition,
-              booking = false,
-            }) => (
-              <div className="listing-item" key={_id}>
-                <ListingCard
-                  listingId={_id}
-                  creator={creator}
-                  listingPhotoPaths={listingPhotoPaths || []}
-                  address={address}
-                  condition={condition}
-                  category={category}
-                  title={title}
-                  type={type}
-                  price={price}
-                  booking={booking}
-                />
-              </div>
-            ))}
-        </div>
-      )}
-    </>
-  );
-  };
-  
-  export default Listings;
+      <div className="listings-grid">
+        {listings
+          .filter((listing) => listing && listing._id)
+          .map(({
+            _id,
+            creator,
+            listingPhotoPaths,
+            address,
+            title,
+            category,
+            type,
+            price,
+            condition,
+            booking = false,
+          }) => (
+            <div className="listing-item" key={_id}>
+              <ListingCard
+                listingId={_id}
+                creator={creator}
+                listingPhotoPaths={listingPhotoPaths || []}
+                address={address}
+                condition={condition}
+                category={category}
+                title={title}
+                type={type}
+                price={price}
+                booking={booking}
+              />
+            </div>
+          ))}
+      </div>
+    );
+};
+
+export default Listings;

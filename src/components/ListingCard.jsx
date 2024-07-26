@@ -4,7 +4,7 @@ import { ArrowForwardIos, ArrowBackIosNew, Favorite } from "@mui/icons-material"
 import { truncateText } from "./utils";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setWishList } from "../redux/state";
+//import { setWishList } from "../redux/state";
 import parseAddress from "parse-address";
 import Notification from '../components/notification/notification.jsx';
 import { toast } from 'react-toastify';
@@ -125,7 +125,7 @@ const ListingCard = ({
     try {
       setIsFavorite(!isFavorite);
       const response = await fetch(
-        `http://192.175.1.221:3001/users/${user?.userId}/${category}/${listingId}`,
+        `http://192.168.1.66:3001/users/${user?.userId}/${category}/${listingId}`,
         {
           method: "PATCH",
           headers: {
@@ -143,7 +143,7 @@ const ListingCard = ({
         const data = await response.json();
         //console.log("Updated wishList:", data.wishList);
         toast.success("Updated WishList")
-        dispatch(setWishList(data.wishList));
+        //dispatch(setWishList(data.wishList));
       }
 
     } catch (error) {

@@ -23,6 +23,7 @@ import Terms from "./Pages/Terms"
 import ChatPage from "./Pages/chat.jsx";
 import Profile from "./Pages/Profile.jsx";
 import ReviewPage from "./Pages/ReviewPage.jsx";
+import EditListing from "./Pages/EditListing.jsx";
 
 //import Footer from "./components/footer"
 function App() { 
@@ -50,6 +51,7 @@ function App() {
             <Route path = "/about-us" element={<AboutUs />} />
             <Route path = "/how-it-works" element={<HowItWorks />} />
             <Route path = "/reviews/:reservationId" element={<ReviewPage />} />
+            <Route path = "/editListing" element={<EditListing />} />
             {/* <Route path ="/:userId/chats/:chatId" element={<Terms />} /> */}
           </Routes>
         </BrowserRouter> 

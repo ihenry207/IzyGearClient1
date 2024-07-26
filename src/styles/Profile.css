@@ -1,79 +1,370 @@
 /* Profile.css */
 
+:root {
+  --pinkred: #F8395A;
+  --blue: #24355A;
+  --lightgrey: #F7F8F8;
+  --grey: #bdb9b9;
+  --darkgrey: #969393;
+}
+
 .profile {
-    padding-top: 20px;
-    padding-bottom: 40px;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+/* User info section */
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.user-avatar-name {
+  display: flex;
+  align-items: center;
+}
+
+.user-info .user-avatar {
+  width: 100px !important;
+  height: 100px !important;
+  font-size: 2rem !important;
+  margin-right: 24px;
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Verified info section */
+.verified-info .MuiListItem-root {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.verified-info .MuiButton-root {
+  min-width: 120px;
+}
+
+/* Custom styles for the edit profile button */
+.edit-profile-button {
+  background-color: #6200ee !important;
+  color: white !important;
+  transition: background-color 0.3s !important;
+}
+
+.edit-profile-button:hover {
+  background-color: #3700b3 !important;
+}
+
+/* Reviews section */
+.reviews {
+  position: relative;
+}
+
+.reviews-container {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 8px;
+}
+
+.review-card {
+  flex: 0 0 auto;
+  width: 300px;
+  margin-right: 16px;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  border: 2px solid black;
+  box-sizing: border-box;
+}
+
+.review-text {
+  margin-bottom: 16px;
+  padding-bottom: 15px;
+}
+
+.review-count {
+  text-align: right;
+  padding-right: 16px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+}
+
+.reviewer-info .reviewer-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  margin-right: 12px;
+  border-radius: 50%;
+}
+
+.reviewer-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+/* Custom scrollbar styles for reviews */
+.reviews-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.reviews-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* OwnerGearList styles */
+.listContainer_r9s0t {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+  font-family: 'Nunito Sans', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.titleList_u1v2w {
+  color: #24355A;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.reservationGrid_a5b6c {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.reservationScroll_x1y2z {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+  gap:30px;
+}
+
+.reservationItem_d7e8f {
+  flex: 0 0 auto;
+  width: 300px;
+  margin-right: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reservationMessage_x3y4z {
+  font-size: 18px;
+  margin: 20px 0;
+  text-align: center;
+  color: #969393;
+}
+
+.actionButtons_g9h0i {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.actionButtons_g9h0i button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.gear-count {
+  text-align: right;
+  padding-right: 16px;
+  margin-top: 8px;
+}
+
+/* Custom scrollbar styles for gear list */
+.reservationScroll_x1y2z::-webkit-scrollbar {
+  height: 8px;
+}
+
+.reservationScroll_x1y2z::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.reservationScroll_x1y2z::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.reservationScroll_x1y2z::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.editButton_j1k2l {
+  color: blue;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: blue;
+}
+
+.editButton_j1k2l:hover {
+  background-color: blue;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.deleteButton_m3n4o {
+  color: red;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: red;
+}
+
+.deleteButton_m3n4o:hover {
+  background-color: red;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.actionButtons_g9h0i button svg {
+  margin-right: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .reservationGrid_a5b6c {
+    max-width: 900px;
   }
-  
-  /* User info section */
+}
+
+@media (max-width: 768px) {
+  .listContainer_r9s0t {
+    padding: 40px 15px;
+  }
+
+  .titleList_u1v2w {
+    font-size: 28px;
+  }
+
+  .reservationItem_d7e8f {
+    width: 250px;
+  }
+
+  .actionButtons_g9h0i button {
+    font-size: 15px;
+  }
+
   .user-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  
-  .user-avatar-name {
-    display: flex;
+    flex-direction: column;
     align-items: center;
   }
-  
-  .user-avatar {
-    width: 100px !important;
-    height: 100px !important;
-    font-size: 2rem !important;
-    margin-right: 24px;
-  }
-  
-  .user-details {
-    display: flex;
+
+  .user-avatar-name {
     flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
   }
-  
-  /* Verified info section */
-  .verified-info .MuiListItem-root {
-    padding-top: 8px;
-    padding-bottom: 8px;
+
+  .user-info .user-avatar {
+    margin-right: 0;
+    margin-bottom: 16px;
   }
-  
-  .verified-info .MuiButton-root {
-    min-width: 120px;
+
+  .user-details {
+    text-align: center;
+    margin-bottom: 16px;
   }
-  
-  /* Custom styles for the edit profile button */
+
   .edit-profile-button {
-    background-color: #6200ee !important;
-    color: white !important;
-    transition: background-color 0.3s !important;
+    width: 100%;
   }
-  
-  .edit-profile-button:hover {
-    background-color: #3700b3 !important;
+
+  .review-card {
+    width: 250px;
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    .user-info {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .user-avatar-name {
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-  
-    .user-avatar {
-      margin-right: 0;
-      margin-bottom: 16px;
-    }
-  
-    .user-details {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-  
-    .edit-profile-button {
-      width: 100%;
-    }
+
+  .reviewer-info .reviewer-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px;
   }
+}
+
+@media (max-width: 480px) {
+  .listContainer_r9s0t {
+    padding: 30px 10px;
+  }
+
+  .titleList_u1v2w {
+    font-size: 24px;
+  }
+  .reservationScroll_x1y2z {
+    gap:120px;
+  }
+
+  .reservationItem_d7e8f {
+    width: 200px;
+  }
+
+  .reservationGrid_a5b6c {
+    max-width: 100%;
+  }
+
+  /* Hide scrollbar on mobile devices */
+  .reviews-container::-webkit-scrollbar,
+  .reservationScroll_x1y2z::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reviews-container,
+  .reservationScroll_x1y2z {
+    scrollbar-width: none; /* For Firefox */
+  }
+
+  .actionButtons_g9h0i {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .actionButtons_g9h0i button {
+    width: 80%;
+    margin: 5px 0;
+    margin-left: 100px;
+  }
+}

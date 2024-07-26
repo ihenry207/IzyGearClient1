@@ -17,7 +17,7 @@ const Listings = () => {
   const getOwnerGearList = async () => {
     try {
       const response = await fetch(
-        `http://192.175.1.221:3001/users/${userId}/ownerGear`,
+        `http://192.168.1.66:3001/users/${userId}/ownerGear`,
         {
           method: "GET",
         }
@@ -52,29 +52,30 @@ const Listings = () => {
     <>
       <Navbar />
       <div className="list-container">
-      <h1 className="title-list">Listed Gears</h1>
-      <Notification/>
-      {message ? (
-        <p className="listing-message">{message}</p>
-      ) : (
-        <div className="list">
-          {ownerGearList.map((gear) => (
-            <ListingCard
-              key={gear._id}
-              listingId={gear._id}
-              creator={gear.creator._id}
-              listingPhotoPaths={gear.listingPhotoPaths}
-              address={gear.address}
-              condition={gear.condition}
-              category={gear.category}
-              title={gear.title}
-              type={gear.type}
-              price={gear.price}
-              booking={false}
-            />
-          ))}
-        </div>
-      )}
+        <h1 className="title-list">Listed Gears</h1>
+        <Notification/>
+        {ownerGearList.length === 0 ? (
+          <p className="reservation-message">No listed gears found at this time</p>
+        ) : (
+          <div className="reservation-grid">
+            {ownerGearList.map((gear) => (
+              <div className="reservation-item" key={gear._id}>
+                <ListingCard
+                  listingId={gear._id}
+                  creator={gear.creator._id}
+                  listingPhotoPaths={gear.listingPhotoPaths}
+                  address={gear.address}
+                  condition={gear.condition}
+                  category={gear.category}
+                  title={gear.title}
+                  type={gear.type}
+                  price={gear.price}
+                  booking={false}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <Footer />
     </>

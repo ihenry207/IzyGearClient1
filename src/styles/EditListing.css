@@ -1,0 +1,255 @@
+/* EditListing.css */
+
+body {
+    background-color: #f7f7f7;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  .edit-listing {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1, h2, h3 {
+    color: #003580;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  h3 {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 1rem 0;
+  }
+  
+  .category-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  .category {
+    background-color: #e0e0e0;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
+  
+  .category.selected {
+    background-color: #003580;
+    color: white;
+  }
+  
+  select, input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .photos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  .photo {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .photo button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .alone, .together {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .icon {
+    font-size: 2rem;
+    color: #003580;
+  }
+  
+  .submit_btn {
+    background-color: #003580;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit_btn:hover {
+    background-color: #002560;
+  }
+  
+  .submit_btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    color: #c62828;
+    float: right;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 600px) {
+    .edit-listing {
+      padding: 10px;
+    }
+  
+    h1 {
+      font-size: 2rem;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+    }
+  
+    h3 {
+      font-size: 1.1rem;
+    }
+  
+    .photo, .alone, .together {
+      width: calc(50% - 5px);
+      height: 120px;
+    }
+  }
+
+  .additional-options {
+    margin-bottom: 1rem;
+  }
+  
+  .option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .option:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .option.selected {
+    background-color: #e6f2ff;
+  }
+  
+  .option input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  .option label {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .option.selected label {
+    font-weight: bold;
+    color: #003580;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .cancel-btn {
+    display: flex;
+    align-items: center;
+    background-color: #ffcccb; /* Light red */
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #ffb3b3; /* Slightly darker on hover */
+  }
+  
+  .cancel-btn svg {
+    margin-right: 5px;
+  }
+  
+  /* Adjust the submit_btn to match the new layout */
+  .submit_btn {
+    /* keep your existing styles and add: */
+    margin-left: 10px;
+  }
