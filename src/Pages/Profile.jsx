@@ -12,7 +12,8 @@ import {
   Paper,
   Avatar,
   Stack,
-  Grid
+  Grid,
+  Modal, IconButton
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
 import Navbar from "../components/Navbar";
@@ -25,16 +26,31 @@ import UndoIcon from '@mui/icons-material/Undo';
 import Notification from '../components/notification/notification.jsx';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 const Profile = () => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const host = useSelector((state) => state.user);
+  
+  const createdAt = host.createdAt;
+  const formattedDate = createdAt 
+    ? new Date(createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) 
+    : '';
+
+  const fullName = `${host.firstName} ${host.lastName}`;
+  const avatar = host.profileImagePath;
+
   const [user, setUser] = useState({
-    name: 'Izere H.',
-    joinDate: 'May 2024',
+    name: fullName,
+    joinDate: formattedDate,
+    avatar: avatar,
     approved: true,
     emailVerified: true,
     phoneVerified: false,
-    facebookConnected: false,
   });
 
   const reviews = [
@@ -98,13 +114,13 @@ const Profile = () => {
     getOwnerGearList();
   }, [userId]);
 
-  useEffect(() => {
-    const listingUpdated = localStorage.getItem("listingUpdated");
-    if (listingUpdated === "true") {
-      toast.success("Listing updated successfully!");
-      localStorage.removeItem("listingUpdated");  // Clean up after showing the toast
-    }
-  }, []);
+  // useEffect(() => {
+  //   const listingUpdated = localStorage.getItem("listingUpdated");
+  //   if (listingUpdated === "true") {
+  //     toast.success("Listing updated successfully!");
+  //     localStorage.removeItem("listingUpdated");  // Clean up after showing the toast
+  //   }
+  // }, []);
 
   const changeStatus = async (category, listingId) => {
     try {
@@ -144,7 +160,7 @@ const Profile = () => {
       <Container maxWidth="md" className="profile">
         <Stack spacing={2}>
           <Paper elevation={3} sx={{ p: 3 }}>
-            <UserInfo user={user} />
+          <UserInfo user={user} onEditProfile={handleOpenModal} />
           </Paper>
           <Paper elevation={3} sx={{ p: 3 }}>
             <VerifiedInfo user={user} />
@@ -155,14 +171,29 @@ const Profile = () => {
         </Stack>
       </Container>
       <OwnerGearList ownerGearList={ownerGearList} changeStatus={changeStatus} />
+      <EditProfileModal open={openModal} onClose={handleCloseModal} user={user} />
     </>
   );
 };
 
-const UserInfo = ({ user }) => (
+const UserInfo = ({ user, onEditProfile }) => (
   <Box className="user-info">
     <Box className="user-avatar-name">
-      <Avatar className="user-avatar">{user.name[0]}</Avatar>
+      <Avatar 
+        className="user-avatar" 
+        src={user.avatar}
+        alt={user.name}
+        sx={{
+          width: '100px !important',
+          height: '100px !important',
+          fontSize: '2rem !important',
+          marginRight: '0',
+          borderRadius: '50%',
+          marginBottom: '16px',
+        }}
+      >
+        {!user.avatar && user.name[0]}
+      </Avatar>
       <Box className="user-details">
         <Typography variant="h4">{user.name}</Typography>
         <Typography variant="body2" color="text.secondary">
@@ -170,10 +201,75 @@ const UserInfo = ({ user }) => (
         </Typography>
       </Box>
     </Box>
-    <Button variant="contained" className="edit-profile-button">Edit profile</Button>
+    <Button variant="contained" className="edit-profile-button" onClick={onEditProfile}
+    sx={{
+      backgroundColor: 'transparent',
+      color: '#24355A',
+      border: '2px solid #24355A',
+      transition: 'background-color 0.3s ease, color 0.3s ease',
+      '&:hover': {
+        backgroundColor: '#24355A',
+        color: 'white',
+      },
+    }}
+    >Edit profile</Button>
   </Box>
 );
 
+const EditProfileModal = ({ open, onClose, user }) => (
+  <Modal
+    open={open}
+    onClose={onClose}
+    aria-labelledby="edit-profile-modal"
+    aria-describedby="modal-to-edit-profile-picture"
+  >
+    <Box sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      boxShadow: 24,
+      p: 4,
+      borderRadius: '10px',
+      textAlign: 'center'
+    }}>
+      <Box sx={{ position: 'relative', width: 200, height: 200, margin: '0 auto 20px' }}>
+        <Avatar 
+          src={user.avatar}
+          alt={user.name}
+          sx={{ width: '100%', height: '100%' }}
+        >
+          {!user.avatar && user.name[0]}
+        </Avatar>
+      </Box>
+      <Box className="change-profile-picture-container-gt45" sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        mt: 2
+      }}>
+        <IconButton 
+          className="icon-button-gt45"
+          aria-label="change profile picture"
+          sx={{ 
+            mr: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            }
+          }}
+        >
+          <CameraAltIcon sx={{ color: 'text.primary', fontSize: 24 }} />
+        </IconButton>
+        <Typography variant="body1" className="change-profile-text-gt45">
+          Change profile picture
+        </Typography>
+      </Box>
+    </Box>
+  </Modal>
+);
 const VerifiedInfo = ({ user }) => (
   <Box className="verified-info">
     <Typography variant="h6" gutterBottom>Verified Info</Typography>

@@ -25,13 +25,13 @@
   align-items: center;
 }
 
-.user-info .user-avatar {
+/* .user-info .user-avatar {
   width: 100px !important;
   height: 100px !important;
   font-size: 2rem !important;
   margin-right: 24px;
   border-radius: 50%;
-}
+} */
 
 .user-details {
   display: flex;
@@ -49,7 +49,7 @@
 }
 
 /* Custom styles for the edit profile button */
-.edit-profile-button {
+/* .edit-profile-button {
   background-color: #6200ee !important;
   color: white !important;
   transition: background-color 0.3s !important;
@@ -57,7 +57,7 @@
 
 .edit-profile-button:hover {
   background-color: #3700b3 !important;
-}
+} */
 
 /* Reviews section */
 .reviews {
@@ -240,13 +240,13 @@
 }
 
 .editButton_j1k2l {
-  color: blue;
+  color: #24355A;
   background-color: rgba(255, 255, 255, 0.8);
-  border-color: blue;
+  border-color: #24355A;
 }
 
 .editButton_j1k2l:hover {
-  background-color: blue;
+  background-color: #24355A;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -300,10 +300,10 @@
     margin-bottom: 16px;
   }
 
-  .user-info .user-avatar {
+  /* .user-info .user-avatar {
     margin-right: 0;
     margin-bottom: 16px;
-  }
+  } */
 
   .user-details {
     text-align: center;

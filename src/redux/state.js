@@ -9,6 +9,7 @@ const initialState = {
   profileImagePath: null,
   firebaseUid: null,
   hasUnreadMessages: false,
+  createdAt: null,
 };
 
 export const userSlice = createSlice({
@@ -23,6 +24,7 @@ export const userSlice = createSlice({
       state.email = action.payload.user?.email || "";
       state.profileImagePath = action.payload.user?.profileImagePath || "";
       state.firebaseUid = action.payload.user?.firebaseUid || action.payload.firebaseUid || null;
+      state.createdAt = action.payload.user?.createdAt || null;
     },
     setLogout: (state) => {
       return initialState;

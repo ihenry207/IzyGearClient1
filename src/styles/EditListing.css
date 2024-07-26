@@ -4,99 +4,98 @@ body {
     background-color: #f7f7f7;
     font-family: 'Arial', sans-serif;
     color: #333;
-  }
-  
-  .edit-listing {
+}
+
+.edl-container-jg6869 {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-  }
-  
-  h1, h2, h3 {
+}
+
+.edl-heading1-uv5678 {
     color: #003580;
-  }
-  
-  h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
-  }
-  
-  h2 {
+}
+
+.edl-heading2-wx9012 {
+    color: #003580;
     font-size: 1.8rem;
     margin-top: 2rem;
     margin-bottom: 1rem;
-  }
-  
-  h3 {
+}
+
+.edl-heading3-yz3456 {
+    color: #003580;
     font-size: 1.2rem;
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
-  }
-  
-  hr {
+}
+
+.edl-divider-ab7890 {
     border: none;
     border-top: 1px solid #e0e0e0;
     margin: 1rem 0;
-  }
-  
-  .category-list {
+}
+
+.edl-category-list-kl3421 {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 1rem;
-  }
-  
-  .category {
+}
+
+.edl-category-mn9012 {
     background-color: #e0e0e0;
     padding: 10px 15px;
     border-radius: 20px;
     font-weight: bold;
-  }
-  
-  .category.selected {
+}
+
+.edl-category-selected-op5678 {
     background-color: #003580;
     color: white;
-  }
-  
-  select, input[type="text"], input[type="number"], textarea {
+}
+
+.edl-form-input-qr2345 {
     width: 100%;
     padding: 10px;
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
-  }
-  
-  textarea {
+}
+
+.edl-form-textarea-cd1234 {
     min-height: 100px;
     resize: vertical;
-  }
-  
-  input[type="checkbox"] {
+}
+
+.edl-form-checkbox-ef5678 {
     margin-right: 10px;
-  }
-  
-  .photos {
+}
+
+.edl-photos-st7890 {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 1rem;
-  }
-  
-  .photo {
+}
+
+.edl-photo-uv1234 {
     position: relative;
     width: 150px;
     height: 150px;
-  }
-  
-  .photo img {
+}
+
+.edl-photo-img-wx5678 {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 4px;
-  }
-  
-  .photo button {
+}
+
+.edl-photo-button-yz9012 {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -105,9 +104,9 @@ body {
     border-radius: 50%;
     padding: 5px;
     cursor: pointer;
-  }
-  
-  .alone, .together {
+}
+
+.edl-upload-box-ab3456 {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -117,15 +116,15 @@ body {
     border: 2px dashed #ccc;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .icon {
+}
+
+.edl-icon-cd7890 {
     font-size: 2rem;
-    color: #003580;
-  }
-  
-  .submit_btn {
-    background-color: #003580;
+    color: #24355A;
+}
+
+.edl-submit-btn-ef1234 {
+    background-color: #24355A;
     color: white;
     border: none;
     padding: 15px 30px;
@@ -133,104 +132,71 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  .submit_btn:hover {
-    background-color: #002560;
-  }
-  
-  .submit_btn:disabled {
+    margin-left: 10px;
+}
+
+.edl-submit-btn-ef1234:hover {
+    background-color: #24355A;
+}
+
+.edl-submit-btn-ef1234:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
-  }
-  
-  .error-message {
+}
+
+.edl-error-message-gh5678 {
     background-color: #ffebee;
     color: #c62828;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 1rem;
-  }
-  
-  .close-button {
+}
+
+.edl-close-button-ij9012 {
     background: none;
     border: none;
     color: #c62828;
     float: right;
     font-size: 1.2rem;
     cursor: pointer;
-  }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 600px) {
-    .edit-listing {
-      padding: 10px;
-    }
-  
-    h1 {
-      font-size: 2rem;
-    }
-  
-    h2 {
-      font-size: 1.5rem;
-    }
-  
-    h3 {
-      font-size: 1.1rem;
-    }
-  
-    .photo, .alone, .together {
-      width: calc(50% - 5px);
-      height: 120px;
-    }
-  }
+}
 
-  .additional-options {
+.edl-additional-options-kl3456 {
     margin-bottom: 1rem;
-  }
-  
-  .option {
+}
+
+.edl-option-mn7890 {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
     padding: 10px;
     border-radius: 4px;
     transition: background-color 0.3s ease;
-  }
-  
-  .option:hover {
-    background-color: #e6e6e6;
-  }
-  
-  .option.selected {
-    background-color: #e6f2ff;
-  }
-  
-  .option input[type="checkbox"] {
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .option label {
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  .option.selected label {
-    font-weight: bold;
-    color: #003580;
-  }
+}
 
-  .button-container {
+.edl-option-mn7890:hover {
+    background-color: #e6e6e6;
+}
+
+.edl-option-selected-op1234 {
+    background-color: #e6f2ff;
+}
+
+.edl-option-selected-op1234 label {
+    font-weight: bold;
+    color: #24355A;
+}
+
+.edl-button-container-qr5678 {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-  }
-  
-  .cancel-btn {
+}
+
+.edl-cancel-btn-st9012 {
     display: flex;
     align-items: center;
-    background-color: #ffcccb; /* Light red */
+    background-color: #ffcccb;
     color: black;
     border: none;
     padding: 10px 20px;
@@ -238,18 +204,36 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
-  }
-  
-  .cancel-btn:hover {
-    background-color: #ffb3b3; /* Slightly darker on hover */
-  }
-  
-  .cancel-btn svg {
+}
+
+.edl-cancel-btn-st9012:hover {
+    background-color: #ffb3b3;
+}
+
+.edl-cancel-btn-st9012 svg {
     margin-right: 5px;
-  }
-  
-  /* Adjust the submit_btn to match the new layout */
-  .submit_btn {
-    /* keep your existing styles and add: */
-    margin-left: 10px;
-  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .edl-container-jg6869 {
+        padding: 10px;
+    }
+
+    .edl-heading1-uv5678 {
+        font-size: 2rem;
+    }
+
+    .edl-heading2-wx9012 {
+        font-size: 1.5rem;
+    }
+
+    .edl-heading3-yz3456 {
+        font-size: 1.1rem;
+    }
+
+    .edl-photo-uv1234, .edl-upload-box-ab3456 {
+        width: calc(50% - 5px);
+        height: 120px;
+    }
+}
