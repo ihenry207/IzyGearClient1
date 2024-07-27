@@ -1,10 +1,8 @@
-//this will show gears that are waiting for approval from the host
 import { useEffect, useState } from "react";
 import "../styles/List.css";
 import Loading from "../components/loader";
 import Navbar from "../components/Navbar";
-import { useDispatch, useSelector } from "react-redux";
-import { setReservationList } from "../redux/state";
+import { useSelector } from "react-redux";
 import ListingCard from "../components/ListingCard";
 import Footer from "../components/footer";
 import Notification from '../components/notification/notification.jsx';
@@ -25,13 +23,8 @@ const formatDate = (dateString) => {
 
 const ReservationList = () => {
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
   const [reservationList, setReservationList] = useState([]);
   const userId = useSelector((state) => state.user.userId);
-  const firebaseUid = useSelector(state => state.firebaseUid || '');
-  //const reservationList = useSelector((state) => state.user.reservationList);
-
-  const dispatch = useDispatch();
 
   const getReservationList = async () => {
     try {
@@ -43,25 +36,22 @@ const ReservationList = () => {
       );
   
       if (response.status === 404) {
-        toast.warn("No current Reservation found at this time")
-        //setMessage("No current Reservation found at this time");
+        toast.warn("No current Reservation found at this time");
       } else {
         const data = await response.json();
         
-        // Format the dates in the received data
         const formattedData = data.map(reservation => ({
           ...reservation,
-          startDate: formatDate(reservation.startDate),
-          endDate: formatDate(reservation.endDate)
+          startDate: new Date(reservation.startDate),
+          endDate: new Date(reservation.endDate)
         }));
   
-        setReservationList(formattedData); // Update the reservationList state with the formatted data
+        setReservationList(formattedData);
         console.log("reservation Info: ", formattedData);
       }
     } catch (err) {
       console.log("Fetch Reservation List failed!", err.message);
-      toast.error("An error occurred while fetching reservations. Try again Later!")
-      //setMessage("An error occurred while fetching reservations.");
+      toast.error("An error occurred while fetching reservations. Try again Later!");
     } finally {
       setLoading(false);
     }
@@ -70,6 +60,33 @@ const ReservationList = () => {
   useEffect(() => {
     getReservationList();
   }, []);
+
+  const currentDate = new Date();
+  const upcomingReservations = reservationList.filter(reservation => reservation.startDate > currentDate);
+  const pastReservations = reservationList.filter(reservation => reservation.startDate <= currentDate);
+
+  const renderReservations = (reservations) => (
+    <div className="reservation-grid">
+      {reservations.map(({ reservationId, listing, startDate, endDate, totalPrice }) => (
+        <div className="reservation-item" key={reservationId}>
+          <ListingCard
+            listingId={listing._id}
+            creator={listing.creator}
+            listingPhotoPaths={listing.listingPhotoPaths}
+            address={listing.address}
+            category={listing.category}
+            condition={listing.condition}
+            title={listing.title}
+            price={listing.price}
+            startDate={formatDate(startDate)}
+            endDate={formatDate(endDate)}
+            totalPrice={totalPrice}
+            booking={true}
+          />
+        </div>
+      ))}
+    </div>
+  );
 
   return loading ? (
     <Loading />
@@ -82,26 +99,17 @@ const ReservationList = () => {
         {reservationList.length === 0 ? (
           <p className="reservation-message">No current Reservation found at this time</p>
         ) : (
-          <div className="reservation-grid">
-            {reservationList.map(({ reservationId, listing, startDate, endDate, totalPrice }) => (
-              <div className="reservation-item" key={reservationId}>
-                <ListingCard
-                  listingId={listing._id}
-                  creator={listing.creator}
-                  listingPhotoPaths={listing.listingPhotoPaths}
-                  address={listing.address}
-                  category={listing.category}
-                  condition={listing.condition}
-                  title={listing.title}
-                  price={listing.price}
-                  startDate={startDate}
-                  endDate={endDate}
-                  totalPrice={totalPrice}
-                  booking={true}
-                />
-              </div>
-            ))}
-          </div>
+          <>
+            <h2>Upcoming Reservations</h2>
+            {upcomingReservations.length > 0 ? renderReservations(upcomingReservations) : (
+              <p>No upcoming reservations</p>
+            )}
+            
+            <h2>Past Reservations</h2>
+            {pastReservations.length > 0 ? renderReservations(pastReservations) : (
+              <p>No past reservations</p>
+            )}
+          </>
         )}
       </div>
       <Footer />

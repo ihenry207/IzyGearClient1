@@ -18,13 +18,13 @@ export const userSlice = createSlice({
   reducers: {
     setLogin: (state, action) => {
       state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.firstName = action.payload.user?.firstName || "";
-      state.lastName = action.payload.user?.lastName || "";
-      state.email = action.payload.user?.email || "";
-      state.profileImagePath = action.payload.user?.profileImagePath || "";
+      state.token = action.payload.token || state.token; // Preserve existing token if not provided
+      state.firstName = action.payload.user?.firstName || state.firstName;
+      state.lastName = action.payload.user?.lastName || state.lastName;
+      state.email = action.payload.user?.email || state.email;
+      state.profileImagePath = action.payload.user?.profileImagePath || state.profileImagePath;
       state.firebaseUid = action.payload.user?.firebaseUid || action.payload.firebaseUid || null;
-      state.createdAt = action.payload.user?.createdAt || null;
+      state.createdAt = action.payload.user?.createdAt || state.createdAt;
     },
     setLogout: (state) => {
       return initialState;

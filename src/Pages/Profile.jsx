@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
   Container, 
   Typography, 
@@ -27,31 +27,42 @@ import Notification from '../components/notification/notification.jsx';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import { setLogin } from '../redux/state'; 
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../lib/firebase"
 
 const Profile = () => {
   const [openModal, setOpenModal] = useState(false);
-
+  const navigate = useNavigate();
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
   const host = useSelector((state) => state.user);
-  
-  const createdAt = host.createdAt;
-  const formattedDate = createdAt 
-    ? new Date(createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) 
-    : '';
-
-  const fullName = `${host.firstName} ${host.lastName}`;
-  const avatar = host.profileImagePath;
 
   const [user, setUser] = useState({
-    name: fullName,
-    joinDate: formattedDate,
-    avatar: avatar,
+    name: '',
+    joinDate: '',
+    avatar: '',
     approved: true,
     emailVerified: true,
     phoneVerified: false,
   });
+
+  useEffect(() => {
+    const createdAt = host.createdAt;
+    const formattedDate = createdAt 
+      ? new Date(createdAt).toLocaleString('default', { month: 'long', year: 'numeric' }) 
+      : '';
+
+    const fullName = `${host.firstName} ${host.lastName}`;
+
+    setUser(prevUser => ({
+      ...prevUser,
+      name: fullName,
+      joinDate: formattedDate,
+      avatar: host.profileImagePath,
+    }));
+  }, [host]);
 
   const reviews = [
     {
@@ -114,13 +125,84 @@ const Profile = () => {
     getOwnerGearList();
   }, [userId]);
 
-  // useEffect(() => {
-  //   const listingUpdated = localStorage.getItem("listingUpdated");
-  //   if (listingUpdated === "true") {
-  //     toast.success("Listing updated successfully!");
-  //     localStorage.removeItem("listingUpdated");  // Clean up after showing the toast
-  //   }
-  // }, []);
+  const dispatch = useDispatch();
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
+
+  const updateFirebaseAvatar = async (userId, newAvatarUrl) => {
+    try {
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        avatar: newAvatarUrl
+      });
+      console.log("Firebase avatar updated successfully");
+      return true;
+    } catch (error) {
+      console.error("Error updating Firebase avatar:", error);
+      throw error;
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (!selectedImage) {
+      toast.error("No image selected");
+      return;
+    }
+    
+
+    try {
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append('profileImage', selectedImage);
+
+      const response = await fetch(
+        `http://192.168.1.66:3001/users/update-profile-image/${userId}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        
+        toast.success("Profile image updated successfully");
+        
+        // Update Redux state
+        dispatch(setLogin({
+          user: {
+            ...host,
+            profileImagePath: data.user.profileImagePath
+          },
+          
+        }));
+
+        // Update Firebase avatar
+        try {
+          await updateFirebaseAvatar(host.firebaseUid, data.user.profileImagePath);
+        } catch (error) {
+          console.log(error)
+          toast.error("Failed to update avatar in chat. Please try again.");
+        }
+
+        handleCloseModal();
+        
+        setSelectedImage(null);
+      } else {
+        throw new Error(data.message || 'Failed to change profile image');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "An error occurred while updating profile image");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const changeStatus = async (category, listingId) => {
     try {
@@ -152,6 +234,7 @@ const Profile = () => {
       setIsLoading(false);
     }
   };
+
   if (isLoading) return <Loading />;
   return (
     <>
@@ -171,7 +254,15 @@ const Profile = () => {
         </Stack>
       </Container>
       <OwnerGearList ownerGearList={ownerGearList} changeStatus={changeStatus} />
-      <EditProfileModal open={openModal} onClose={handleCloseModal} user={user} />
+      <EditProfileModal 
+        open={openModal} 
+        onClose={handleCloseModal} 
+        user={user}
+        selectedImage={selectedImage}
+        onImageChange={handleImageChange}
+        onSaveChanges={handleSaveChanges}
+        isLoading={isLoading}
+      />
     </>
   );
 };
@@ -215,61 +306,117 @@ const UserInfo = ({ user, onEditProfile }) => (
     >Edit profile</Button>
   </Box>
 );
+const EditProfileModal = ({ 
+  open, 
+  onClose, 
+  user, 
+  selectedImage, 
+  onImageChange, 
+  onSaveChanges, 
+  isLoading 
+}) => {
+  const handleCancel = () => {
+    onClose();
+  };
 
-const EditProfileModal = ({ open, onClose, user }) => (
-  <Modal
-    open={open}
-    onClose={onClose}
-    aria-labelledby="edit-profile-modal"
-    aria-describedby="modal-to-edit-profile-picture"
-  >
-    <Box sx={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 400,
-      bgcolor: 'background.paper',
-      boxShadow: 24,
-      p: 4,
-      borderRadius: '10px',
-      textAlign: 'center'
-    }}>
-      <Box sx={{ position: 'relative', width: 200, height: 200, margin: '0 auto 20px' }}>
-        <Avatar 
-          src={user.avatar}
-          alt={user.name}
-          sx={{ width: '100%', height: '100%' }}
-        >
-          {!user.avatar && user.name[0]}
-        </Avatar>
-      </Box>
-      <Box className="change-profile-picture-container-gt45" sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        mt: 2
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="edit-profile-modal"
+      aria-describedby="modal-to-edit-profile-picture"
+    >
+      <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        p: 4,
+        borderRadius: '10px',
+        textAlign: 'center'
       }}>
-        <IconButton 
-          className="icon-button-gt45"
-          aria-label="change profile picture"
-          sx={{ 
-            mr: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            }
-          }}
-        >
-          <CameraAltIcon sx={{ color: 'text.primary', fontSize: 24 }} />
-        </IconButton>
-        <Typography variant="body1" className="change-profile-text-gt45">
-          Change profile picture
-        </Typography>
+        <Box sx={{ position: 'relative', width: 200, height: 200, margin: '0 auto 20px' }}>
+          <Avatar 
+            src={selectedImage ? URL.createObjectURL(selectedImage) : user.avatar}
+            alt={user.name}
+            sx={{ width: '100%', height: '100%' }}
+          >
+            {!selectedImage && !user.avatar && user.name[0]}
+          </Avatar>
+        </Box>
+        <Box className="change-profile-picture-container-gt45" sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mt: 2
+        }}>
+          <input
+            accept="image/*"
+            style={{ display: 'none' }}
+            id="icon-button-file"
+            type="file"
+            onChange={onImageChange}
+          />
+          <label htmlFor="icon-button-file">
+            <IconButton 
+              className="icon-button-gt45"
+              aria-label="change profile picture"
+              component="span"
+              sx={{ 
+                mr: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                }
+              }}
+            >
+              <CameraAltIcon sx={{ color: 'text.primary', fontSize: 24 }} />
+            </IconButton>
+          </label>
+          <Typography variant="body1" className="change-profile-text-gt45">
+            Change profile picture
+          </Typography>
+        </Box>
+        {selectedImage && (
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+            <Button 
+              onClick={handleCancel}
+              sx={{
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                color: 'red',
+                border: '2px solid red',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                },
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={onSaveChanges}
+              disabled={isLoading}
+              sx={{
+                backgroundColor: 'transparent',
+                border: '2px solid #24355A',
+                color: '#24355A',
+                '&:hover': {
+                  backgroundColor: '#24355A',
+                  color: 'white',
+                },
+              }}
+            >
+              {isLoading ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </Box>
+        )}
       </Box>
-    </Box>
-  </Modal>
-);
+    </Modal>
+  );
+};
+
 const VerifiedInfo = ({ user }) => (
   <Box className="verified-info">
     <Typography variant="h6" gutterBottom>Verified Info</Typography>
