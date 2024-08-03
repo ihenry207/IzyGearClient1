@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "../styles/ListingDetails.css";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "react-date-range/dist/styles.css";
@@ -18,6 +18,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Notification from '../components/notification/notification.jsx';
 import { toast } from 'react-toastify';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { debounce } from 'lodash';
 import {
   arrayUnion,
   collection,
@@ -62,6 +64,10 @@ const ListingDetails = () => {
   const { category, listingId } = location.state;
   const customerFirebaseUid = useSelector(state => state.firebaseUid || '');
   const [errorMessage, setErrorMessage] = useState("");
+  const User = useSelector((state) => state.user);
+  const customerId = User?.userId;
+  const navigate = useNavigate();
+  const [isReserving, setIsReserving] = useState(false);
   let address = listing?.address;
   let city, state, country;
 
@@ -281,33 +287,34 @@ const ListingDetails = () => {
   };
 
   const handleSelect = (ranges) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    setDateRange([ranges.selection]);
+    // const today = new Date();
+    // today.setHours(0, 0, 0, 0);
   
-    const isStartDateDisabled = disabledDates.some(
-      disabledDate => 
-        disabledDate instanceof Date && 
-        ranges.selection.startDate.toDateString() === disabledDate.toDateString()
-    );
+    // const isStartDateDisabled = disabledDates.some(
+    //   disabledDate => 
+    //     disabledDate instanceof Date && 
+    //     ranges.selection.startDate.toDateString() === disabledDate.toDateString()
+    // );
   
-    let endDate = ranges.selection.endDate;
-    if (!endDate || endDate < ranges.selection.startDate) {
-      endDate = ranges.selection.startDate;
-    }
+    // let endDate = ranges.selection.endDate;
+    // if (!endDate || endDate < ranges.selection.startDate) {
+    //   endDate = ranges.selection.startDate;
+    // }
   
-    const isEndDateDisabled = disabledDates.some(
-      disabledDate => 
-        disabledDate instanceof Date && 
-        endDate.toDateString() === disabledDate.toDateString()
-    );
+    // const isEndDateDisabled = disabledDates.some(
+    //   disabledDate => 
+    //     disabledDate instanceof Date && 
+    //     endDate.toDateString() === disabledDate.toDateString()
+    // );
   
-    if (ranges.selection.startDate >= today && !isStartDateDisabled && !isEndDateDisabled) {
-      setDateRange([{
-        startDate: ranges.selection.startDate,
-        endDate: endDate,
-        key: "selection"
-      }]);
-    }
+    // if (ranges.selection.startDate >= today && !isStartDateDisabled && !isEndDateDisabled) {
+    //   setDateRange([{
+    //     startDate: ranges.selection.startDate,
+    //     endDate: endDate,
+    //     key: "selection"
+    //   }]);
+    // }
   };
 
   const timeOptions = Array.from({ length: 48 }, (_, i) => {
@@ -331,33 +338,39 @@ const ListingDetails = () => {
     return disabledDatesArray;
   };
 
+  // useEffect(() => {
+  //   if (listing && listing.BookedDates) {
+  //     const { startDate, endDate } = findNextAvailableDates(listing.BookedDates);
+  //     setDateRange([
+  //       {
+  //         startDate,
+  //         endDate,
+  //         key: "selection"
+  //       }
+  //     ]);
+  //     const formattedDates = formatBookedDates(listing.BookedDates);
+  //     setDisabledDates(formattedDates.filter(date => date instanceof Date && !isNaN(date)));
+  //   }
+  // }, [listing]);
   useEffect(() => {
     if (listing && listing.BookedDates) {
-      const { startDate, endDate } = findNextAvailableDates(listing.BookedDates);
-      setDateRange([
-        {
-          startDate,
-          endDate,
-          key: "selection"
-        }
-      ]);
       const formattedDates = formatBookedDates(listing.BookedDates);
       setDisabledDates(formattedDates.filter(date => date instanceof Date && !isNaN(date)));
     }
   }, [listing]);
 
-  const dayContentRenderer = (date) => {
-    const isDisabled = disabledDates.some(
-      disabledDate => 
-        disabledDate instanceof Date && 
-        date.toDateString() === disabledDate.toDateString()
-    );
-    return (
-      <div className={isDisabled ? 'disabled-date' : ''}>
-        {date.getDate()}
-      </div>
-    );
-  };
+  // const dayContentRenderer = (date) => {
+  //   const isDisabled = disabledDates.some(
+  //     disabledDate => 
+  //       disabledDate instanceof Date && 
+  //       date.toDateString() === disabledDate.toDateString()
+  //   );
+  //   return (
+  //     <div className={isDisabled ? 'disabled-date' : ''}>
+  //       {date.getDate()}
+  //     </div>
+  //   );
+  // };
 
   const formatToISO8601 = (date, time) => {
     const [hours, minutes, period] = time.split(/:| /);
@@ -396,10 +409,6 @@ const ListingDetails = () => {
 
 
   /* SUBMIT Reservation */
-  const User = useSelector((state) => state.user);
-  const customerId = User?.userId;
-  
-  const navigate = useNavigate();
   const formatDateDisplay = (date, time) => {
     if (!(date instanceof Date)) return 'Select a date';
     const isoString = formatToISO8601(date, time);
@@ -414,9 +423,10 @@ const ListingDetails = () => {
     });
   };
   
-
+  
   const handleSubmit = async () => {
     try {
+      setIsReserving(true);  // Disable the button
       if (!user) {
         navigate("/login");
         return;
@@ -501,31 +511,60 @@ const ListingDetails = () => {
     } catch (err) {
       toast.error("Reservation failed! Try again later.")
       console.log("Submit Booking Failed.", err.message);
+    }finally {
+      setIsReserving(false);  // Re-enable the button
     }
   };
 
   /* ADD TO WISHLIST */
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const wishList = user?.wishList || [];
-  const isLiked = wishList?.find((item) => item?._id === listingId);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [cooldownActive, setCooldownActive] = useState(false);
 
 
   useEffect(() => {
-    setIsFavorite(isLiked !== undefined);
-  }, [isLiked]);
+    const checkWishlistStatus = async () => {
+      if (!user.userId) return;
 
-  const toggleFavorite = async () => {
-    if (!user) {
-      toast.error("Please log in to add items to your wishlist");
+      try {
+        const response = await fetch(`http://192.168.1.66:3001/users/${user.userId}/wishlist/check/${listingId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setIsFavorite(data.isFavorite);
+        } else {
+          console.error("Failed to check wishlist status");
+        }
+      } catch (error) {
+        console.error("Error checking wishlist status:", error);
+      }
+    };
+
+    checkWishlistStatus();
+  }, [user.userId, listingId]);
+
+  const startCooldown = () => {
+    setCooldownActive(true);
+    setTimeout(() => {
+      setCooldownActive(false);
+    }, 15000); // 15 seconds cooldown
+  };
+
+
+  const toggleFavorite = useCallback(debounce(async () => {
+    if (!user.userId || isUpdating || cooldownActive) {
       return;
     }
 
+    setIsUpdating(true);
+
     try {
-      setIsFavorite(!isFavorite);
+      const newFavoriteState = !isFavorite;
+      setIsFavorite(newFavoriteState);
+
       const response = await fetch(
-        `http://192.168.1.66:3001/users/${user?.userId}/${category}/${listingId}`,
+        `http://192.168.1.66:3001/users/${user.userId}/${category}/${listingId}`,
         {
           method: "PATCH",
           headers: {
@@ -538,20 +577,21 @@ const ListingDetails = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.log(errorData.message);
-        toast.error("Error Adding to wishList.")
-      }else if(response.ok){
+        toast.error("Error updating wishlist.");
+        setIsFavorite(!newFavoriteState); // Revert the state if the API call fails
+      } else {
         const data = await response.json();
-        //console.log("Updated wishList:", data.wishList);
-        toast.success("Updated WishList")
-        //dispatch(setWishList(data.wishList));
+        //toast.success("Updated WishList");
+        startCooldown(); // Start the cooldown after a successful update
       }
-
     } catch (error) {
       console.log("Error updating wishlist:", error);
-      toast.error("Error Adding to wishList. Try Later")
-      //setErrorMessage("Error updating wishlist");
+      toast.error("Error updating wishlist. Try again later.");
+      setIsFavorite(!isFavorite); // Revert the state if there's an error
+    } finally {
+      setIsUpdating(false);
     }
-  };
+  }, 300), [user.userId, listingId, category, isFavorite, isUpdating, cooldownActive, listing]);
 
   return loading ? (
     <Loading />
@@ -571,18 +611,18 @@ const ListingDetails = () => {
         </div>
       )}
       <div className="listing-details">
-        <div className="title-container">
+        <div className="title-container" >
           <h1>{listing.title}</h1>
           <button
-            className="favorite-icon"
+          className="favorite-icon"
             onClick={toggleFavorite}
-            disabled={!user}
+            disabled={!user.userId || isUpdating || cooldownActive}
           >
             {isFavorite ? (
-            <Favorite sx={{ color: "red" }} />
-          ) : (
-            <FavoriteBorder sx={{ color: "black" }} />
-          )}
+              <Favorite sx={{ color: "red" }} />
+            ) : (
+              <FavoriteBorder sx={{ color: "black" }} />
+            )}
           </button>
         </div>
         <div className="photos">
@@ -634,7 +674,7 @@ const ListingDetails = () => {
             onChange={handleSelect}
             minDate={new Date()}
             disabledDates={disabledDates}
-            dayContentRenderer={dayContentRenderer}
+            //dayContentRenderer={dayContentRenderer}
             selectsRange={true}
             showSelectionPreview={true}
             months={1}
@@ -648,65 +688,91 @@ const ListingDetails = () => {
           {/* Pickup and Return Time container */}
           <div className="time-picker-container">
             <div className="time-picker">
-              <label>Pickup Time:</label>
-              <div className="time-select-container2" onClick={togglePickupTime}>
-                <QueryBuilderIcon className="clock-icon" />
+              <label className="time-label">Pickup Time</label>
+              <div className="time-select-wrapper">
                 <select
+                  className="time-select"
                   value={pickupTime}
                   onChange={(e) => setPickupTime(e.target.value)}
-                  onFocus={togglePickupTime}
-                  onBlur={togglePickupTime}
                 >
                   {timeOptions.map((time, index) => (
                     <option key={index} value={time}>{time}</option>
                   ))}
                 </select>
-                {isPickupTimeOpen ? (
-                  <KeyboardArrowUpIcon className="arrow-icon" />
-                ) : (
-                  <KeyboardArrowDownIcon className="arrow-icon" />
-                )}
+                <div className="time-icon">
+                  <i className="far fa-clock"></i>
+                </div>
               </div>
             </div>
             <div className="time-picker">
-              <label>Return Time:</label>
-              <div className="time-select-container2" onClick={toggleReturnTime}>
-                <QueryBuilderIcon className="clock-icon" />
+              <label className="time-label">Return Time</label>
+              <div className="time-select-wrapper">
                 <select
+                  className="time-select"
                   value={returnTime}
                   onChange={(e) => setReturnTime(e.target.value)}
-                  onFocus={toggleReturnTime}
-                  onBlur={toggleReturnTime}
                 >
                   {timeOptions.map((time, index) => (
                     <option key={index} value={time}>{time}</option>
                   ))}
                 </select>
-                {isReturnTimeOpen ? (
-                  <KeyboardArrowUpIcon className="arrow-icon" />
-                ) : (
-                  <KeyboardArrowDownIcon className="arrow-icon" />
-                )}
+                <div className="time-icon">
+                  <i className="far fa-clock"></i>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Pricing information */}
-          <div className="pricing-info">
-          <h2>${listing.price} x {diffDays} day{diffDays > 1 ? 's' : ''}</h2>
-          <h2>Total price: ${listing.price * (diffDays || 1)}</h2>
-          <p>From: {dateRange[0] && dateRange[0].startDate instanceof Date 
-            ? formatDateDisplay(dateRange[0].startDate, pickupTime)
-            : 'Select a start date'}</p>
-          <p>Until: {dateRange[0] && dateRange[0].endDate instanceof Date 
-            ? formatDateDisplay(dateRange[0].endDate, returnTime)
-            : 'Select an end date'}</p>
-        </div>
+          <div className="pricing-card">
+            <div className="pricing-header">
+              <h2 className="pricing-title">Booking Summary</h2>
+            </div>
+            <div className="pricing-details">
+              <div className="pricing-row">
+                <span className="pricing-label">Daily Rate:</span>
+                <span className="pricing-value">${listing.price}</span>
+              </div>
+              <div className="pricing-row">
+                <span className="pricing-label">Duration:</span>
+                <span className="pricing-value">{diffDays} day{diffDays > 1 ? 's' : ''}</span>
+              </div>
+              <div className="pricing-row total">
+                <span className="pricing-label">Total Price:</span>
+                <span className="pricing-value">${listing.price * (diffDays || 1)}</span>
+              </div>
+            </div>
+            <div className="booking-dates">
+              <div className="date-row">
+                <i className="fas fa-calendar-check"></i>
+                <span className="date-label">From:</span>
+                <span className="date-value">
+                  {dateRange[0] && dateRange[0].startDate instanceof Date 
+                    ? formatDateDisplay(dateRange[0].startDate, pickupTime)
+                    : 'Select a start date'}
+                </span>
+              </div>
+              <div className="date-row">
+                <i className="fas fa-calendar-times"></i>
+                <span className="date-label">Until:</span>
+                <span className="date-value">
+                  {dateRange[0] && dateRange[0].endDate instanceof Date 
+                    ? formatDateDisplay(dateRange[0].endDate, returnTime)
+                    : 'Select an end date'}
+                </span>
+              </div>
+            </div>
+          </div>
 
           {/* Reserve button container */}
           <div className="reserve-button-container">
-            <button className="button" type="submit" onClick={handleSubmit}>
-              Reserve
+            <button 
+              className="button" 
+              type="submit" 
+              onClick={handleSubmit}
+              disabled={isReserving}
+            >
+              {isReserving ? 'Reserving...' : 'Reserve'}
             </button>
           </div>
         </div>

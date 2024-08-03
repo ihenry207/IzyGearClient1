@@ -10,6 +10,8 @@ import Loading from "../components/loader";
 //import { setOwnerGearList } from "../redux/state";
 import { Loader } from '@googlemaps/js-api-loader';
 import ImageUploading from 'react-images-uploading';
+import Notification from '../components/notification/notification.jsx';
+import { toast } from 'react-toastify';
 
 const libraries = ["places"]; //IoIosImages
 
@@ -30,10 +32,13 @@ const CreateListing = () => {
   const [customBrand, setCustomBrand] = useState('');
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [additionalOptions, setAdditionalOptions] = useState({});
+  const [equipment, setEquipment] = useState("");
   const dispatch = useDispatch();
   const creatorId = useSelector((state) => state.user.userId);
   //const ownerGearList = useSelector((state) => state.user.ownerGearList); // Ensure to get the current list
   const firebaseUid = useSelector(state => state.firebaseUid || '');
+  const [rules, setRules] = useState('');
   const navigate = useNavigate();
   const autocompleteRef = useRef(null);
 
@@ -112,7 +117,7 @@ const CreateListing = () => {
     // Check if all required fields are filled
     const missingFields = [];
     if (!category) missingFields.push("Category");
-    if (!brand) missingFields.push("Brand");
+    
     if (!price) missingFields.push("Price");
     if (!formLocation.address) missingFields.push("address");
     if (!condition) missingFields.push("Condition");
@@ -121,23 +126,27 @@ const CreateListing = () => {
     // Category-specific checks
     if (category === "Biking") {
       if (!type) missingFields.push("Type");
+      if (!brand) missingFields.push("Brand");
       if (!kind) missingFields.push("Kind");
       if (!size) missingFields.push("Size");
     } else if (category === "Camping") {
       if (!subcategory) missingFields.push("Subcategory");
+      if (!brand) missingFields.push("Brand");
       if (!size) missingFields.push("Size");
       if ((subcategory === "Sleeping bags" || subcategory === "Outdoor clothing") && !gender) {
         missingFields.push("Gender");
       }
-    } else {
-      // For Snowboard and Ski categories
+    } else if (category === "Water") {
+      if (!equipment) missingFields.push("Equipment");
+      if (!size) missingFields.push("Size");
+    } else if (category === "Snowboard" || category === "Ski") {
       if (!gender) missingFields.push("Gender");
       if (!size) missingFields.push("Size");
     }
   
     if (missingFields.length > 0) {
       console.log("missing fields", missingFields);
-      setErrorMessage(`Please fill in the following fields: ${missingFields.join(", ")}`);
+      toast.error(`Please fill in the following fields: ${missingFields.join(", ")}`);
       return;
     }
   
@@ -148,14 +157,16 @@ const CreateListing = () => {
       const listingForm = new FormData();
       listingForm.append("creator", creatorId);
       listingForm.append("category", category);
-      listingForm.append("brand", brand);
+      
       listingForm.append("price", price);
       listingForm.append("address", formLocation.address);
       listingForm.append("condition", condition);
       listingForm.append("description", description);
       listingForm.append("creatorFirebaseUid", firebaseUid);
+      listingForm.append("rules", rules); // Add this line
   
       if (category === "Snowboard" || category === "Ski") {
+        listingForm.append("brand", brand);
         listingForm.append("gender", gender);
         listingForm.append("size", size);
         listingForm.append("boots", withBoots);
@@ -163,17 +174,27 @@ const CreateListing = () => {
       }
   
       if (category === "Biking") {
+        listingForm.append("brand", brand);
         listingForm.append("type", type);
         listingForm.append("kind", kind);
         listingForm.append("size", size);
       }
   
       if (category === "Camping") {
+        listingForm.append("brand", brand);
         listingForm.append("subcategory", subcategory);
         listingForm.append("size", size);
         if (subcategory === "Sleeping bags" || subcategory === "Outdoor clothing") {
           listingForm.append("gender", gender);
         }
+      }
+
+      if (category === "Water") {
+        listingForm.append("equipment", equipment);
+        listingForm.append("size", size);
+        Object.entries(additionalOptions).forEach(([key, value]) => {
+          listingForm.append(key, value);
+        });
       }
   
       /* Append each selected photo to the FormData object */
@@ -195,10 +216,11 @@ const CreateListing = () => {
         return new Blob([u8arr], {type:mime});
       }
   
-      /* Send a POST request to server 10.1.82.57:3001*/
+      /* Send a POST request to server */
       const response = await fetch(
         category === "Biking" ? "http://192.168.1.66:3001/gears/biking/create" :
         category === "Camping" ? "http://192.168.1.66:3001/gears/camping/create" :
+        category === "Water" ? "http://192.168.1.66:3001/gears/water/create" :
         "http://192.168.1.66:3001/gears/skisnow/create",
         {
           method: "POST",
@@ -210,20 +232,19 @@ const CreateListing = () => {
       
       if (response.ok) {
         const newListing = await response.json();
-        //dispatch(setOwnerGearList([...ownerGearList, newListing]));
         setIsLoading(false);
         navigate("/");
       } else {
         const errorData = await response.json();
-        setErrorMessage("Error. Try again later");
+        toast.error("Error. Try again later");
         setIsLoading(false);
       }
     } catch (err) {
       console.log("Publish Listing failed", err.message);
-      setErrorMessage("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
       setIsLoading(false);
     }
-  };
+};
   const topRef = useRef(null);
 
   useEffect(() => {
@@ -232,6 +253,7 @@ const CreateListing = () => {
 
   return(
     <>
+    <Notification/>
     <Navbar />
     {errorMessage && (
       <div className="error-message">
@@ -274,10 +296,32 @@ const CreateListing = () => {
             >
               <p>Camping</p>
             </div>
+            <div
+              className={`category ${category === "Water" ? "selected" : ""}`}
+              onClick={() => setCategory("Water")}
+            >
+              <p>Water</p>
+            </div>
           </div>
 
           {category === "Snowboard" && (
             <>
+              <h3>Type</h3>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              >
+                <option value="">Select a type</option>
+                <option value="All-Mountain">All-Mountain</option>
+                <option value="Freestyle">Freestyle</option>
+                <option value="Freeride">Freeride</option>
+                <option value="Powder">Powder</option>
+                <option value="Splitboards">Splitboards</option>
+                <option value="Carving/Alpine">Carving/Alpine</option>
+                <option value="Beginner">Beginner </option>
+              </select>
+
               <h3>Brand</h3>
               <select
                 value={brand}
@@ -290,33 +334,26 @@ const CreateListing = () => {
                 required
               >
                 <option value="">Select a brand</option>
-                <option value="Arbor">Arbor</option>
-                <option value="Bataleon">Bataleon</option>
                 <option value="Burton">Burton</option>
-                <option value="CAPiTA">CAPiTA</option>
-                <option value="Cardiff">Cardiff</option>
-                <option value="DC">DC</option>
-                <option value="GNU">GNU</option>
-                <option value="Jones">Jones</option>
+                <option value="Ride">Ride</option>
                 <option value="K2">K2</option>
                 <option value="Lib Tech">Lib Tech</option>
-                <option value="Moss Snowstick">Moss Snowstick</option>
-                <option value="Never Summer">Never Summer</option>
-                <option value="Nidecker">Nidecker</option>
-                <option value="Nitro">Nitro</option>
-                <option value="Public Snowboards">Public Snowboards</option>
-                <option value="Ride">Ride</option>
-                <option value="Rome">Rome</option>
-                <option value="Rossignol">Rossignol</option>
-                <option value="Roxy">Roxy</option>
+                <option value="GNU">GNU</option>
                 <option value="Salomon">Salomon</option>
-                <option value="Season">Season</option>
-                <option value="Sims">Sims</option>
-                <option value="Slash">Slash</option>
-                <option value="United Shapes">United Shapes</option>
+                <option value="Arbor">Arbor</option>
+                <option value="Never Summer">Never Summer</option>
+                <option value="Jones">Jones</option>
+                <option value="Nitro">Nitro</option>
+                <option value="Rome">Rome</option>
+                <option value="Capita">Capita</option>
+                <option value="Rossignol">Rossignol</option>
+                <option value="Yes">Yes</option>
+                <option value="Bataleon">Bataleon</option>
+                <option value="Nidecker">Nidecker</option>
+                <option value="Flow">Flow</option>
+                <option value="DC">DC</option>
+                <option value="Signal">Signal</option>
                 <option value="Weston">Weston</option>
-                <option value="WNDR Alpine">WNDR Alpine</option>
-                <option value="Yes.">Yes.</option>
               </select>
               
 
@@ -422,6 +459,24 @@ const CreateListing = () => {
 
           {category === "Ski" && (
             <>
+              <h3>Type</h3>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              >
+                <option value="">Select a type</option>
+                <option value="All-Mountain">All-Mountain</option>
+                <option value="Powder">Powder</option>
+                <option value="Freestyle">Freestyle</option>
+                <option value="Carving">Carving</option>
+                <option value="Race">Race</option>
+                <option value="Backcountry/Touring">Backcountry/Touring</option>
+                <option value="Alpine Touring (AT)">Alpine Touring (AT)</option>
+                <option value="Cross-Country">Cross-Country</option>
+                <option value="Telemark">Telemark</option>
+              </select>
+
               <h3>Brand</h3>
               <select
                 value={brand}
@@ -434,49 +489,29 @@ const CreateListing = () => {
                 required
               >
                 <option value="">Select a brand</option>
-                <option value="4FRNT">4FRNT</option>
-                <option value="Armada Skis">Armada Skis</option>
+                <option value="Rossignol">Rossignol</option>
                 <option value="Atomic">Atomic</option>
-                <option value="Black Crows">Black Crows</option>
-                <option value="Black Diamond Equipment">Black Diamond Equipment</option>
+                <option value="Salomon">Salomon</option>
+                <option value="K2">K2</option>
+                <option value="Volkl">Volkl</option>
+                <option value="Head">Head</option>
+                <option value="Fischer">Fischer</option>
+                <option value="Nordica">Nordica</option>
                 <option value="Blizzard">Blizzard</option>
-                <option value="Blossom">Blossom</option>
-                <option value="DPS Skis">DPS Skis</option>
                 <option value="Dynastar">Dynastar</option>
                 <option value="Elan">Elan</option>
-                <option value="Faction Skis">Faction Skis</option>
-                <option value="Fischer">Fischer</option>
-                <option value="Forest Skis">Forest Skis</option>
-                <option value="Freyrie">Freyrie</option>
-                <option value="Friztmeir Skis">Friztmeir Skis</option>
-                <option value="Hart">Hart</option>
-                <option value="Head">Head</option>
-                <option value="Identity One / Id One">Identity One / Id One</option>
-                <option value="J Skis">J Skis</option>
-                <option value="K2">K2</option>
-                <option value="Kneissl">Kneissl</option>
-                <option value="Liberty Skis">Liberty Skis</option>
-                <option value="Line Skis">Line Skis</option>
-                <option value="Madshus">Madshus</option>
-                <option value="Moment Skis">Moment Skis</option>
-                <option value="Nordica">Nordica</option>
-                <option value="Ogasaka Skis">Ogasaka Skis</option>
-                <option value="Olin">Olin</option>
-                <option value="Paradise Skis">Paradise Skis</option>
-                <option value="Peltonen">Peltonen</option>
-                <option value="Romp Skis">Romp Skis</option>
-                <option value="Rønning Treski">Rønning Treski</option>
-                <option value="Rossignol">Rossignol</option>
-                <option value="Salomon">Salomon</option>
-                <option value="Slatnar">Slatnar</option>
-                <option value="Spalding Skis">Spalding Skis</option>
-                <option value="Stöckli">Stöckli</option>
-                <option value="Voit">Voit</option>
-                <option value="Volant">Volant</option>
-                <option value="Völkl">Völkl</option>
-                {/* <option value="Other">Other</option> */}
+                <option value="Line">Line</option>
+                <option value="Armada">Armada</option>
+                <option value="Black Crows">Black Crows</option>
+                <option value="DPS">DPS</option>
+                <option value="Faction">Faction</option>
+                <option value="Scott">Scott</option>
+                <option value="Movement">Movement</option>
+                <option value="Icelantic">Icelantic</option>
+                <option value="Liberty">Liberty</option>
+                <option value="Black Diamond">Black Diamond</option>
               </select>
-              
+                        
 
               <h3>Gender</h3>
               <select
@@ -883,8 +918,8 @@ const CreateListing = () => {
                         case "Coolers":
                           return [
                             "YETI", "Coleman", "Igloo", "RTIC", "Pelican",
-                            "Orca", "Engel", "OtterBox", "Grizzly", "K2 Coolers",
-                            "Stanley", "Arctic Zone", "Canyon Coolers", "Bison Coolers", "Frost River"
+                            "Orca", "Engel", "OtterBox", "Grizzly", "K2",
+                            "Stanley", "Arctic Zone", "Canyon", "Bison", "Frost River"
                           ].map(brand => <option key={brand} value={brand}>{brand}</option>);
                         default:
                           return null;
@@ -924,7 +959,7 @@ const CreateListing = () => {
                             .map(size => <option key={size} value={size}>{size}</option>);
                         case "Bags and backpacks":
                           return ["Daypacks", "Overnight Packs", "Weekend Packs", "Expedition Packs",
-                            "Hydration Packs", "Waist Packs/Fanny Packs"]
+                            "Hydration", "Waist Packs/Fanny"]
                             .map(size => <option key={size} value={size}>{size}</option>);
                         case "Outdoor clothing":
                           return ["Jackets and Parkas", "Pants", "Base Layers", "Insulating Layers",
@@ -934,8 +969,8 @@ const CreateListing = () => {
                           return ["Power Banks", "Solar Panels", "Portable Power Stations"]
                             .map(size => <option key={size} value={size}>{size}</option>);
                         case "Coolers":
-                          return ["Personal/Small Coolers", "Medium Coolers", "Large Coolers",
-                            "Extra Large Coolers", "Soft Coolers"]
+                          return ["Personal/Small", "Medium", "Large",
+                            "Extra Large", "Soft"]
                             .map(size => <option key={size} value={size}>{size}</option>);
                         default:
                           return null;
@@ -976,6 +1011,105 @@ const CreateListing = () => {
             </>
           )}
 
+          {category === "Water" && (
+            <>
+              <h3>Equipment</h3>
+              <select
+                value={equipment}
+                onChange={(e) => setEquipment(e.target.value)}
+                required
+              >
+                <option value="">Select equipment</option>
+                {["Surfboard", "Kayak", "Paddleboard", "Jet Ski", "Water Skis", "Wakeboard", "Canoe", "Fishing Rod"].map(eq => (
+                  <option key={eq} value={eq}>{eq}</option>
+                ))}
+              </select>
+
+              {equipment && (
+                <>
+                  <h3>Size</h3>
+                  <select
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
+                    required
+                  >
+                    <option value="">Select size</option>
+                    {(() => {
+                      const sizes = {
+                        "Surfboard": ["5'", "6'", "7'", "8'", "9'", "10'", "11'", "12'"],
+                        "Kayak": ["8'", "9'", "10'", "11'", "12'", "13'", "14'", "15'", "16'"],
+                        "Paddleboard": ["9'", "10'", "11'", "12'", "13'", "14'"],
+                        "Jet Ski": ["8'", "9'", "10'", "11'", "12'"],
+                        "Wakeboard": ["128cm", "132cm", "136cm", "140cm", "144cm", "146cm"],
+                        "Water Skis": ["60cm", "62cm", "64cm", "66cm", "68cm", "70cm"],
+                        "Canoe": ["12'", "13'", "14'", "15'", "16'", "17'", "18'"],
+                        "Fishing Rod": ["6'", "7'", "8'", "9'", "10'", "11'", "12'"]
+                      };
+                      return (sizes[equipment] || []).map(s => <option key={s} value={s}>{s}</option>);
+                    })()}
+                  </select>
+
+                  <h3>Additional Options</h3>
+                  {(() => {
+                    const options = {
+                      "Canoe": [
+                        { id: "withPaddles", label: "Comes with Paddles" },
+                        { id: "withLifeJackets", label: "Comes with Life Jackets" }
+                      ],
+                      "Water Skis": [
+                        { id: "withBindings", label: "Comes with Bindings" },
+                        { id: "withLifeJacket", label: "Comes with Life Jacket" }
+                      ],
+                      "Wakeboard": [
+                        { id: "withBindings", label: "Comes with Bindings" },
+                        { id: "withRope", label: "Comes with Rope" },
+                        { id: "withLifeJacket", label: "Comes with Life Jacket" }
+                      ],
+                      "Jet Ski": [
+                        { id: "withLifeJacket", label: "Comes with Life Jacket" }
+                      ],
+                      "Paddleboard": [
+                        { id: "withPaddle", label: "Comes with Paddle" },
+                        { id: "withLifeJacket", label: "Comes with Life Jacket" }
+                      ],
+                      "Kayak": [
+                        { id: "withPaddle", label: "Comes with Paddle" },
+                        { id: "withLifeJacket", label: "Comes with Life Jacket" }
+                      ],
+                      "Surfboard": [
+                        { id: "withLeash", label: "Comes with Leash" }
+                      ]
+                    };
+
+                    return (options[equipment] || []).map(({ id, label }) => (
+                      <div key={id}>
+                        <input
+                          type="checkbox"
+                          id={id}
+                          checked={additionalOptions[id] || false}
+                          onChange={(e) => setAdditionalOptions(prev => ({ ...prev, [id]: e.target.checked }))}
+                        />
+                        <label htmlFor={id}>{label}</label>
+                      </div>
+                    ));
+                  })()}
+
+                  <h3>Price per Day (in dollars)</h3>
+                  <input
+                    type="number"
+                    placeholder="Enter price"
+                    min={1}
+                    max={599.99}
+                    step={0.01}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                  />
+                </>
+              )}
+            </>
+          )}
+
           <div className="create-listing">
             <h3>Where's your gear located?</h3>
             <p style={{ fontSize: "18px", fontWeight: "normal" }}>
@@ -984,7 +1118,7 @@ const CreateListing = () => {
             <input
               id="autocomplete"
               type="text"
-              placeholder="Enter your address"
+              placeholder="1 Monument square Portland, ME"
               style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
               name="address"
               value={formLocation.address}
@@ -1021,6 +1155,13 @@ const CreateListing = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
+          ></textarea>
+
+          <h3>Rules</h3>
+            <textarea
+                placeholder="Enter any rules or guidelines for renting your gear"
+                value={rules}
+                onChange={(e) => setRules(e.target.value)}
           ></textarea>
 
           <h3>Add some photos of your gear</h3>
