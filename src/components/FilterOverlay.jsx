@@ -33,6 +33,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
     const isMobile = useMediaQuery({ maxWidth: 767 });
     const [pickupDate, setPickupDate] = useState(null);
     const [returnDate, setReturnDate] = useState(null);
+    const [equipment, setEquipment] = useState("");
     useEffect(() => {
         const loader = new Loader({
           apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -125,6 +126,9 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         } else if (filter === 'Kind') {
             setSelectedKind(value);
         }
+        else if(filter == 'equipment'){
+          setEquipment(value);
+        }
         else if (filter === 'Subcategory'){
             setSelectedSubcategory(value);
         }
@@ -162,7 +166,8 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         location: location.address,
         distance: selectedRadius,
         startDate: pickupDate,
-        endDate: returnDate
+        endDate: returnDate,
+        equipment: equipment
       };
     
       console.log(filters);
@@ -189,6 +194,7 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         { value: 'Snowboard', label: 'Snowboarding' },
         { value: 'Biking', label: 'Bikes' },
         { value: 'Camping', label: 'Camping' },
+        {value: 'Water', label: 'Water'},
     ];
 
     const priceOptions = [
@@ -211,81 +217,68 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
         { value: '180+', label: '180cm +' },
     ];
 
+    const waterEquipment = [
+      "Surfboard", "Kayak", "Paddleboard", "Jet Ski", "Water Skis", "Wakeboard", "Canoe", "Fishing Rod"
+    ];
+
+    const waterSizes = {
+      "Surfboard": ["5'", "6'", "7'", "8'", "9'", "10'", "11'", "12'"],
+      "Kayak": ["8'", "9'", "10'", "11'", "12'", "13'", "14'", "15'", "16'"],
+      "Paddleboard": ["9'", "10'", "11'", "12'", "13'", "14'"],
+      "Jet Ski": ["8'", "9'", "10'", "11'", "12'"],
+      "Wakeboard": ["128cm", "132cm", "136cm", "140cm", "144cm", "146cm"],
+      "Water Skis": ["60cm", "62cm", "64cm", "66cm", "68cm", "70cm"],
+      "Canoe": ["12'", "13'", "14'", "15'", "16'", "17'", "18'"],
+      "Fishing Rod": ["6'", "7'", "8'", "9'", "10'", "11'", "12'"]
+    };
+
     const skiBrandOptions = [
-        { value: '', label: 'All' },
-        { value: '4FRNT', label: '4FRNT' },
-        { value: 'Armada Skis', label: 'Armada Skis' },
-        { value: 'Atomic', label: 'Atomic' },
-        { value: 'Black Crows', label: 'Black Crows' },
-        { value: 'Black Diamond Equipment', label: 'Black Diamond Equipment' },
-        { value: 'Blizzard', label: 'Blizzard' },
-        { value: 'Blossom', label: 'Blossom' },
-        { value: 'DPS Skis', label: 'DPS Skis' },
-        { value: 'Dynastar', label: 'Dynastar' },
-        { value: 'Elan', label: 'Elan' },
-        { value: 'Faction Skis', label: 'Faction Skis' },
-        { value: 'Fischer', label: 'Fischer' },
-        { value: 'Forest Skis', label: 'Forest Skis' },
-        { value: 'Freyrie', label: 'Freyrie' },
-        { value: 'Friztmeir Skis', label: 'Friztmeir Skis' },
-        { value: 'Hart', label: 'Hart' },
-        { value: 'Head', label: 'Head' },
-        { value: 'Identity One / Id One', label: 'Identity One / Id One' },
-        { value: 'J Skis', label: 'J Skis' },
-        { value: 'K2', label: 'K2' },
-        { value: 'Kneissl', label: 'Kneissl' },
-        { value: 'Liberty Skis', label: 'Liberty Skis' },
-        { value: 'Line Skis', label: 'Line Skis' },
-        { value: 'Madshus', label: 'Madshus' },
-        { value: 'Moment Skis', label: 'Moment Skis' },
-        { value: 'Nordica', label: 'Nordica' },
-        { value: 'Ogasaka Skis', label: 'Ogasaka Skis' },
-        { value: 'Olin', label: 'Olin' },
-        { value: 'Paradise Skis', label: 'Paradise Skis' },
-        { value: 'Peltonen', label: 'Peltonen' },
-        { value: 'Romp Skis', label: 'Romp Skis' },
-        { value: 'Rønning Treski', label: 'Rønning Treski' },
-        { value: 'Rossignol', label: 'Rossignol' },
-        { value: 'Salomon', label: 'Salomon' },
-        { value: 'Slatnar', label: 'Slatnar' },
-        { value: 'Spalding Skis', label: 'Spalding Skis' },
-        { value: 'Stöckli', label: 'Stöckli' },
-        { value: 'Voit', label: 'Voit' },
-        { value: 'Volant', label: 'Volant' },
-        { value: 'Völkl', label: 'Völkl' },
-        // { value: 'Other', label: 'Other' },
+      { value: '', label: 'Select a brand' },
+      { value: 'Rossignol', label: 'Rossignol' },
+      { value: 'Atomic', label: 'Atomic' },
+      { value: 'Salomon', label: 'Salomon' },
+      { value: 'K2', label: 'K2' },
+      { value: 'Volkl', label: 'Volkl' },
+      { value: 'Head', label: 'Head' },
+      { value: 'Fischer', label: 'Fischer' },
+      { value: 'Nordica', label: 'Nordica' },
+      { value: 'Blizzard', label: 'Blizzard' },
+      { value: 'Dynastar', label: 'Dynastar' },
+      { value: 'Elan', label: 'Elan' },
+      { value: 'Line', label: 'Line' },
+      { value: 'Armada', label: 'Armada' },
+      { value: 'Black Crows', label: 'Black Crows' },
+      { value: 'DPS', label: 'DPS' },
+      { value: 'Faction', label: 'Faction' },
+      { value: 'Scott', label: 'Scott' },
+      { value: 'Movement', label: 'Movement' },
+      { value: 'Icelantic', label: 'Icelantic' },
+      { value: 'Liberty', label: 'Liberty' },
+      { value: 'Black Diamond', label: 'Black Diamond' }
     ];
 
     const snowboardBrandOptions = [
-        { value: '', label: 'All' },
-        { value: 'Arbor', label: 'Arbor' },
-        { value: 'Bataleon', label: 'Bataleon' },
-        { value: 'Burton', label: 'Burton' },
-        { value: 'CAPiTA', label: 'CAPiTA' },
-        { value: 'Cardiff', label: 'Cardiff' },
-        { value: 'DC', label: 'DC' },
-        { value: 'GNU', label: 'GNU' },
-        { value: 'Jones', label: 'Jones' },
-        { value: 'K2', label: 'K2' },
-        { value: 'Lib Tech', label: 'Lib Tech' },
-        { value: 'Moss Snowstick', label: 'Moss Snowstick' },
-        { value: 'Never Summer', label: 'Never Summer' },
-        { value: 'Nidecker', label: 'Nidecker' },
-        { value: 'Nitro', label: 'Nitro' },
-        { value: 'Public Snowboards', label: 'Public Snowboards' },
-        { value: 'Ride', label: 'Ride' },
-        { value: 'Rome', label: 'Rome' },
-        { value: 'Rossignol', label: 'Rossignol' },
-        { value: 'Roxy', label: 'Roxy' },
-        { value: 'Salomon', label: 'Salomon' },
-        { value: 'Season', label: 'Season' },
-        { value: 'Sims', label: 'Sims' },
-        { value: 'Slash', label: 'Slash' },
-        { value: 'United Shapes', label: 'United Shapes' },
-        { value: 'Weston', label: 'Weston' },
-        { value: 'WNDR Alpine', label: 'WNDR Alpine' },
-        { value: 'Yes.', label: 'Yes.' },
-        // { value: 'Other', label: 'Other' },
+      { value: '', label: 'Select a brand' },
+      { value: 'Burton', label: 'Burton' },
+      { value: 'Ride', label: 'Ride' },
+      { value: 'K2', label: 'K2' },
+      { value: 'Lib Tech', label: 'Lib Tech' },
+      { value: 'GNU', label: 'GNU' },
+      { value: 'Salomon', label: 'Salomon' },
+      { value: 'Arbor', label: 'Arbor' },
+      { value: 'Never Summer', label: 'Never Summer' },
+      { value: 'Jones', label: 'Jones' },
+      { value: 'Nitro', label: 'Nitro' },
+      { value: 'Rome', label: 'Rome' },
+      { value: 'Capita', label: 'Capita' },
+      { value: 'Rossignol', label: 'Rossignol' },
+      { value: 'Yes', label: 'Yes' },
+      { value: 'Bataleon', label: 'Bataleon' },
+      { value: 'Nidecker', label: 'Nidecker' },
+      { value: 'Flow', label: 'Flow' },
+      { value: 'DC', label: 'DC' },
+      { value: 'Signal', label: 'Signal' },
+      { value: 'Weston', label: 'Weston' }
     ];
 
     const genderOptions = [
@@ -988,6 +981,119 @@ const FilterOverlay = ({ pcategory, onApplyFilter, showFilter, setShowFilter  })
                 </div>
               </>
             );
+        }
+
+        else if (selectedCategory === 'Water') {
+          return (
+            <>
+              {/* Equipment filter */}
+              <div className="filter-section">
+                <div className="filter-title" onClick={() => toggleExpand('Equipment')}>
+                  Equipment
+                  {equipment && (
+                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                      {equipment}
+                    </span>
+                  )}
+                  {expanded === 'Equipment' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </div>
+                {expanded === 'Equipment' && (
+                  <div className="filter-options">
+                    {waterEquipment.map((option) => (
+                      <div
+                        key={option}
+                        className={`filter-box ${equipment === option ? 'selected' : ''}`}
+                        onClick={() => handleOptionClick('equipment', option)}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+      
+              {/* Size filter */}
+              {equipment && (
+                <div className="filter-section">
+                  <div className="filter-title" onClick={() => toggleExpand('Size')}>
+                    Size
+                    {selectedSize && (
+                      <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                        {selectedSize}
+                      </span>
+                    )}
+                    {expanded === 'Size' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                  </div>
+                  {expanded === 'Size' && (
+                    <div className="filter-options">
+                      {waterSizes[equipment].map((size) => (
+                        <div
+                          key={size}
+                          className={`filter-box ${selectedSize === size ? 'selected' : ''}`}
+                          onClick={() => handleOptionClick('Size', size)}
+                        >
+                          {size}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+      
+              {/* Condition filter */}
+              <div className="filter-section">
+                <div className="filter-title" onClick={() => toggleExpand('Condition')}>
+                  Condition
+                  {selectedCondition && (
+                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                      {selectedCondition}
+                    </span>
+                  )}
+                  {expanded === 'Condition' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </div>
+                {expanded === 'Condition' && (
+                  <div className="filter-options">
+                    {conditionOptions.map((option) => (
+                      <div
+                        key={option.value}
+                        className={`filter-box ${selectedCondition === option.value ? 'selected' : ''}`}
+                        onClick={() => handleOptionClick('Condition', option.value)}
+                      >
+                        {option.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+      
+              {/* Price filter */}
+              <div className="filter-section">
+                <div className="filter-title" onClick={() => toggleExpand('Price')}>
+                  Price
+                  {selectedPrice && (
+                    <span className="selected-label" style={{ fontWeight: 'bold', marginLeft: '10px' }}>
+                      {selectedPrice}
+                    </span>
+                  )}
+                  {expanded === 'Price' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </div>
+                {expanded === 'Price' && (
+                  <div className="filter-options">
+                    <RadioGroup value={selectedPrice} onChange={handlePriceChange}>
+                      {priceOptions.map((option) => (
+                        <FormControlLabel
+                          key={option.value}
+                          value={option.value}
+                          control={<Radio />}
+                          label={option.label}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </div>
+                )}
+              </div>
+            </>
+          );
         }
         return null;
       };

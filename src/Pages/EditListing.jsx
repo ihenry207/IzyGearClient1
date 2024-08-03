@@ -12,7 +12,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Notification from '../components/notification/notification.jsx';
 import { toast } from 'react-toastify';
 
-const libraries = ["places"];
+const libraries = ["places"]; 
 
 const EditListing = () => {
   const location = useLocation();

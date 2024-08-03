@@ -209,31 +209,57 @@ const ListingDetails = () => {
   const getListingDetails = async () => {
     try {
       let apiUrl = "";
-      //I could also fetch booked dates to blur out those days, if in past don't blur
-      if (category === "Ski" || category === "Snowboard") {
-        apiUrl = `http://192.168.1.66:3001/gears/skisnow/${listingId}`;
-      } else if (category === "Biking") {
-        apiUrl = `http://192.168.1.66:3001/gears/biking/${listingId}`;
-      } else if (category === "Camping") {
-        apiUrl = `http://192.168.1.66:3001/gears/camping/${listingId}`;
+      
+      switch(category) {
+        case "Ski":
+        case "Snowboard":
+          apiUrl = `http://192.168.1.66:3001/gears/skisnow/${listingId}`;
+          break;
+        case "Biking":
+          apiUrl = `http://192.168.1.66:3001/gears/biking/${listingId}`;
+          break;
+        case "Camping":
+          apiUrl = `http://192.168.1.66:3001/gears/camping/${listingId}`;
+          break;
+        case "Water":
+          apiUrl = `http://192.168.1.66:3001/gears/water/${listingId}`;
+          break;
+        default:
+          console.error("Unknown category:", category);
+          setLoading(false);
+          return;
       }
-
+  
+      if (!apiUrl) {
+        console.error("No API URL generated for category:", category);
+        setLoading(false);
+        return;
+      }
+  
       const response = await fetch(apiUrl, {
         method: "GET",
       });
-
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
       const data = await response.json();
       setListing(data);
-      console.log("data of current listings: ",data)
+      console.log("Data of current listing: ", data);
       setLoading(false);
     } catch (err) {
-      console.log("Fetch Listing Details Failed", err.message);
+      toast.error("Fetch Listing Details Failed")
+      console.error("Fetch Listing Details Failed", err.message);
+      setLoading(false);
+      // You might want to set an error state here to display to the user
+      // setError(err.message);
     }
   };
-
+  
   useEffect(() => {
     getListingDetails();
-  }, []);
+  }, [listingId, category]); // Add dependencies here
 
   /* BOOKING CALENDAR */
   //Setting default dates to tomorrow and day after tomorrow

@@ -39,7 +39,13 @@ const CategoryPage = () => {
         subcategory: '',
         name: '',
       };
-    } else {
+    } else if (categoryName === 'Water') {
+      return {
+        ...baseFilters,
+        equipment: '',
+      };
+    }
+     else {
       return baseFilters;
     }
   };

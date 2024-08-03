@@ -32,6 +32,7 @@ const Listings = ({ selectedFilters }) => {
             kind,
             subcategory,
             name,
+            equipment,  // Add this for water gear
           } = selectedFilters;
     
           const filterParams = new URLSearchParams();
@@ -48,27 +49,30 @@ const Listings = ({ selectedFilters }) => {
           if (kind) filterParams.append("kind", kind);
           if (subcategory) filterParams.append("subcategory", subcategory);
           if (name) filterParams.append("name", name);
+          if (equipment) filterParams.append("equipment", equipment);  // Add this for water gear
           if (location && distance) {
             filterParams.append("location", location);
             filterParams.append("distance", distance);
           }
     
           if (category === "all" || category === "") {
-            const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
+            const [skiSnowResponse, bikingResponse, campingResponse, waterResponse] = await Promise.all([
               fetch(`${baseUrl}/skisnow?${filterParams.toString()}`, { method: "GET" }),
               fetch(`${baseUrl}/biking?${filterParams.toString()}`, { method: "GET" }),
               fetch(`${baseUrl}/camping?${filterParams.toString()}`, { method: "GET" }),
+              fetch(`${baseUrl}/water?${filterParams.toString()}`, { method: "GET" }),
             ]);
     
-            if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok) {
+            if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok || !waterResponse.ok) {
               throw new Error("Failed to fetch listings");
             }
     
             const skiSnowListings = await skiSnowResponse.json();
             const bikingListings = await bikingResponse.json();
             const campingListings = await campingResponse.json();
+            const waterListings = await waterResponse.json();
     
-            fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings];
+            fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings, ...waterListings];
           } else if (category === "Camping") {
             response = await fetch(`${baseUrl}/camping?${filterParams.toString()}`, { method: "GET" });
             fetchedListings = await response.json();
@@ -78,23 +82,28 @@ const Listings = ({ selectedFilters }) => {
           } else if (category === "Ski" || category === "Snowboard") {
             response = await fetch(`${baseUrl}/skisnow?${filterParams.toString()}`, { method: "GET" });
             fetchedListings = await response.json();
+          } else if (category === "Water") {
+            response = await fetch(`${baseUrl}/water?${filterParams.toString()}`, { method: "GET" });
+            fetchedListings = await response.json();
           }
         } else {
-          const [skiSnowResponse, bikingResponse, campingResponse] = await Promise.all([
+          const [skiSnowResponse, bikingResponse, campingResponse, waterResponse] = await Promise.all([
             fetch(`${baseUrl}/skisnow`, { method: "GET" }),
             fetch(`${baseUrl}/biking`, { method: "GET" }),
             fetch(`${baseUrl}/camping`, { method: "GET" }),
+            fetch(`${baseUrl}/water`, { method: "GET" }),
           ]);
     
-          if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok) {
+          if (!skiSnowResponse.ok || !bikingResponse.ok || !campingResponse.ok || !waterResponse.ok) {
             throw new Error("Failed to fetch listings");
           }
     
           const skiSnowListings = await skiSnowResponse.json();
           const bikingListings = await bikingResponse.json();
           const campingListings = await campingResponse.json();
+          const waterListings = await waterResponse.json();
     
-          fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings];
+          fetchedListings = [...skiSnowListings, ...bikingListings, ...campingListings, ...waterListings];
         }
     
         setListings(fetchedListings);
@@ -129,6 +138,7 @@ const Listings = ({ selectedFilters }) => {
             price,
             condition,
             booking = false,
+            equipment,  // Add this for water gear
           }) => (
             <div className="listing-item" key={_id}>
               <ListingCard
@@ -142,6 +152,7 @@ const Listings = ({ selectedFilters }) => {
                 type={type}
                 price={price}
                 booking={booking}
+                equipment={equipment}  // Add this for water gear
               />
             </div>
           ))}
